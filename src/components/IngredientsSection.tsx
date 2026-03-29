@@ -1,6 +1,7 @@
 import { useState } from "react";
 import * as Collapsible from "@radix-ui/react-collapsible";
 import { ChevronDown } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const ingredients = [
   { name: "Cafeína", dose: "80mg", max: 130, description: "Estimula metabolismo, queima de gordura, melhora circulação." },
@@ -68,8 +69,10 @@ const IngredientCard = ({ item, alwaysOpen }: { item: typeof ingredients[0]; alw
   );
 };
 
-const IngredientsSection = () => (
-  <section className="py-16 md:py-24 px-4" style={{ background: "linear-gradient(180deg, #F5F7FA 0%, #FFFFFF 100%)" }}>
+const IngredientsSection = () => {
+  const ref = useScrollAnimation();
+  return (
+  <section ref={ref} className="py-16 md:py-24 px-4" style={{ background: "linear-gradient(180deg, #F5F7FA 0%, #FFFFFF 100%)" }}>
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-12">
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3" style={{ color: "#1B3A6B", fontFamily: "'Playfair Display', serif" }}>
