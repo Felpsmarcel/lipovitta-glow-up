@@ -26,7 +26,7 @@ const HeroSection = () => {
               Por Clara Caldas
             </span>
 
-            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold leading-tight text-white mb-4 md:mb-6">
+            <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-[3.25rem] font-bold leading-snug md:leading-tight text-white mb-4 md:mb-6">
               A transformação vem de dentro para fora!
             </h1>
 
