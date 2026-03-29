@@ -7,6 +7,10 @@ import ForWhoSection from "@/components/ForWhoSection";
 import HowToUseSection from "@/components/HowToUseSection";
 import IngredientsSection from "@/components/IngredientsSection";
 import ProductsSection from "@/components/ProductsSection";
+import OfferSection from "@/components/OfferSection";
+import FAQSection from "@/components/FAQSection";
+import ContactSection from "@/components/ContactSection";
+import Footer from "@/components/Footer";
 
 const Index = () => (
   <div className="min-h-screen bg-background">
@@ -20,7 +24,11 @@ const Index = () => (
       <HowToUseSection />
       <IngredientsSection />
       <ProductsSection />
+      <OfferSection />
+      <FAQSection />
+      <ContactSection />
     </main>
+    <Footer />
   </div>
 );
 
