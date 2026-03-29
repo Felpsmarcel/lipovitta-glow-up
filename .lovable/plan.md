@@ -1,25 +1,23 @@
 
 
-# Seções Benefícios + Para Quem É
+# Seções Como Usar + Ingredientes
 
 ## Arquivos
 
-### Criar `src/components/BenefitsSection.tsx`
-- Fundo gradiente #F5F7FA → #FFFFFF
-- Título + linha decorativa (mesmo padrão dos depoimentos)
-- Grid 3x2 desktop / 1 coluna mobile com 6 cards
-- Cards com ícones lucide-react (48px, #2E5EA6), título #1B3A6B, descrição #555
-- Hover: sombra elevada + borda inferior #7BA33E via `group-hover`
-- Ícones mapeados: Footprints, Droplets, Zap, Heart, Activity, Shield
+### Criar `src/components/HowToUseSection.tsx`
+- Fundo branco, título + linha decorativa gradiente (padrão existente)
+- Timeline vertical com linha conectora #2E5EA6 à esquerda dos passos (desktop)
+- Mobile: cards empilhados sem linha lateral
+- 4 passos com círculo numerado #7BA33E, título bold #1B3A6B, descrição #555
 
-### Criar `src/components/ForWhoSection.tsx`
-- Fundo sólido #1B3A6B
-- Layout flex: texto à esquerda, placeholder imagem à direita (mobile: empilhado)
-- Título #7BA33E, lista com CheckCircle #7BA33E e texto branco
-- 5 itens da lista conforme especificado
-- Botão CTA verde pill shape (mesmo estilo do hero)
-- Placeholder imagem: div arredondada com borda e ícone
+### Criar `src/components/IngredientsSection.tsx`
+- Fundo gradiente #F5F7FA → branco, título + subtítulo
+- 5 cards com borda esquerda 4px #2E5EA6
+- Título bold com dosagem em #7BA33E, descrição #555
+- Barra de progresso visual proporcional à dosagem (cor #2E5EA6)
+- Dimpless® com borda especial #7BA33E + badge "PATENTEADO"
+- Mobile: accordion (usando Collapsible do radix) — desktop: todos expandidos
 
 ### Editar `src/pages/Index.tsx`
-- Importar e adicionar `BenefitsSection` e `ForWhoSection` após `TestimonialsSection`
+- Importar e adicionar `HowToUseSection` e `IngredientsSection` após `ForWhoSection`
 
