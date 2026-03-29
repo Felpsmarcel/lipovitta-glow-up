@@ -1,7 +1,4 @@
-import { useState } from "react";
-
 const HeroSection = () => {
-  const [iframeError, setIframeError] = useState(false);
 
   return (
     <section
