@@ -87,3 +87,21 @@
 .animate-pulse-cta {
   animation: pulse-cta 2s ease-in-out infinite;
 }
+
+@keyframes scale-in-modal {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.animate-scale-in {
+  animation: scale-in-modal 0.3s ease-out;
+}
+
+/* Focus states for accessibility */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid #2E5EA6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}

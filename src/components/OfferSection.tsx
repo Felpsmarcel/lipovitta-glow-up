@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Shield, Lock, Truck, CreditCard } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 type Product = {
   name: string;
@@ -73,9 +74,10 @@ const ProductCard = ({ product }: { product: Product }) => (
 
 const OfferSection = () => {
   const [activeTab, setActiveTab] = useState<TabKey>("individuais");
+  const sectionRef = useScrollAnimation();
 
   return (
-    <section id="precos" className="py-16 sm:py-20" style={{ background: "#F5F7FA" }}>
+    <section ref={sectionRef} id="precos" className="py-16 sm:py-20" style={{ background: "#F5F7FA" }}>
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-10">

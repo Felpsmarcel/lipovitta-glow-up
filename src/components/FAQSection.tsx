@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const faqs = [
   {
@@ -32,8 +33,10 @@ const faqs = [
   },
 ];
 
-const FAQSection = () => (
-  <section className="py-16 sm:py-20" style={{ background: "#F5F7FA" }}>
+const FAQSection = () => {
+  const ref = useScrollAnimation();
+  return (
+  <section ref={ref} className="py-16 sm:py-20" style={{ background: "#F5F7FA" }}>
     <div className="container mx-auto px-4 max-w-3xl">
       <div className="text-center mb-10">
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#1B3A6B] mb-3">
@@ -60,6 +63,7 @@ const FAQSection = () => (
       </Accordion>
     </div>
   </section>
-);
+  );
+};
 
 export default FAQSection;
