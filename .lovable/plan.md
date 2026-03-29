@@ -1,32 +1,24 @@
 
 
-# Editar Hero Section — "Conheça a Clara"
+# Nova Seção "A Rotina que Muda Tudo"
 
-## O que muda
-Substituir o conteúdo interno da HeroSection (texto sobre produto + placeholder de imagem) por apresentação da Clara Caldas com embed de vídeo do Instagram.
+## O que será feito
+Criar `src/components/RoutineSection.tsx` e inserir entre HeroSection e TestimonialsSection.
 
-## Editar `src/components/HeroSection.tsx`
+## 1. Criar `src/components/RoutineSection.tsx`
+- `id="rotina"`, fundo `#F5F7FA`, padding 80px/48px
+- 2 colunas desktop (gap 48px), empilhado mobile
+- **Esquerda**: iframe Instagram (`/p/DWRSgEfEYW8/embed`), aspect-ratio 1:1, max-w 480px, rounded-2xl, sombra. Fallback com useState para erro. Texto "@lipo.vitta" abaixo.
+- **Direita**: Título Playfair Display `#1B3A6B`, parágrafos emocionais Inter `#555`, "Não é." em bold maior, lista com checks `#7BA33E`, box destaque com borda esquerda verde, botão CTA scroll para produtos
+- Usar `useScrollAnimation` hook existente
 
-**Coluna esquerda (texto):**
-- Tag "POR CLARA CALDAS" — uppercase, letter-spacing 2px, cor `#7BA33E`, fonte pequena
-- Headline: "A transformação vem de dentro para fora!"
-- Parágrafo com história da Clara (opacidade 90%)
-- Subtexto itálico: "Lipedema não tem cura, mas tem controle."
-- CTA: "QUERO COMEÇAR MINHA TRANSFORMAÇÃO" — fundo `#7BA33E`, rounded-full, pulse
-- 3 badges: "100% Natural" | "Sem Glúten" | "+2.000 mulheres"
+## 2. Editar `src/pages/Index.tsx`
+- Importar `RoutineSection`
+- Inserir `<RoutineSection />` entre `<HeroSection />` e `<TestimonialsSection />`
 
-**Coluna direita (vídeo):**
-- iframe do Instagram Reel (`/reel/DWZpEscEe_I/embed`), aspect-ratio 9/16, max-height 580px, border-radius 16px, sombra
-- Fallback com `onError`: div placeholder com ícone play e link externo "Assistir no Instagram"
-- Texto abaixo: "📍 @clarinhacbr no Instagram"
-
-**Fundo:** Manter `#1B3A6B` sólido com padrão geométrico SVG sutil (opacity 5%)
-
-**Mobile:** Texto primeiro, vídeo abaixo full-width (max-height 500px), botão full-width, centralizado
-
-## Editar `index.html`
-- Adicionar `<script async src="https://www.instagram.com/embed.js"></script>` no `<head>`
-
-## Copiar imagem
-- Copiar `user-uploads://PHOTO-2025-12-29-14-25-56.jpg` para `src/assets/clara-caldas-hero.jpg` (imagem da Clara para uso futuro/fallback, não será usada diretamente no hero agora pois o foco é o vídeo)
+## Detalhes técnicos
+- Script embed.js já está no `index.html` — não duplicar
+- Fallback: `onError` no iframe → mostra placeholder com link externo
+- Botão CTA: `document.getElementById('produtos')?.scrollIntoView({ behavior: 'smooth' })` (confirmar id da ProductsSection, adicionar se necessário)
+- Google Fonts: Playfair Display precisa ser importado (adicionar no index.html ou index.css)
 
