@@ -1,25 +1,23 @@
 
 
-# Trocar vídeo do Hero por MP4
+# Otimizar Hero — Corrigir Sobreposição
 
-## O que muda
-Substituir o iframe do Instagram (linhas 78-102) por um `<video>` tag nativo com o MP4 fornecido. Remover o estado `iframeError` e o fallback, pois não são mais necessários.
+## Problema
+A `UrgencyBar` é `fixed top-0`, tirando-a do fluxo do documento. Isso faz com que a Navbar e o conteúdo do Hero subam e fiquem sobrepostos por ela. No mobile (430px), a barra de urgência + navbar + countdown ocupam espaço visual que invade o hero.
 
-## Editar `src/components/HeroSection.tsx`
+## Solução
 
-- Remover `useState` import e `iframeError` state
-- Substituir o bloco iframe/fallback (linhas 78-102) por:
-  ```jsx
-  <video
-    src="https://assets.cdn.filesafe.space/GlpDUog4tP50uH0NOPjz/media/69c95b313204cc15746c0dfb.mp4"
-    autoPlay
-    muted
-    loop
-    playsInline
-    className="w-full h-full object-cover"
-    title="Vídeo da Clara Caldas"
-  />
-  ```
-- Manter o container com aspect-ratio 9/16, border-radius, sombra
-- Atualizar o texto abaixo para "📍 @clarinhacbr" (remover "no Instagram" ou manter como está)
+### 1. Adicionar spacer para a UrgencyBar fixa em `Index.tsx`
+Adicionar um `div` spacer antes do Navbar com altura equivalente à UrgencyBar (~44px mobile, ~40px desktop) para compensar o `position: fixed`.
+
+### 2. Ajustar padding-top do HeroSection
+Aumentar `pt-8` (32px) para `pt-16` (64px) no mobile e manter `md:pt-16` no desktop, garantindo espaço suficiente abaixo da navbar sticky.
+
+### 3. Otimizar layout mobile do vídeo no Hero
+- Limitar `max-h-[500px]` no container do vídeo em mobile
+- Reduzir `gap-8` para `gap-6` no mobile para compactar o layout
+
+### Arquivos editados
+- `src/pages/Index.tsx` — spacer div
+- `src/components/HeroSection.tsx` — padding e gap ajustados
 
