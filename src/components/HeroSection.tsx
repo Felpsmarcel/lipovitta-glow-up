@@ -16,7 +16,7 @@ const HeroSection = () => {
       />
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+        <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-12">
           {/* Text content */}
           <div className="flex-1 text-center lg:text-left">
             <span
