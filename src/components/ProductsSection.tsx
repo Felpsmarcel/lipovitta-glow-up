@@ -93,7 +93,7 @@ const ProductsSection = () => {
   }, [emblaApi]);
 
   return (
-    <section ref={sectionRef} className="py-16 md:py-24 px-4" style={{ background: "#1B3A6B" }}>
+    <section id="produtos" ref={sectionRef} className="py-16 md:py-24 px-4" style={{ background: "#1B3A6B" }}>
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
