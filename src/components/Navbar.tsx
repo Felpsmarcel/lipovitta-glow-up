@@ -1,17 +1,42 @@
-import logoImg from "@/assets/logo-lipovitta.png";
+import { useState, useEffect } from "react";
 
-const Navbar = () => (
-  <nav className="sticky top-[44px] sm:top-[40px] z-40 bg-card/95 backdrop-blur-sm border-b border-border">
-    <div className="container mx-auto flex items-center justify-between py-3 px-4">
-      <img src={logoImg} alt="LipoVitta por Clara Caldas" className="h-10 sm:h-12 w-auto" />
-      <a
-        href="#cta"
-        className="hidden sm:inline-flex bg-accent text-accent-foreground font-bold text-sm px-5 py-2 rounded-full hover:bg-accent-light transition-colors"
-      >
-        Comprar Agora
-      </a>
-    </div>
-  </nav>
-);
+const Navbar = () => {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <nav
+      className={`sticky top-[44px] sm:top-[40px] z-40 backdrop-blur-sm border-b transition-colors duration-300 ${
+        scrolled ? "border-transparent" : "border-border"
+      }`}
+      style={{ backgroundColor: scrolled ? "#1B3A6B" : "rgba(255,255,255,0.95)" }}
+    >
+      <div className="container mx-auto flex items-center justify-between py-3 px-4">
+        <img
+          src="https://cdn.abacus.ai/images/4b9c67ed-695b-4262-881c-483c94f51e98.png"
+          alt="LipoVitta por Clara Caldas"
+          className="h-10 w-auto"
+          loading="lazy"
+        />
+        <a
+          href="#precos"
+          onClick={(e) => {
+            e.preventDefault();
+            document.getElementById("precos")?.scrollIntoView({ behavior: "smooth" });
+          }}
+          className="inline-flex font-bold text-sm px-5 py-2 rounded-full transition-colors text-white"
+          style={{ backgroundColor: "#7BA33E" }}
+        >
+          COMPRAR AGORA
+        </a>
+      </div>
+    </nav>
+  );
+};
 
 export default Navbar;
