@@ -1,23 +1,18 @@
 
 
-# Seções Como Usar + Ingredientes
+# Seção "Linha Completa LipoVitta"
 
-## Arquivos
+## O que será feito
+Criar `src/components/ProductsSection.tsx` com fundo azul escuro (#1B3A6B), 3 cards de produtos lado a lado no desktop e carrossel Embla swipeable no mobile.
 
-### Criar `src/components/HowToUseSection.tsx`
-- Fundo branco, título + linha decorativa gradiente (padrão existente)
-- Timeline vertical com linha conectora #2E5EA6 à esquerda dos passos (desktop)
-- Mobile: cards empilhados sem linha lateral
-- 4 passos com círculo numerado #7BA33E, título bold #1B3A6B, descrição #555
+## Componente `ProductsSection.tsx`
+- Título #7BA33E + subtítulo branco, linha decorativa gradiente
+- 3 cards brancos com border-radius 16px, sombra, hover com borda inferior #7BA33E
+- Cada card: badge colorido no topo, placeholder imagem, descrição, lista com bullets #7BA33E, tag secundária (#E8ECF1), botão "Ver oferta" (#2E5EA6)
+- Botão faz smooth scroll para seção de preços (`document.getElementById('precos')?.scrollIntoView`)
+- Mobile: Embla Carousel com dots (mesmo padrão de TestimonialsSection)
+- Desktop: grid 3 colunas
 
-### Criar `src/components/IngredientsSection.tsx`
-- Fundo gradiente #F5F7FA → branco, título + subtítulo
-- 5 cards com borda esquerda 4px #2E5EA6
-- Título bold com dosagem em #7BA33E, descrição #555
-- Barra de progresso visual proporcional à dosagem (cor #2E5EA6)
-- Dimpless® com borda especial #7BA33E + badge "PATENTEADO"
-- Mobile: accordion (usando Collapsible do radix) — desktop: todos expandidos
-
-### Editar `src/pages/Index.tsx`
-- Importar e adicionar `HowToUseSection` e `IngredientsSection` após `ForWhoSection`
+## Editar `Index.tsx`
+- Importar `ProductsSection` e adicionar após `IngredientsSection`
 
