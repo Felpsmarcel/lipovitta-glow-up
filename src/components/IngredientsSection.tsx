@@ -99,6 +99,7 @@ const IngredientsSection = () => {
       </div>
     </div>
   </section>
-);
+  );
+};
 
 export default IngredientsSection;

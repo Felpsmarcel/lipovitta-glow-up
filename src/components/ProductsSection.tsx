@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Check, Package } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const products = [
   {
@@ -75,6 +76,7 @@ const ProductCard = ({ product }: { product: (typeof products)[0] }) => (
 const ProductsSection = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [activeIndex, setActiveIndex] = useState(0);
+  const sectionRef = useScrollAnimation();
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -85,7 +87,7 @@ const ProductsSection = () => {
   }, [emblaApi]);
 
   return (
-    <section className="py-16 md:py-24 px-4" style={{ background: "#1B3A6B" }}>
+    <section ref={sectionRef} className="py-16 md:py-24 px-4" style={{ background: "#1B3A6B" }}>
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
