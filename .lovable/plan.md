@@ -1,23 +1,21 @@
 
 
-# Otimizar Hero — Corrigir Sobreposição
+# Ajustar fonte do título Hero no mobile
 
 ## Problema
-A `UrgencyBar` é `fixed top-0`, tirando-a do fluxo do documento. Isso faz com que a Navbar e o conteúdo do Hero subam e fiquem sobrepostos por ela. No mobile (430px), a barra de urgência + navbar + countdown ocupam espaço visual que invade o hero.
+No viewport 430px, o `h1` usa `text-3xl` (30px) que pode ficar apertado com o texto longo "A transformação vem de dentro para fora!".
 
 ## Solução
 
-### 1. Adicionar spacer para a UrgencyBar fixa em `Index.tsx`
-Adicionar um `div` spacer antes do Navbar com altura equivalente à UrgencyBar (~44px mobile, ~40px desktop) para compensar o `position: fixed`.
+### Editar `src/components/HeroSection.tsx` (linha 29)
 
-### 2. Ajustar padding-top do HeroSection
-Aumentar `pt-8` (32px) para `pt-16` (64px) no mobile e manter `md:pt-16` no desktop, garantindo espaço suficiente abaixo da navbar sticky.
+Alterar a escala de tamanhos do `h1`:
+- Mobile: `text-2xl` (24px) → melhor legibilidade em 430px
+- SM (640px+): `sm:text-3xl` (30px)
+- MD (768px+): `md:text-4xl` (36px) — ligeiramente maior que antes
+- LG (1024px+): `lg:text-[3.25rem]` — manter
 
-### 3. Otimizar layout mobile do vídeo no Hero
-- Limitar `max-h-[500px]` no container do vídeo em mobile
-- Reduzir `gap-8` para `gap-6` no mobile para compactar o layout
+Também ajustar o `leading` para `leading-snug` no mobile para melhor espaçamento entre linhas.
 
-### Arquivos editados
-- `src/pages/Index.tsx` — spacer div
-- `src/components/HeroSection.tsx` — padding e gap ajustados
+Classe final: `text-2xl sm:text-3xl md:text-4xl lg:text-[3.25rem] font-bold leading-snug md:leading-tight text-white mb-4 md:mb-6`
 
