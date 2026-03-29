@@ -1,7 +1,4 @@
-import { useState } from "react";
-
 const HeroSection = () => {
-  const [iframeError, setIframeError] = useState(false);
 
   return (
     <section
@@ -75,31 +72,15 @@ const HeroSection = () => {
                 boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
               }}
             >
-              {!iframeError ? (
-                <iframe
-                  src="https://www.instagram.com/reel/DWZpEscEe_I/embed"
-                  width="100%"
-                  height="100%"
-                  frameBorder="0"
-                  scrolling="no"
-                  allowTransparency={true}
-                  onError={() => setIframeError(true)}
-                  title="Vídeo da Clara Caldas no Instagram"
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              ) : (
-                <a
-                  href="https://www.instagram.com/reel/DWZpEscEe_I/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full h-full flex flex-col items-center justify-center gap-4"
-                  style={{ backgroundColor: "rgba(46,94,166,0.2)" }}
-                >
-                  <span className="text-white text-5xl">▶</span>
-                  <span className="text-white font-medium text-sm">Assistir no Instagram</span>
-                </a>
-              )}
+              <video
+                src="https://assets.cdn.filesafe.space/GlpDUog4tP50uH0NOPjz/media/69c95b313204cc15746c0dfb.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover"
+                title="Vídeo da Clara Caldas"
+              />
             </div>
             <p className="text-sm mt-3" style={{ color: "#999" }}>
               📍{" "}
