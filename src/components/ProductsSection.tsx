@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import { Check, Package } from "lucide-react";
+import { Check } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import shotMatinalImg from "@/assets/shot-matinal.jpg";
+import gummyImg from "@/assets/gummy-vittaglow.png";
+import shotRushImg from "@/assets/shot-rush.jpg";
 
 const products = [
   {
     name: "Shot Matinal LipoVitta",
     badge: "☀️ Ritual Matinal",
+    image: shotMatinalImg,
     description:
       "Shot natural para fortalecer imunidade, reduzir inflamações e aliviar o inchaço. Com L-Glutamina, Curcumina, Beta-glucana, Vitaminas A/C/D/E, Zinco e Selênio.",
     benefits: ["Fortalece imunidade", "Reduz inflamações", "Combate inchaço", "Regula intestino"],
@@ -15,6 +19,7 @@ const products = [
   {
     name: "Gummy VittaGlow Colágeno",
     badge: "✨ Beleza de Dentro pra Fora",
+    image: gummyImg,
     description:
       "Gomas com 2,5g de colágeno hidrolisado + 120mg de ácido hialurônico + vitaminas e minerais. Sem açúcar, sem glúten, sem lactose.",
     benefits: ["Firmeza da pele", "Hidratação profunda", "Praticidade", "Baixo calórico"],
@@ -23,6 +28,7 @@ const products = [
   {
     name: "Shot Rush Pré-Treino",
     badge: "⚡ Performance Premium",
+    image: shotRushImg,
     description:
       "Energia, foco e vitalidade com Taurina, Guaraná, Feno-grego, Arginina, Resveratrol, Coenzima Q10. Zero açúcar, sabor frutas vermelhas.",
     benefits: ["Energia prolongada", "Libido e vigor", "Controle de peso", "Proteção celular"],
@@ -39,9 +45,9 @@ const ProductCard = ({ product }: { product: (typeof products)[0] }) => (
       </span>
     </div>
 
-    {/* Placeholder imagem */}
-    <div className="mx-5 mt-4 h-40 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center">
-      <Package size={48} color="#2E5EA6" strokeWidth={1.5} />
+    {/* Imagem do produto */}
+    <div className="mx-5 mt-4 h-40 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden">
+      <img src={product.image} alt={product.name} className="h-full w-full object-contain" loading="lazy" />
     </div>
 
     {/* Content */}
