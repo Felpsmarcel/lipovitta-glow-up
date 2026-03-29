@@ -14,6 +14,7 @@ const BenefitsSection = () => {
   const ref = useScrollAnimation();
   return (
   <section ref={ref} className="py-16 md:py-24 px-4" style={{ background: "linear-gradient(180deg, #F5F7FA 0%, #FFFFFF 100%)" }}>
+    <div className="max-w-6xl mx-auto">
       <div className="text-center mb-12">
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4" style={{ color: "#1B3A6B", fontFamily: "'Playfair Display', serif" }}>
           6 benefícios que você sente no corpo
