@@ -1,4 +1,5 @@
 import { Footprints, Droplets, Zap, Heart, Activity, Shield } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const benefits = [
   { icon: Footprints, title: "Menos Celulite", description: "Ativos que melhoram a circulação deixam suas pernas mais leves e com menos celulite." },
@@ -9,9 +10,10 @@ const benefits = [
   { icon: Shield, title: "Proteção Celular", description: "Antioxidantes combatem radicais livres, protegendo suas células." },
 ];
 
-const BenefitsSection = () => (
-  <section className="py-16 md:py-24 px-4" style={{ background: "linear-gradient(180deg, #F5F7FA 0%, #FFFFFF 100%)" }}>
-    <div className="max-w-6xl mx-auto">
+const BenefitsSection = () => {
+  const ref = useScrollAnimation();
+  return (
+  <section ref={ref} className="py-16 md:py-24 px-4" style={{ background: "linear-gradient(180deg, #F5F7FA 0%, #FFFFFF 100%)" }}>
       <div className="text-center mb-12">
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4" style={{ color: "#1B3A6B", fontFamily: "'Playfair Display', serif" }}>
           6 benefícios que você sente no corpo
@@ -22,8 +24,8 @@ const BenefitsSection = () => (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {benefits.map(({ icon: Icon, title, description }) => (
           <div
+            data-animate
             key={title}
-            className="group bg-white rounded-2xl p-6 border transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
             style={{ borderColor: "#E8ECF1" }}
           >
             <div
@@ -43,6 +45,7 @@ const BenefitsSection = () => (
       </div>
     </div>
   </section>
-);
+  );
+};
 
 export default BenefitsSection;

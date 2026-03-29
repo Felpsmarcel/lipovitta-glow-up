@@ -1,3 +1,5 @@
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+
 const steps = [
   { emoji: "☀️", title: "Autocuidado", description: "Comece o dia cuidando de você: atividade física, descanso e equilíbrio ajudam a aliviar o lipedema." },
   { emoji: "☕", title: "Pós-café da manhã", description: "Tome 1 cápsula de LipoVitta após o café com bastante água para efeito anti-inflamatório e antioxidante." },
@@ -5,8 +7,10 @@ const steps = [
   { emoji: "🔄", title: "Constância", description: "Faça do LipoVitta parte da sua rotina. Dieta equilibrada + atividade física potencializam os resultados." },
 ];
 
-const HowToUseSection = () => (
-  <section className="py-16 md:py-24 px-4 bg-white">
+const HowToUseSection = () => {
+  const ref = useScrollAnimation();
+  return (
+  <section ref={ref} className="py-16 md:py-24 px-4 bg-white">
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-12">
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4" style={{ color: "#1B3A6B", fontFamily: "'Playfair Display', serif" }}>
@@ -40,6 +44,7 @@ const HowToUseSection = () => (
       </div>
     </div>
   </section>
-);
+  );
+};
 
 export default HowToUseSection;
