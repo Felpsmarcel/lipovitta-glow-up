@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { Shield, Lock, Truck, CreditCard } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import capsulasImg from "@/assets/capsulas-lipovitta.png";
+import shotMatinalImg from "@/assets/shot-matinal.jpg";
+import gummyImg from "@/assets/gummy-vittaglow.png";
+import shotRushImg from "@/assets/shot-rush.jpg";
+import comboImg from "@/assets/combo-lipovitta.jpg";
 
 type Product = {
   name: string;
@@ -10,13 +15,14 @@ type Product = {
   link: string;
   extras?: string;
   badge?: string;
+  image?: string;
 };
 
 const individuais: Product[] = [
-  { name: "LipoVitta Cápsula", oldPrice: "R$357", price: "R$321,30", installment: "3x R$119,13", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/lipovitta/" },
-  { name: "Shot Matinal", price: "R$170", installment: "3x R$63,03", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-matinal-lipovitta/" },
-  { name: "Gummy VittaGlow", oldPrice: "R$289", price: "R$260", installment: "3x R$96,33", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/gummy-skin-glow/" },
-  { name: "Shot Rush", oldPrice: "R$250", price: "R$225", installment: "3x R$75", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-rush-pre-treino/" },
+  { name: "LipoVitta Cápsula", oldPrice: "R$357", price: "R$321,30", installment: "3x R$119,13", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/lipovitta/", image: capsulasImg },
+  { name: "Shot Matinal", price: "R$170", installment: "3x R$63,03", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-matinal-lipovitta/", image: shotMatinalImg },
+  { name: "Gummy VittaGlow", oldPrice: "R$289", price: "R$260", installment: "3x R$96,33", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/gummy-skin-glow/", image: gummyImg },
+  { name: "Shot Rush", oldPrice: "R$250", price: "R$225", installment: "3x R$75", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-rush-pre-treino/", image: shotRushImg },
 ];
 
 const kitsDuplos: Product[] = [
@@ -48,6 +54,11 @@ const tabData: Record<TabKey, Product[]> = {
 
 const ProductCard = ({ product }: { product: Product }) => (
   <div className="bg-white rounded-2xl border border-[#E8ECF1] p-5 flex flex-col gap-3 hover:shadow-lg transition-shadow">
+    {product.image && (
+      <div className="h-32 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden">
+        <img src={product.image} alt={product.name} className="h-full w-full object-contain" loading="lazy" />
+      </div>
+    )}
     <h4 className="font-bold text-[#1B3A6B] text-lg">{product.name}</h4>
     <div className="flex items-baseline gap-2 flex-wrap">
       {product.oldPrice && (
@@ -95,7 +106,12 @@ const OfferSection = () => {
           <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#7BA33E] text-white text-xs font-bold px-4 py-1 rounded-full">
             ⭐ MAIS VENDIDO
           </span>
-          <h3 className="text-xl sm:text-2xl font-bold text-[#1B3A6B] mt-2 mb-1">
+          <div className="flex flex-col sm:flex-row gap-6 items-center mt-2">
+            <div className="w-40 h-40 shrink-0 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden">
+              <img src={comboImg} alt="Kit LipoVitta + Shot Matinal" className="h-full w-full object-contain" loading="lazy" />
+            </div>
+            <div className="flex-1">
+          <h3 className="text-xl sm:text-2xl font-bold text-[#1B3A6B] mb-1">
             Kit LipoVitta + Shot Matinal
           </h3>
           <p className="text-sm text-[#555] mb-4">
@@ -118,6 +134,8 @@ const OfferSection = () => {
           >
             COMPRAR AGORA COM DESCONTO
           </a>
+            </div>
+          </div>
         </div>
 
         {/* Tabs */}
