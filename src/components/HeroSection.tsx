@@ -64,7 +64,7 @@ const HeroSection = () => {
           {/* Video column */}
           <div className="flex-shrink-0 w-full lg:w-auto flex flex-col items-center">
             <div
-              className="w-full max-w-[326px] overflow-hidden"
+              className="w-full max-w-[326px] max-h-[500px] lg:max-h-none overflow-hidden"
               style={{
                 aspectRatio: "9/16",
                 maxHeight: "580px",
