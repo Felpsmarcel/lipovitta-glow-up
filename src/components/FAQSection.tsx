@@ -63,6 +63,7 @@ const FAQSection = () => {
       </Accordion>
     </div>
   </section>
-);
+  );
+};
 
 export default FAQSection;
