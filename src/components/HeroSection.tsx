@@ -2,7 +2,7 @@ const HeroSection = () => {
 
   return (
     <section
-      className="relative overflow-hidden pt-8 pb-16 md:pt-16 md:pb-24"
+      className="relative overflow-hidden pt-16 pb-16 md:pt-16 md:pb-24"
       style={{
         background: "hsl(214 59% 26%)",
       }}
@@ -16,7 +16,7 @@ const HeroSection = () => {
       />
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+        <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-12">
           {/* Text content */}
           <div className="flex-1 text-center lg:text-left">
             <span
@@ -64,7 +64,7 @@ const HeroSection = () => {
           {/* Video column */}
           <div className="flex-shrink-0 w-full lg:w-auto flex flex-col items-center">
             <div
-              className="w-full max-w-[326px] overflow-hidden"
+              className="w-full max-w-[326px] max-h-[500px] lg:max-h-none overflow-hidden"
               style={{
                 aspectRatio: "9/16",
                 maxHeight: "580px",
