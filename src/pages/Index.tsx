@@ -18,8 +18,6 @@ import ExitIntentPopup from "@/components/ExitIntentPopup";
 
 const Index = () => (
   <div className="min-h-screen bg-background">
-    <UrgencyBar />
-    <div className="h-[44px] sm:h-[40px]" />
     <Navbar />
     <main>
       <HeroSection />
