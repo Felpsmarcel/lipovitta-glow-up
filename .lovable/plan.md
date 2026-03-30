@@ -1,21 +1,29 @@
 
 
-# Ajustar fonte do título Hero no mobile
+# Adicionar poster ao vídeo do Hero
 
-## Problema
-No viewport 430px, o `h1` usa `text-3xl` (30px) que pode ficar apertado com o texto longo "A transformação vem de dentro para fora!".
+## O que muda
+Adicionar atributo `poster` ao `<video>` em `HeroSection.tsx` com um frame estático do vídeo, para que o navegador exiba a imagem imediatamente enquanto o MP4 carrega.
 
-## Solução
+## Editar `src/components/HeroSection.tsx`
 
-### Editar `src/components/HeroSection.tsx` (linha 29)
+Adicionar `poster` e `preload="none"` ao `<video>`:
 
-Alterar a escala de tamanhos do `h1`:
-- Mobile: `text-2xl` (24px) → melhor legibilidade em 430px
-- SM (640px+): `sm:text-3xl` (30px)
-- MD (768px+): `md:text-4xl` (36px) — ligeiramente maior que antes
-- LG (1024px+): `lg:text-[3.25rem]` — manter
+```jsx
+<video
+  src="https://assets.cdn.filesafe.space/GlpDUog4tP50uH0NOPjz/media/69c95b313204cc15746c0dfb.mp4"
+  poster="https://assets.cdn.filesafe.space/GlpDUog4tP50uH0NOPjz/media/69c95b313204cc15746c0dfb.mp4#t=0.5"
+  autoPlay
+  muted
+  loop
+  playsInline
+  preload="metadata"
+  className="w-full h-full object-cover"
+  title="Vídeo da Clara Caldas"
+/>
+```
 
-Também ajustar o `leading` para `leading-snug` no mobile para melhor espaçamento entre linhas.
+O `#t=0.5` extrai um frame do próprio vídeo como thumbnail. O `preload="metadata"` carrega apenas metadados iniciais, acelerando o first paint.
 
-Classe final: `text-2xl sm:text-3xl md:text-4xl lg:text-[3.25rem] font-bold leading-snug md:leading-tight text-white mb-4 md:mb-6`
+**Nota**: Para um poster verdadeiramente otimizado, o ideal seria gerar um `.webp` estático do frame. Como não temos esse asset disponível, usamos o truque `#t=0.5` que funciona na maioria dos navegadores modernos.
 
