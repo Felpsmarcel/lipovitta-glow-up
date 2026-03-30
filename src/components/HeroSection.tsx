@@ -74,10 +74,12 @@ const HeroSection = () => {
             >
               <video
                 src="https://assets.cdn.filesafe.space/GlpDUog4tP50uH0NOPjz/media/69c95b313204cc15746c0dfb.mp4"
+                poster="https://assets.cdn.filesafe.space/GlpDUog4tP50uH0NOPjz/media/69c95b313204cc15746c0dfb.mp4#t=0.5"
                 autoPlay
                 muted
                 loop
                 playsInline
+                preload="metadata"
                 className="w-full h-full object-cover"
                 title="Vídeo da Clara Caldas"
               />
