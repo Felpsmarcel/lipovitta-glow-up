@@ -15,7 +15,6 @@ import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 
-
 const Index = () => (
   <div className="min-h-screen bg-background">
     <Navbar />
