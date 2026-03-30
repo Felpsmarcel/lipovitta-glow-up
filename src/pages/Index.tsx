@@ -1,4 +1,3 @@
-import UrgencyBar from "@/components/UrgencyBar";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import RoutineSection from "@/components/RoutineSection";
