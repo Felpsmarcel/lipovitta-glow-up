@@ -1,32 +1,20 @@
-## Objetivo
-Substituir os textos de todos os botões CTA da landing LipoVitta para alinhar à nova hierarquia de comunicação, sem alterar estilo, cor, links, checkout, pixels ou scripts.
+## Remover emojis da seção "Como Usar"
 
-## Alterações
+### Objetivo
+Remover os emojis dos títulos dos 4 passos na seção "Como Usar", mantendo a numeração visual em círculos verdes já existente.
 
-### 1. HeroSection.tsx
-- Linha 47: trocar texto do `<a>` de `"QUERO COMEÇAR MINHA TRANSFORMAÇÃO"` para `"CONHECER A ROTINA LIPOVITTA"`.
+### Alterações
+1. **src/components/HowToUseSection.tsx**
+   - Remover a propriedade `emoji` do array `steps` (4 itens)
+   - Remover o `<span>` que renderiza o emoji dentro do título de cada passo
+   - Manter o círculo numérico verde (`{i + 1}`) como está
 
-### 2. RoutineSection.tsx
-- Linha 141: trocar texto do `<button>` de `"QUERO CONHECER OS PRODUTOS"` para `"VER A FÓRMULA PRINCIPAL"`.
+### O que NÃO será alterado
+- Textos dos títulos e descrições
+- Cores, fontes, espaçamentos, layout
+- Círculos numéricos verdes
+- Links, checkout, pixels, scripts
+- Qualquer outra seção da página
 
-### 3. ForWhoSection.tsx
-- Linha 39: trocar texto do `<a>` de `"QUERO COMEÇAR MINHA TRANSFORMAÇÃO"` para `"COMEÇAR PELA CÁPSULA"`.
-
-### 4. CTABanner.tsx
-- Linha 12: trocar texto do `<a>` de `"QUERO MINHA TRANSFORMAÇÃO"` para `"ESCOLHER MEU KIT"`.
-
-### 5. ProductsSection.tsx
-- Linha 76: trocar texto do `<button>` do card Shot Matinal de `"Ver oferta"` para `"ADICIONAR À MINHA ROTINA"`.
-
-### 6. OfferSection.tsx
-- Linha 81: trocar texto do `<a>` do card LipoVitta Cápsula de `"COMPRAR AGORA"` para `"COMEÇAR MINHA ROTINA"`.
-- Linha 135: trocar texto do `<a>` do kit destaque (Kit LipoVitta + Shot Matinal) de `"COMPRAR AGORA COM DESCONTO"` para `"ESCOLHER PROTOCOLO COMPLETO"`.
-
-### 7. Varredura geral
-- Buscar qualquer ocorrência remanescente de `"QUERO COMEÇAR MINHA TRANSFORMAÇÃO"` ou `"QUERO MINHA TRANSFORMAÇÃO"` em todo o projeto e substituir por `"CONHECER A ROTINA LIPOVITTA"`.
-
-## O que permanece inalterado
-- Estilos CSS, cores, tamanhos, bordas, animações, classes Tailwind.
-- Todos os atributos `href`, `onClick`, `target`, `rel` e comportamentos de navegação.
-- Scripts de rastreamento, pixels, checkout e lógica de conversão.
-- Todo o restante do conteúdo textual da página.
+### Resultado esperado
+Títulos limpos sem emojis, com a numeração 1-2-3-4 nos círculos verde-musgo preservada.

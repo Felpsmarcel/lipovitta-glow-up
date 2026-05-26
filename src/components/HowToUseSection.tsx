@@ -1,10 +1,10 @@
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const steps = [
-  { emoji: "☀️", title: "Autocuidado", description: "Comece o dia cuidando de você: atividade física, descanso e equilíbrio ajudam a aliviar o lipedema." },
-  { emoji: "☕", title: "Pós-café da manhã", description: "Tome 1 cápsula de LipoVitta após o café com bastante água para efeito anti-inflamatório e antioxidante." },
-  { emoji: "✨", title: "Alívio progressivo", description: "Com uso contínuo, você percebe melhora no aspecto da celulite, inchaço e peso." },
-  { emoji: "🔄", title: "Constância", description: "Faça do LipoVitta parte da sua rotina. Dieta equilibrada + atividade física potencializam os resultados." },
+  { title: "Autocuidado", description: "Comece o dia cuidando de você: atividade física, descanso e equilíbrio ajudam a aliviar o lipedema." },
+  { title: "Pós-café da manhã", description: "Tome 1 cápsula de LipoVitta após o café com bastante água para efeito anti-inflamatório e antioxidante." },
+  { title: "Alívio progressivo", description: "Com uso contínuo, você percebe melhora no aspecto da celulite, inchaço e peso." },
+  { title: "Constância", description: "Faça do LipoVitta parte da sua rotina. Dieta equilibrada + atividade física potencializam os resultados." },
 ];
 
 const HowToUseSection = () => {
@@ -34,7 +34,7 @@ const HowToUseSection = () => {
               </div>
               <div className="bg-white rounded-xl p-5 border flex-1 transition-shadow hover:shadow-md" style={{ borderColor: "#E8ECF1" }}>
                 <h3 className="font-bold text-lg mb-1" style={{ color: "#1B3A6B" }}>
-                  <span className="mr-2">{step.emoji}</span>{step.title}
+                  {step.title}
                 </h3>
                 <p className="text-sm leading-relaxed" style={{ color: "#555" }}>{step.description}</p>
               </div>
