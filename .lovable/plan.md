@@ -1,20 +1,17 @@
-## Remover emojis da seção "Como Usar"
+Objetivo: Atualizar as respostas das duas primeiras perguntas do FAQ da landing LipoVitta para cumprir regras de responsabilidade sanitária (ANVISA). Nenhum outro elemento é alterado.
 
-### Objetivo
-Remover os emojis dos títulos dos 4 passos na seção "Como Usar", mantendo a numeração visual em círculos verdes já existente.
+Alterações
+------------
+1. **src/components/FAQSection.tsx**
+   - Substituir a resposta da **Pergunta 1** (*"O Lipovitta vai funcionar pra mim?"*) para o texto fornecido:
+     > "O LipoVitta é um suplemento alimentar com ativos naturais selecionados para fazer parte de uma rotina de cuidado diário. Os resultados variam de pessoa para pessoa e ele não substitui orientação médica. Por isso oferecemos garantia de 30 dias: se não fizer sentido para a sua rotina, devolvemos seu dinheiro."
+   - Substituir a resposta da **Pergunta 2** (*"Em quanto tempo terei resultados?"*) para o texto fornecido:
+     > "Varia de organismo para organismo. Algumas clientes relatam sensação de leveza nas primeiras semanas. O uso contínuo, aliado a hábitos saudáveis, potencializa os efeitos percebidos."
+   - **Perguntas 3, 4, 5 e 6** permanecem inalteradas.
 
-### Alterações
-1. **src/components/HowToUseSection.tsx**
-   - Remover a propriedade `emoji` do array `steps` (4 itens)
-   - Remover o `<span>` que renderiza o emoji dentro do título de cada passo
-   - Manter o círculo numérico verde (`{i + 1}`) como está
-
-### O que NÃO será alterado
-- Textos dos títulos e descrições
-- Cores, fontes, espaçamentos, layout
-- Círculos numéricos verdes
-- Links, checkout, pixels, scripts
-- Qualquer outra seção da página
-
-### Resultado esperado
-Títulos limpos sem emojis, com a numeração 1-2-3-4 nos círculos verde-musgo preservada.
+O que NÃO muda
+----------------
+- Texto das perguntas (Q1–Q6)
+- Layout, estilos, cores, fontes, espaçamento e animações do componente
+- Demais componentes da landing
+- Links, checkout, pixels ou scripts

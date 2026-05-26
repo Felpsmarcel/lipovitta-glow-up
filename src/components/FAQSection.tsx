@@ -9,11 +9,11 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 const faqs = [
   {
     q: "O Lipovitta vai funcionar pra mim?",
-    a: "Sim! Desenvolvido com compostos 100% naturais que ajudam a reduzir o inchaço, melhorar a circulação e trazer mais leveza. Muitas mulheres com lipedema já sentem os benefícios com uso contínuo.",
+    a: "O LipoVitta é um suplemento alimentar com ativos naturais selecionados para fazer parte de uma rotina de cuidado diário. Os resultados variam de pessoa para pessoa e ele não substitui orientação médica. Por isso oferecemos garantia de 30 dias: se não fizer sentido para a sua rotina, devolvemos seu dinheiro.",
   },
   {
     q: "Em quanto tempo terei resultados?",
-    a: "Resultados variam por organismo. Muitas usuárias percebem redução do inchaço e sensação de leveza nas primeiras semanas. Quanto mais tempo de uso, maiores os benefícios.",
+    a: "Varia de organismo para organismo. Algumas clientes relatam sensação de leveza nas primeiras semanas. O uso contínuo, aliado a hábitos saudáveis, potencializa os efeitos percebidos.",
   },
   {
     q: "Como devo usar o LipoVitta?",
