@@ -1,13 +1,13 @@
+## Substituir título H1 do Hero
 
+### O que muda
+- Apenas o texto do elemento `<h1>` na `HeroSection.tsx`, linha 30.
 
-# Retirar a barra de oferta (UrgencyBar) do Hero
+### Texto atual
+"A transformação vem de dentro para fora!"
 
-## O que muda
-Remover o componente `UrgencyBar` e o spacer associado do `Index.tsx`.
+### Novo texto
+"Lipedema não tem cura. Mas tem controle — e eu aprendi isso na pele."
 
-## Editar `src/pages/Index.tsx`
-
-- Remover o import de `UrgencyBar`
-- Remover `<UrgencyBar />` (linha 24)
-- Remover o spacer `<div className="h-[44px] sm:h-[40px]" />` (linha 25)
-
+### O que NÃO muda
+- Subtítulo, parágrafos, vídeo, badges, botão CTA, imagens, links, scripts, estilos, classes CSS — tudo permanece idêntico.

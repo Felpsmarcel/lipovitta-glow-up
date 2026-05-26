@@ -27,7 +27,7 @@ const HeroSection = () => {
             </span>
 
             <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-[3.25rem] font-bold leading-snug md:leading-tight text-white mb-4 md:mb-6">
-              A transformação vem de dentro para fora!
+              Lipedema não tem cura. Mas tem controle — e eu aprendi isso na pele.
             </h1>
 
             <p className="font-sans text-base sm:text-lg text-white/90 mb-4 max-w-xl mx-auto lg:mx-0 leading-relaxed">
