@@ -28,8 +28,8 @@ const Index = () => (
       <HowToUseSection />
       <IngredientsSection />
       <CTABanner />
-      <ProductsSection />
       <OfferSection />
+      <ProductsSection />
       <FAQSection />
       <ContactSection />
     </main>

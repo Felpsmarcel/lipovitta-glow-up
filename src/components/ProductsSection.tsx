@@ -1,138 +1,240 @@
-import { useState, useEffect } from "react";
-import useEmblaCarousel from "embla-carousel-react";
 import { Check } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import capsulasImg from "@/assets/capsulas-lipovitta.png";
 import shotMatinalImg from "@/assets/shot-matinal.jpg";
 import gummyImg from "@/assets/gummy-vittaglow.png";
 import shotRushImg from "@/assets/shot-rush.jpg";
 
-const products = [
-  {
-    name: "Shot Matinal LipoVitta",
-    badge: "☀️ Ritual Matinal",
-    image: shotMatinalImg,
-    description:
-      "Shot natural para fortalecer imunidade, reduzir inflamações e aliviar o inchaço. Com L-Glutamina, Curcumina, Beta-glucana, Vitaminas A/C/D/E, Zinco e Selênio.",
-    benefits: ["Fortalece imunidade", "Reduz inflamações", "Combate inchaço", "Regula intestino"],
-    tag: "Sem glúten",
-  },
-  {
-    name: "Gummy VittaGlow Colágeno",
-    badge: "✨ Beleza de Dentro pra Fora",
-    image: gummyImg,
-    description:
-      "Gomas com 2,5g de colágeno hidrolisado + 120mg de ácido hialurônico + vitaminas e minerais. Sem açúcar, sem glúten, sem lactose.",
-    benefits: ["Firmeza da pele", "Hidratação profunda", "Praticidade", "Baixo calórico"],
-    tag: "Sem açúcar",
-  },
-  {
-    name: "Shot Rush Pré-Treino",
-    badge: "⚡ Performance Premium",
-    image: shotRushImg,
-    description:
-      "Energia, foco e vitalidade com Taurina, Guaraná, Feno-grego, Arginina, Resveratrol, Coenzima Q10. Zero açúcar, sabor frutas vermelhas.",
-    benefits: ["Energia prolongada", "Libido e vigor", "Controle de peso", "Proteção celular"],
-    tag: "Zero açúcar",
-  },
-];
-
-const ProductCard = ({ product }: { product: (typeof products)[0] }) => (
-  <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group hover:border-b-[3px] hover:border-b-[#7BA33E] border-b-[3px] border-b-transparent flex flex-col">
-    {/* Badge */}
-    <div className="p-5 pb-0">
-      <span className="inline-block px-3 py-1 rounded-full text-sm font-medium" style={{ background: "rgba(123,163,62,0.1)", color: "#7BA33E" }}>
-        {product.badge}
-      </span>
-    </div>
-
-    {/* Imagem do produto */}
-    <div className="mx-5 mt-4 h-40 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden">
-      <img src={product.image} alt={product.name} className="h-full w-full object-contain" loading="lazy" />
-    </div>
-
-    {/* Content */}
-    <div className="p-5 flex flex-col flex-1">
-      <h3 className="text-lg font-bold mb-2" style={{ color: "#1B3A6B" }}>{product.name}</h3>
-      <p className="text-sm mb-4" style={{ color: "#555" }}>{product.description}</p>
-
-      <ul className="space-y-2 mb-4 flex-1">
-        {product.benefits.map((b) => (
-          <li key={b} className="flex items-center gap-2 text-sm" style={{ color: "#333" }}>
-            <Check size={16} color="#7BA33E" className="shrink-0" />
-            {b}
-          </li>
-        ))}
-      </ul>
-
-      <span className="inline-block self-start px-3 py-1 rounded-full text-xs font-medium mb-4" style={{ background: "#E8ECF1", color: "#555" }}>
-        {product.tag}
-      </span>
-
-      <button
-        onClick={() => document.getElementById("precos")?.scrollIntoView({ behavior: "smooth" })}
-        className="w-full py-3 rounded-xl font-bold text-white transition-colors hover:opacity-90 cursor-pointer"
-        style={{ background: "#2E5EA6" }}
-      >
-        ADICIONAR À MINHA ROTINA
-      </button>
-    </div>
-  </div>
-);
-
 const ProductsSection = () => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
-  const [activeIndex, setActiveIndex] = useState(0);
   const sectionRef = useScrollAnimation();
 
-  useEffect(() => {
-    if (!emblaApi) return;
-    const onSelect = () => setActiveIndex(emblaApi.selectedScrollSnap());
-    emblaApi.on("select", onSelect);
-    onSelect();
-    return () => { emblaApi.off("select", onSelect); };
-  }, [emblaApi]);
-
   return (
-    <section id="produtos" ref={sectionRef} className="py-16 md:py-24 px-4" style={{ background: "#1B3A6B" }}>
-      <div className="max-w-6xl mx-auto">
+    <section
+      ref={sectionRef}
+      id="complementos"
+      className="pt-20 md:pt-28 pb-16 md:pb-24 bg-white"
+    >
+      <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-3" style={{ color: "#7BA33E" }}>
-            Potencialize seus resultados com a linha completa
+        <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#1B3A6B] mb-4">
+            Potencialize sua rotina com a Cápsula LipoVitta
           </h2>
-          <div className="w-20 h-1 mx-auto rounded-full mb-4" style={{ background: "linear-gradient(90deg, #2E5EA6, #7BA33E)" }} />
-          <p className="text-lg text-white/80">Cada produto complementa sua rotina de transformação</p>
+          <p className="text-base sm:text-lg text-[#444] mb-3">
+            A Cápsula é a base. O Shot Matinal é o complemento que fecha sua
+            rotina diária.
+          </p>
+          <p className="text-sm text-[#666]">
+            Adicione ao seu pedido e receba tudo junto, com frete grátis a
+            partir de R$323,00.
+          </p>
+          <div className="mx-auto mt-5 h-1 w-20 rounded-full bg-gradient-to-r from-[#2E5EA6] to-[#7BA33E]" />
         </div>
 
-        {/* Desktop grid */}
-        <div className="hidden md:grid md:grid-cols-3 gap-6">
-          {products.map((p) => (
-            <ProductCard key={p.name} product={p} />
-          ))}
-        </div>
+        {/* Cards grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {/* Card A — Shot Matinal (destaque, ocupa 2 colunas no desktop) */}
+          <article className="md:col-span-2 md:row-span-2 bg-white rounded-3xl border-2 border-[#7BA33E] p-6 sm:p-8 shadow-lg flex flex-col">
+            <span className="self-start bg-[#7BA33E] text-white text-xs font-bold uppercase tracking-wide px-4 py-1.5 rounded-full mb-5">
+              Combina perfeitamente com a Cápsula
+            </span>
 
-        {/* Mobile carousel */}
-        <div className="md:hidden">
-          <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex">
-              {products.map((p) => (
-                <div key={p.name} className="min-w-0 shrink-0 grow-0 basis-[85%] pl-4 first:pl-0">
-                  <ProductCard product={p} />
-                </div>
-              ))}
-            </div>
-          </div>
-          {/* Dots */}
-          <div className="flex justify-center gap-2 mt-6">
-            {products.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => emblaApi?.scrollTo(i)}
-                className={`w-2.5 h-2.5 rounded-full transition-all ${i === activeIndex ? "w-8" : "opacity-40"}`}
-                style={{ background: "#7BA33E" }}
+            <div className="rounded-2xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] p-4 mb-6 flex items-center justify-center gap-3 h-56 sm:h-64">
+              <img
+                src={shotMatinalImg}
+                alt="Frasco do Shot Matinal LipoVitta"
+                className="h-full w-auto object-contain"
+                loading="lazy"
               />
-            ))}
-          </div>
+              <img
+                src={capsulasImg}
+                alt="Pote da Cápsula LipoVitta"
+                className="h-full w-auto object-contain"
+                loading="lazy"
+              />
+            </div>
+
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-[#1B3A6B] mb-2">
+              Shot Matinal LipoVitta
+            </h3>
+            <p className="text-base font-semibold text-[#2E5EA6] mb-3">
+              O ritual da manhã que potencializa sua Cápsula.
+            </p>
+            <p className="text-[#555] mb-5 leading-relaxed">
+              A Cápsula cuida da sua rotina ao longo do dia. O Shot Matinal
+              apoia o início da manhã com cuidado para inchaço, intestino e
+              disposição. Juntos, formam a rotina completa.
+            </p>
+
+            <ul className="space-y-2 mb-6">
+              {[
+                "Apoia o controle do inchaço matinal",
+                "Suporte para o intestino logo ao acordar",
+                "Sabor agradável, fácil de incluir na rotina",
+                "Combina com a Cápsula LipoVitta",
+              ].map((b) => (
+                <li key={b} className="flex items-start gap-2 text-[#444]">
+                  <Check className="w-5 h-5 text-[#7BA33E] shrink-0 mt-0.5" />
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex items-baseline gap-2 flex-wrap mb-1">
+              <span className="text-[#1B3A6B] font-extrabold text-3xl">
+                R$170,00
+              </span>
+            </div>
+            <p className="text-sm text-[#555] mb-5">
+              ou 3x de R$63,03 sem juros
+            </p>
+
+            <div className="bg-[#7BA33E]/10 border border-[#7BA33E]/30 rounded-xl p-4 mb-3">
+              <p className="text-sm font-semibold text-[#1B3A6B]">
+                Cápsula + Shot Matinal juntos: economia de R$79,05 no Protocolo
+                Completo.
+              </p>
+            </div>
+            <a
+              href="#precos"
+              className="text-sm text-[#2E5EA6] underline underline-offset-2 hover:text-[#1B3A6B] mb-6 inline-block"
+            >
+              Ver Protocolo Completo
+            </a>
+
+            <a
+              href="https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-matinal-lipovitta/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-auto block text-center bg-[#2E5EA6] hover:bg-[#1B3A6B] text-white font-bold py-3 px-6 rounded-full transition-colors text-base"
+            >
+              Adicionar Shot Matinal à minha rotina
+            </a>
+            <p className="text-xs text-[#777] text-center mt-2">
+              Receba junto com sua Cápsula.
+            </p>
+          </article>
+
+          {/* Card B — Gummy VittaGlow */}
+          <article className="bg-white rounded-2xl border border-[#E8ECF1] p-5 flex flex-col">
+            <span className="self-start text-[11px] font-semibold uppercase tracking-wide text-[#2E5EA6] border border-[#2E5EA6]/30 px-3 py-1 rounded-full mb-3">
+              Combina com a Cápsula
+            </span>
+            <div className="rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] h-36 flex items-center justify-center mb-4 overflow-hidden">
+              <img
+                src={gummyImg}
+                alt="Pote do Gummy VittaGlow Colágeno"
+                className="h-full w-auto object-contain"
+                loading="lazy"
+              />
+            </div>
+            <h3 className="text-lg font-bold text-[#1B3A6B] mb-2">
+              Gummy VittaGlow Colágeno
+            </h3>
+            <p className="text-sm text-[#555] mb-3 leading-relaxed">
+              Cuidado extra para pele, cabelo e firmeza. Pensado para somar à
+              sua rotina com a Cápsula LipoVitta.
+            </p>
+            <ul className="space-y-1.5 mb-4">
+              {["Colágeno verisol", "Sabor agradável", "Uso diário simples"].map(
+                (b) => (
+                  <li
+                    key={b}
+                    className="flex items-start gap-2 text-sm text-[#444]"
+                  >
+                    <Check className="w-4 h-4 text-[#7BA33E] shrink-0 mt-0.5" />
+                    <span>{b}</span>
+                  </li>
+                )
+              )}
+            </ul>
+            <div className="mb-3">
+              <span className="text-[#1B3A6B] font-extrabold text-xl">
+                R$260,00
+              </span>
+              <p className="text-xs text-[#555]">ou 3x R$96,33 sem juros</p>
+            </div>
+            <a
+              href="https://clarinhacbr.lojavirtualnuvem.com.br/produtos/gummy-skin-glow/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-auto block text-center border-2 border-[#2E5EA6] text-[#2E5EA6] hover:bg-[#2E5EA6] hover:text-white font-semibold py-2.5 rounded-full transition-colors text-sm"
+            >
+              Adicionar à minha rotina
+            </a>
+            <p className="text-[11px] text-[#777] text-center mt-2">
+              Receba junto com sua Cápsula.
+            </p>
+          </article>
+
+          {/* Card C — Shot Rush */}
+          <article className="bg-white rounded-2xl border border-[#E8ECF1] p-5 flex flex-col">
+            <span className="self-start text-[11px] font-semibold uppercase tracking-wide text-[#2E5EA6] border border-[#2E5EA6]/30 px-3 py-1 rounded-full mb-3">
+              Combina com a Cápsula
+            </span>
+            <div className="rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] h-36 flex items-center justify-center mb-4 overflow-hidden">
+              <img
+                src={shotRushImg}
+                alt="Frasco do Shot Rush Pré-Treino"
+                className="h-full w-auto object-contain"
+                loading="lazy"
+              />
+            </div>
+            <h3 className="text-lg font-bold text-[#1B3A6B] mb-2">
+              Shot Rush Pré-Treino
+            </h3>
+            <p className="text-sm text-[#555] mb-3 leading-relaxed">
+              Apoio para disposição antes do movimento. Pensado para somar à
+              sua rotina com a Cápsula LipoVitta.
+            </p>
+            <ul className="space-y-1.5 mb-4">
+              {[
+                "Energia natural",
+                "Fácil de tomar",
+                "Sem estimulantes agressivos",
+              ].map((b) => (
+                <li
+                  key={b}
+                  className="flex items-start gap-2 text-sm text-[#444]"
+                >
+                  <Check className="w-4 h-4 text-[#7BA33E] shrink-0 mt-0.5" />
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mb-3">
+              <span className="text-[#1B3A6B] font-extrabold text-xl">
+                R$225,00
+              </span>
+              <p className="text-xs text-[#555]">ou 3x R$75,00 sem juros</p>
+            </div>
+            <a
+              href="https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-rush-pre-treino/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-auto block text-center border-2 border-[#2E5EA6] text-[#2E5EA6] hover:bg-[#2E5EA6] hover:text-white font-semibold py-2.5 rounded-full transition-colors text-sm"
+            >
+              Adicionar à minha rotina
+            </a>
+            <p className="text-[11px] text-[#777] text-center mt-2">
+              Receba junto com sua Cápsula.
+            </p>
+          </article>
+        </div>
+
+        {/* Rodapé da seção */}
+        <div className="max-w-2xl mx-auto text-center mt-12 md:mt-16">
+          <p className="text-[#555] mb-4 leading-relaxed">
+            A Cápsula LipoVitta continua sendo a base da rotina. O Shot Matinal
+            é o complemento natural. Gummy e Shot Rush são opcionais conforme
+            sua necessidade.
+          </p>
+          <a
+            href="#precos"
+            className="text-[#2E5EA6] underline underline-offset-4 font-medium hover:text-[#1B3A6B]"
+          >
+            Voltar para a Cápsula LipoVitta
+          </a>
         </div>
       </div>
     </section>
