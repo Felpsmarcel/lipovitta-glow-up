@@ -3,11 +3,11 @@ import { Check, Instagram, Play } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const checkItems = [
-  "O inchaço reduz",
-  "As pernas ficam mais leves",
-  "A dor passa",
-  "A pele melhora",
-  "A energia volta",
+  "Inchaço reduzido",
+  "Pernas mais leves",
+  "Menos dor",
+  "Pele com melhor aparência",
+  "Mais disposição no dia a dia",
 ];
 
 const RoutineSection = () => {
@@ -67,7 +67,7 @@ const RoutineSection = () => {
             )}
           </div>
           <p className="mt-3 text-sm" style={{ color: "#999" }}>
-            📸 @lipo.vitta no Instagram
+            @lipo.vitta no Instagram
           </p>
         </div>
 
@@ -77,31 +77,32 @@ const RoutineSection = () => {
             className="text-2xl md:text-3xl font-bold leading-snug"
             style={{ color: "#1B3A6B", fontFamily: "'Playfair Display', serif" }}
           >
-            Você não precisa de mais força de vontade. Precisa da estratégia
-            certa.
+            Não é falta de força de vontade.
           </h2>
 
           <p style={{ color: "#555", lineHeight: 1.8 }}>
-            Sabe aquela sensação de acordar já cansada, o corpo inchado, as
-            pernas pesadas no fim do dia... e mesmo assim achar que a culpa é
-            sua?
+            Acordar inchada. Pernas pesadas no fim do dia. Sentir que o corpo
+            não responde — mesmo fazendo tudo certo. Eu sei o que é isso.
+            Passei anos achando que era culpa minha.
+          </p>
+
+          <p style={{ color: "#555", lineHeight: 1.8 }}>
+            Quando descobri que era lipedema, entendi que o problema nunca foi
+            esforço. Foi falta do suporte certo para o que o meu corpo
+            precisava.
+          </p>
+
+          <p style={{ color: "#555", lineHeight: 1.8 }}>
+            O LipoVitta é a rotina que eu mesma uso. Não criei para vender
+            suplemento. Criei porque precisava — e porque sei que tem muita
+            mulher passando pelo mesmo.
           </p>
 
           <p
-            className="text-xl md:text-2xl font-bold"
-            style={{ color: "#1B3A6B" }}
+            className="font-semibold"
+            style={{ color: "#1B3A6B", fontFamily: "'Playfair Display', serif" }}
           >
-            Não é.
-          </p>
-
-          <p style={{ color: "#555", lineHeight: 1.8 }}>
-            Às vezes o corpo não precisa de mais esforço. Ele precisa do suporte
-            certo.
-          </p>
-
-          <p style={{ color: "#555", lineHeight: 1.8 }}>
-            Quando você começa a dar pra ele o que falta, as coisas mudam de um
-            jeito que você sente:
+            — Clara Caldas
           </p>
 
           <ul className="flex flex-col gap-3">
@@ -112,20 +113,6 @@ const RoutineSection = () => {
               </li>
             ))}
           </ul>
-
-          {/* Box destaque */}
-          <div
-            className="rounded-lg p-5"
-            style={{
-              borderLeft: "4px solid #7BA33E",
-              background: "rgba(123,163,62,0.05)",
-            }}
-          >
-            <p className="font-bold" style={{ color: "#1B3A6B" }}>
-              O combo Cápsulas + Shot Matinal começa a transformar seu corpo de
-              dentro pra fora, todo dia.
-            </p>
-          </div>
 
           <button
             onClick={scrollToProducts}
