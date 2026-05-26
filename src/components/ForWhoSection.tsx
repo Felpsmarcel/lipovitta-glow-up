@@ -36,7 +36,7 @@ const ForWhoSection = () => {
           className="inline-block text-white font-bold text-base md:text-lg px-8 py-4 rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
           style={{ backgroundColor: "#7BA33E" }}
         >
-          QUERO COMEÇAR MINHA TRANSFORMAÇÃO
+          COMEÇAR PELA CÁPSULA
         </a>
       </div>
 

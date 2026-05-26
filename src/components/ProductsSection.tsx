@@ -73,7 +73,7 @@ const ProductCard = ({ product }: { product: (typeof products)[0] }) => (
         className="w-full py-3 rounded-xl font-bold text-white transition-colors hover:opacity-90 cursor-pointer"
         style={{ background: "#2E5EA6" }}
       >
-        Ver oferta
+        ADICIONAR À MINHA ROTINA
       </button>
     </div>
   </div>
