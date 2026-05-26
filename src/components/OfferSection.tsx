@@ -1,191 +1,231 @@
-import { useState } from "react";
-import { Shield, Lock, Truck, CreditCard } from "lucide-react";
+import { Shield, Lock, Truck, CreditCard, Check } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import capsulasImg from "@/assets/capsulas-lipovitta.png";
 import shotMatinalImg from "@/assets/shot-matinal.jpg";
-import gummyImg from "@/assets/gummy-vittaglow.png";
-import shotRushImg from "@/assets/shot-rush.jpg";
 import comboImg from "@/assets/combo-lipovitta.jpg";
 
-type Product = {
-  name: string;
-  oldPrice?: string;
-  price: string;
-  installment: string;
-  link: string;
-  extras?: string;
-  badge?: string;
-  image?: string;
-};
-
-const individuais: Product[] = [
-  { name: "LipoVitta Cápsula", oldPrice: "R$357", price: "R$321,30", installment: "3x R$119,13", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/lipovitta/", image: capsulasImg },
-  { name: "Shot Matinal", price: "R$170", installment: "3x R$63,03", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-matinal-lipovitta/", image: shotMatinalImg },
-  { name: "Gummy VittaGlow", oldPrice: "R$289", price: "R$260", installment: "3x R$96,33", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/gummy-skin-glow/", image: gummyImg },
-  { name: "Shot Rush", oldPrice: "R$250", price: "R$225", installment: "3x R$75", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-rush-pre-treino/", image: shotRushImg },
-];
-
-const kitsDuplos: Product[] = [
-  { name: "2x LipoVitta", oldPrice: "R$714", price: "R$585", installment: "3x R$216,90", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/2-potes-de-lipovitta/" },
-  { name: "2x Shot Matinal", oldPrice: "R$340", price: "R$323", installment: "3x R$110,86", extras: "+ Mixer", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/2-shot-matinal-lipovitta/" },
-  { name: "2x Shot Rush", oldPrice: "R$500", price: "R$425", installment: "3x R$141,67", extras: "+ Mixer", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/kit-2-shots-rush-pre-treino/" },
-  { name: "2x Gummy VittaGlow", oldPrice: "R$578", price: "R$508,64", installment: "3x R$169,55", extras: "+ Escova", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/kit-duas-gummys-vitaglow/" },
-  { name: "Shot Rush + LipoVitta", price: "R$546,30", installment: "3x R$182,10", extras: "+ Raspador", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-rush-lipovitta-capsulas/" },
-];
-
-const kitPremium: Product[] = [
-  { name: "3x LipoVitta", oldPrice: "R$1.071", price: "R$835", installment: "3x R$309,59", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/3-potes-de-lipovitta/" },
-  { name: "Kit Lipolover Full", oldPrice: "R$1.066", price: "R$852,80", installment: "3x R$284,27", extras: "+ Balança", link: "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/kit-lipolover-full/" },
-];
-
-const tabs = [
-  { key: "individuais", label: "Individuais" },
-  { key: "duplos", label: "Kits Duplos" },
-  { key: "premium", label: "Kit Premium" },
-] as const;
-
-type TabKey = (typeof tabs)[number]["key"];
-
-const tabData: Record<TabKey, Product[]> = {
-  individuais,
-  duplos: kitsDuplos,
-  premium: kitPremium,
-};
-
-const ProductCard = ({ product }: { product: Product }) => (
-  <div className="bg-white rounded-2xl border border-[#E8ECF1] p-5 flex flex-col gap-3 hover:shadow-lg transition-shadow">
-    {product.image && (
-      <div className="h-32 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden">
-        <img src={product.image} alt={product.name} className="h-full w-full object-contain" loading="lazy" />
-      </div>
-    )}
-    <h4 className="font-bold text-[#1B3A6B] text-lg">{product.name}</h4>
-    <div className="flex items-baseline gap-2 flex-wrap">
-      {product.oldPrice && (
-        <span className="text-[#999] line-through text-sm">{product.oldPrice}</span>
-      )}
-      <span className="text-[#1B3A6B] font-extrabold text-2xl">{product.price}</span>
-    </div>
-    <p className="text-sm text-[#555]">ou {product.installment} sem juros</p>
-    {product.extras && (
-      <span className="inline-block text-xs font-semibold text-[#7BA33E] bg-[#7BA33E]/10 px-3 py-1 rounded-full w-fit">
-        {product.extras}
-      </span>
-    )}
-    <a
-      href={product.link}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="mt-auto block text-center bg-[#7BA33E] hover:bg-[#6B9334] text-white font-bold py-3 rounded-full transition-colors text-sm"
-    >
-      COMEÇAR MINHA ROTINA
-    </a>
-  </div>
-);
+const LINK_CAPSULAS = "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/lipovitta/";
+const LINK_PROTOCOLO = "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-matinal-lipovitta1/";
+const LINK_SHOT = "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-matinal-lipovitta/";
 
 const OfferSection = () => {
-  const [activeTab, setActiveTab] = useState<TabKey>("individuais");
   const sectionRef = useScrollAnimation();
 
   return (
     <section ref={sectionRef} id="precos" className="py-16 sm:py-20" style={{ background: "#F5F7FA" }}>
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-10 max-w-2xl mx-auto">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#1B3A6B] mb-3">
-            Escolha o kit ideal para sua transformação
+            Comece sua rotina LipoVitta
           </h2>
-          <p className="text-[#666] max-w-xl mx-auto">
-            Aproveite o preço exclusivo de lançamento — oferta por tempo limitado!
+          <p className="text-[#555] text-base sm:text-lg">
+            Escolha como quer começar. Você pode adicionar complementos depois.
+          </p>
+          <p className="text-sm text-[#888] mt-2">
+            Frete grátis em compras a partir de R$323,00.
           </p>
           <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-gradient-to-r from-[#2E5EA6] to-[#7BA33E]" />
         </div>
 
-        {/* Featured Card */}
-        <div className="max-w-2xl mx-auto mb-10 bg-white rounded-2xl border-2 border-[#7BA33E] p-6 sm:p-8 shadow-xl relative">
-          <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#7BA33E] text-white text-xs font-bold px-4 py-1 rounded-full">
-            ⭐ MAIS VENDIDO
-          </span>
-          <div className="flex flex-col sm:flex-row gap-6 items-center mt-2">
-            <div className="w-40 h-40 shrink-0 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden">
-              <img src={comboImg} alt="Kit LipoVitta + Shot Matinal" className="h-full w-full object-contain" loading="lazy" />
-            </div>
-            <div className="flex-1">
-          <h3 className="text-xl sm:text-2xl font-bold text-[#1B3A6B] mb-1">
-            Kit LipoVitta + Shot Matinal
-          </h3>
-          <p className="text-sm text-[#555] mb-4">
-            1 pote LipoVitta + 1 pote Shot Matinal + Raspador de língua grátis
-          </p>
-          <div className="flex items-baseline gap-3 mb-1 flex-wrap">
-            <span className="text-[#999] line-through text-lg">R$527</span>
-            <span className="text-[#1B3A6B] font-extrabold text-3xl sm:text-4xl">R$447,95</span>
-            <span className="text-sm text-[#555]">à vista</span>
-          </div>
-          <p className="text-sm text-[#555] mb-3">ou 3x R$166,08 sem juros</p>
-          <span className="inline-block text-xs font-semibold text-[#7BA33E] bg-[#7BA33E]/10 px-3 py-1 rounded-full mb-5">
-            Economize R$79,05
-          </span>
-          <a
-            href="https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-matinal-lipovitta1/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block text-center bg-[#7BA33E] hover:bg-[#6B9334] text-white font-bold py-4 rounded-full transition-colors text-lg"
+        {/* 3 Cards Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-5 max-w-6xl mx-auto items-stretch mb-10">
+          {/* CARD 1 — Cápsulas */}
+          <article
+            id="card-capsulas"
+            className="lg:col-span-5 bg-white rounded-2xl border border-[#E8ECF1] p-6 sm:p-7 flex flex-col shadow-md"
           >
-            ESCOLHER PROTOCOLO COMPLETO
-          </a>
+            <span className="inline-block self-start text-xs font-semibold uppercase tracking-wide text-white bg-[#1B3A6B] px-3 py-1 rounded-full mb-4">
+              Fórmula principal
+            </span>
+            <div className="h-44 sm:h-52 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden mb-5">
+              <img src={capsulasImg} alt="LipoVitta Cápsulas" className="h-full w-full object-contain" loading="lazy" />
             </div>
-          </div>
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-[#1B3A6B] mb-2">
+              LipoVitta Cápsulas
+            </h3>
+            <p className="text-[#555] text-base mb-4">
+              A fórmula principal da rotina LipoVitta. Apoia o cuidado diário com circulação, sensação de pernas pesadas e bem-estar.
+            </p>
+            <ul className="space-y-2 mb-5">
+              {["Contém Dimpless® patenteado", "Frete grátis incluso", "Garantia de 30 dias"].map((b) => (
+                <li key={b} className="flex items-start gap-2 text-[#333] text-sm sm:text-base">
+                  <Check className="w-5 h-5 text-[#7BA33E] shrink-0 mt-0.5" />
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-auto">
+              <div className="mb-4">
+                <p className="text-[#1B3A6B] font-extrabold text-3xl sm:text-4xl leading-none">R$357,00</p>
+                <p className="text-sm text-[#666] mt-1">ou 3x de R$119,00 sem juros</p>
+              </div>
+              <a
+                href={LINK_CAPSULAS}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-center bg-[#7BA33E] hover:bg-[#6B9334] text-white font-bold rounded-full transition-colors text-base sm:text-lg py-4 sm:py-5 min-h-[56px]"
+              >
+                COMEÇAR MINHA ROTINA
+              </a>
+              <p className="text-xs text-[#777] text-center mt-3">
+                Adicione Shot Matinal, Gummy ou Shot Rush logo abaixo.
+              </p>
+            </div>
+          </article>
+
+          {/* CARD 2 — Protocolo Completo */}
+          <article
+            id="card-protocolo"
+            className="lg:col-span-4 relative bg-white rounded-2xl border-2 border-[#7BA33E] p-6 sm:p-7 flex flex-col shadow-2xl lg:scale-[1.03]"
+          >
+            <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#7BA33E] text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap shadow">
+              MAIS ESCOLHIDO
+            </span>
+            <span className="absolute -top-3 right-3 bg-[#1B3A6B] text-white text-[11px] font-bold px-3 py-1 rounded-full shadow">
+              Economia de R$79,05
+            </span>
+
+            <div className="h-44 sm:h-52 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden mb-5 mt-2">
+              <img src={comboImg} alt="Cápsulas LipoVitta com Shot Matinal" className="h-full w-full object-contain" loading="lazy" />
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-[#1B3A6B] mb-1">
+              Protocolo Completo LipoVitta
+            </h3>
+            <p className="text-[#2E5EA6] font-semibold text-sm sm:text-base mb-3">
+              Cápsula + Shot Matinal. A rotina completa em um único pedido.
+            </p>
+            <p className="text-[#555] text-sm sm:text-base mb-4">
+              A combinação pensada para quem quer começar com a rotina completa: a Cápsula como base diária e o Shot Matinal apoiando o início da manhã.
+            </p>
+            <ul className="space-y-2 mb-5">
+              <li className="flex items-start gap-2 text-[#1B3A6B] font-semibold text-sm sm:text-base">
+                <Check className="w-5 h-5 text-[#7BA33E] shrink-0 mt-0.5" />
+                <span>LipoVitta Cápsulas (fórmula principal)</span>
+              </li>
+              <li className="flex items-start gap-2 text-[#1B3A6B] font-semibold text-sm sm:text-base">
+                <Check className="w-5 h-5 text-[#7BA33E] shrink-0 mt-0.5" />
+                <span>Shot Matinal (ritual da manhã)</span>
+              </li>
+              {["Frete grátis incluso", "Economia de R$79,05 em relação à compra separada", "Garantia de 30 dias"].map((b) => (
+                <li key={b} className="flex items-start gap-2 text-[#333] text-sm sm:text-base">
+                  <Check className="w-5 h-5 text-[#7BA33E] shrink-0 mt-0.5" />
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="bg-[#F5F7FA] rounded-xl p-4 mb-4 space-y-1.5">
+              <div className="flex justify-between text-sm text-[#666]">
+                <span>Comprando separado:</span>
+                <span className="line-through">R$527,00</span>
+              </div>
+              <div className="flex justify-between text-sm sm:text-base font-semibold text-[#1B3A6B]">
+                <span>No Protocolo:</span>
+                <span>R$447,95</span>
+              </div>
+              <div className="flex justify-between text-sm sm:text-base font-bold text-[#7BA33E] pt-1.5 border-t border-[#E8ECF1]">
+                <span>Você economiza:</span>
+                <span>R$79,05</span>
+              </div>
+            </div>
+
+            <div className="mt-auto">
+              <div className="mb-4">
+                <span className="text-[#999] line-through text-sm mr-2">R$527,00</span>
+                <p className="text-[#1B3A6B] font-extrabold text-3xl sm:text-4xl leading-none">R$447,95</p>
+                <p className="text-sm text-[#666] mt-1">ou 3x de R$166,08 sem juros</p>
+              </div>
+              <a
+                href={LINK_PROTOCOLO}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-center bg-[#7BA33E] hover:bg-[#6B9334] text-white font-bold rounded-full transition-colors text-base py-4 min-h-[52px]"
+              >
+                ESCOLHER PROTOCOLO COMPLETO
+              </a>
+              <p className="text-xs text-[#777] text-center mt-3">
+                A escolha de 7 em cada 10 clientes.
+              </p>
+            </div>
+          </article>
+
+          {/* CARD 3 — Shot Matinal */}
+          <article
+            id="card-shot"
+            className="lg:col-span-3 bg-white rounded-2xl border border-[#E8ECF1] p-5 sm:p-6 flex flex-col shadow-sm"
+          >
+            <span className="inline-block self-start text-xs font-medium text-[#666] border border-[#D1D5DB] px-3 py-1 rounded-full mb-4">
+              Complemento matinal
+            </span>
+            <div className="h-36 sm:h-40 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden mb-4">
+              <img src={shotMatinalImg} alt="Shot Matinal LipoVitta" className="h-full w-full object-contain" loading="lazy" />
+            </div>
+            <h3 className="text-xl sm:text-2xl font-bold text-[#1B3A6B] mb-2">
+              Shot Matinal LipoVitta
+            </h3>
+            <p className="text-[#555] text-sm mb-4">
+              Apoia o início da manhã com cuidado para inchaço matinal, intestino e disposição. Pensado para combinar com a Cápsula LipoVitta.
+            </p>
+            <ul className="space-y-2 mb-5">
+              {["Suporte para a manhã", "Sabor agradável", "Fácil de incluir na rotina"].map((b) => (
+                <li key={b} className="flex items-start gap-2 text-[#333] text-sm">
+                  <Check className="w-4 h-4 text-[#7BA33E] shrink-0 mt-0.5" />
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-auto">
+              <div className="mb-4">
+                <p className="text-[#1B3A6B] font-bold text-2xl sm:text-3xl leading-none">R$170,00</p>
+                <p className="text-xs sm:text-sm text-[#666] mt-1">ou 3x de R$63,03 sem juros</p>
+              </div>
+              <a
+                href={LINK_SHOT}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-center border-2 border-[#2E5EA6] text-[#2E5EA6] hover:bg-[#2E5EA6] hover:text-white font-bold rounded-full transition-colors text-sm py-3 min-h-[48px]"
+              >
+                ADICIONAR À MINHA ROTINA
+              </a>
+              <p className="text-xs text-[#777] text-center mt-3">
+                Combine com a Cápsula para liberar frete grátis e economizar R$79,05 escolhendo o Protocolo Completo.
+              </p>
+              <a
+                href="#card-protocolo"
+                className="block text-center text-xs text-[#2E5EA6] underline underline-offset-2 hover:text-[#1B3A6B] mt-2"
+              >
+                Ver Protocolo Completo
+              </a>
+            </div>
+          </article>
         </div>
 
-        {/* Tabs */}
-        <div className="flex justify-center gap-2 mb-8 overflow-x-auto pb-2">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-colors ${
-                activeTab === tab.key
-                  ? "bg-[#2E5EA6] text-white"
-                  : "bg-white text-[#2E5EA6] border border-[#2E5EA6]/30 hover:bg-[#2E5EA6]/10"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto mb-12">
-          {tabData[activeTab].map((product) => (
-            <ProductCard key={product.name} product={product} />
-          ))}
-        </div>
-
-        {/* Guarantee Bar */}
-        <div className="bg-[#1B3A6B] rounded-2xl p-6 text-center text-white mb-8">
+        {/* Guarantee Block */}
+        <div className="max-w-3xl mx-auto bg-white border border-[#E8ECF1] rounded-2xl p-6 text-center mb-6 shadow-sm">
           <div className="flex items-center justify-center gap-3 mb-2">
-            <Shield className="w-8 h-8" />
-            <span className="text-lg font-bold">Garantia de 30 dias</span>
+            <Shield className="w-7 h-7 text-[#2E5EA6]" />
+            <span className="text-lg font-bold text-[#1B3A6B]">Garantia de 30 dias</span>
           </div>
-          <p className="text-white/80 text-sm max-w-lg mx-auto">
-            Se não sentir diferença, devolvemos seu dinheiro. Sem perguntas.
+          <p className="text-[#555] text-sm max-w-lg mx-auto">
+            Se não fizer sentido para a sua rotina, devolvemos seu dinheiro. Sem perguntas.
           </p>
         </div>
 
         {/* Trust Seals */}
-        <div className="flex flex-wrap justify-center gap-4">
+        <div className="flex flex-wrap justify-center gap-3">
           {[
-            { icon: Lock, text: "Compra Segura" },
-            { icon: Truck, text: "Envio Rápido" },
+            { icon: Lock, text: "Compra segura" },
+            { icon: Truck, text: "Envio rápido para todo o Brasil" },
             { icon: CreditCard, text: "Até 3x sem juros" },
+            { icon: Shield, text: "Garantia de 30 dias" },
           ].map(({ icon: Icon, text }) => (
             <div
               key={text}
-              className="flex items-center gap-2 bg-white rounded-full px-5 py-2.5 shadow-sm"
+              className="flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm border border-[#E8ECF1]"
             >
-              <Icon className="w-5 h-5 text-[#2E5EA6]" />
-              <span className="text-sm font-semibold text-[#1B3A6B]">{text}</span>
+              <Icon className="w-4 h-4 text-[#2E5EA6]" />
+              <span className="text-xs sm:text-sm font-semibold text-[#1B3A6B]">{text}</span>
             </div>
           ))}
         </div>
