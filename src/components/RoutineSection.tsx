@@ -138,7 +138,7 @@ const RoutineSection = () => {
               (e.currentTarget.style.background = "#7BA33E")
             }
           >
-            QUERO CONHECER OS PRODUTOS
+            VER A FÓRMULA PRINCIPAL
           </button>
         </div>
       </div>

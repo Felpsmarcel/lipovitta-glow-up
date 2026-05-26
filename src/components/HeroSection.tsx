@@ -44,7 +44,7 @@ const HeroSection = () => {
                 className="animate-pulse-cta inline-block font-bold text-base sm:text-lg px-8 sm:px-10 py-4 rounded-full shadow-lg transition-colors w-full sm:w-auto text-center text-white hover:opacity-90"
                 style={{ backgroundColor: "#7BA33E" }}
               >
-                QUERO COMEÇAR MINHA TRANSFORMAÇÃO
+                CONHECER A ROTINA LIPOVITTA
               </a>
             </div>
 

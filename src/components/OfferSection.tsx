@@ -78,7 +78,7 @@ const ProductCard = ({ product }: { product: Product }) => (
       rel="noopener noreferrer"
       className="mt-auto block text-center bg-[#7BA33E] hover:bg-[#6B9334] text-white font-bold py-3 rounded-full transition-colors text-sm"
     >
-      COMPRAR AGORA
+      COMEÇAR MINHA ROTINA
     </a>
   </div>
 );
@@ -132,7 +132,7 @@ const OfferSection = () => {
             rel="noopener noreferrer"
             className="block text-center bg-[#7BA33E] hover:bg-[#6B9334] text-white font-bold py-4 rounded-full transition-colors text-lg"
           >
-            COMPRAR AGORA COM DESCONTO
+            ESCOLHER PROTOCOLO COMPLETO
           </a>
             </div>
           </div>
