@@ -1,40 +1,37 @@
-## Plano — Seção Emocional/Rotina (Prompt P5)
+## Objetivo
+Atualizar a seção de depoimentos da landing LipoVitta para remover depoimentos genéricos e preparar espaço para prints reais de WhatsApp, mantendo o contador social e layout existente.
 
-### Escopo
-Editar apenas `src/components/RoutineSection.tsx`. Nenhuma outra seção, link, checkout, pixel ou script será alterado.
+## Arquivo: `src/components/TestimonialsSection.tsx`
 
-### Mudanças
+### 1. Título e subtítulo
+- Alterar título de "Veja o que mulheres reais estão dizendo" para **"O que nossas clientes dizem"**
+- Adicionar subtítulo: **"Prints reais. Resultados reais."**
 
-1. **Título (h2)**
-   - De: "Você não precisa de mais força de vontade. Precisa da estratégia certa."
-   - Para: "Não é falta de força de vontade."
+### 2. Remover depoimentos escritos
+- Remover array `testimonials` com os 6 depoimentos
+- Remover componente `TestimonialCard`
+- Remover grid desktop de depoimentos
+- Remover carrossel mobile de depoimentos + dots de navegação
+- Remover imports não utilizados (`Star`, `CheckCircle`, `useEmblaCarousel`, `useState` para o carousel, etc.)
 
-2. **Parágrafos emocionais**
-   - Substituir os 4 blocos de texto atuais por:
-     - Parágrafo 1: "Acordar inchada. Pernas pesadas no fim do dia. Sentir que o corpo não responde — mesmo fazendo tudo certo. Eu sei o que é isso. Passei anos achando que era culpa minha."
-     - Parágrafo 2: "Quando descobri que era lipedema, entendi que o problema nunca foi esforço. Foi falta do suporte certo para o que o meu corpo precisava."
-     - Parágrafo 3: "O LipoVitta é a rotina que eu mesma uso. Não criei para vender suplemento. Criei porque precisava — e porque sei que tem muita mulher passando pelo mesmo."
-     - Assinatura: "— Clara Caldas"
+### 3. Adicionar placeholder visual para prints
+- Criar grid responsivo capaz de exibir de 3 a 9 imagens (desktop: 3 colunas, tablet: 2, mobile: 1 ou adaptável)
+- Cada slot será um retângulo vertical (aspect-ratio ~9:16) com borda sutil e fundo neutro (estilo print de celular)
+- Texto temporário centralizado no grid: **"Em breve: depoimentos reais das nossas clientes."**
+- O texto e o placeholder grid devem ser fáceis de remover quando os prints forem adicionados
 
-3. **Lista de benefícios (`checkItems`)**
-   - Atualizar para:
-     - "Inchaço reduzido"
-     - "Pernas mais leves"
-     - "Menos dor"
-     - "Pele com melhor aparência"
-     - "Mais disposição no dia a dia"
+### 4. Contador social
+- Manter o `useAnimatedCounter` e a animação
+- Substituir texto de "+ de {count} mulheres já transformaram sua rotina com LipoVitta" por **"Mais de {count} mulheres já usam LipoVitta na rotina."**
 
-4. **Remover box de destaque**
-   - Remover todo o bloco com borda verde que contém "O combo Cápsulas + Shot Matinal começa a transformar seu corpo de dentro pra fora, todo dia."
+### 5. Regras de design
+- Sem emojis
+- Sem estrelas amarelas
+- Mobile-first
+- Manter espaçamento generoso (py-16 md:py-24, etc.)
+- Manter cores e fontes existentes do design system
 
-5. **Remover emoji**
-   - Remover 📸 da legenda do Instagram (@lipo.vitta no Instagram).
-
-6. **Manter inalterado**
-   - Layout, grid, espaçamentos, cores, fontes.
-   - Botão "VER A FÓRMULA PRINCIPAL" (já atualizado no P4).
-   - Instagram embed, iframe e fallback.
-   - Animações e hooks.
-
-### Arquivo alvo
-- `src/components/RoutineSection.tsx`
+### 6. Não alterar
+- Outras seções
+- Produtos, preços, links, checkout
+- Pixels ou scripts
