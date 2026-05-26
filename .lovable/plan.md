@@ -1,89 +1,77 @@
-## Objetivo
-Transformar a seção `ProductsSection` (Shot Matinal, Gummy VittaGlow, Shot Rush) numa área de upsell visual posicionada **logo abaixo** da seção de ofertas, com o Shot Matinal como complemento principal da Cápsula.
+# Reconstrução da seção de ofertas (`OfferSection.tsx`)
 
-## Arquivo 1: `src/pages/Index.tsx`
-Mover `<ProductsSection />` para **depois** de `<OfferSection />` (atualmente está antes).
+Substituir totalmente o conteúdo de `src/components/OfferSection.tsx` mantendo o `id="precos"` e o background atual. Nenhuma outra seção, link, pixel ou script será alterado.
 
-Ordem nova:
-```
-... IngredientsSection
-CTABanner
-OfferSection
-ProductsSection   ← movido para cá
-FAQSection ...
-```
+## Estrutura nova
 
-## Arquivo 2: `src/components/ProductsSection.tsx` (reescrita completa)
+**Header**
+- H2: "Comece sua rotina LipoVitta"
+- Subtítulo: "Escolha como quer começar. Você pode adicionar complementos depois."
+- Linha discreta: "Frete grátis em compras a partir de R$323,00."
 
-### Cabeçalho da seção
-- Título: **"Potencialize sua rotina com a Cápsula LipoVitta"**
-- Subtítulo: **"A Cápsula é a base. O Shot Matinal é o complemento que fecha sua rotina diária."**
-- Microcopy: **"Adicione ao seu pedido e receba tudo junto, com frete grátis a partir de R$323,00."**
-- Espaçamento generoso acima (`pt-20 md:pt-28`) para separar da seção de ofertas.
+**Grid de 3 cards** (mobile: stack vertical 1→2→3; desktop ≥lg: 3 colunas com larguras assimétricas via `lg:col-span-*` num grid de 12 para refletir hierarquia — Card 1 ocupa 5/12, Card 2 ocupa 4/12 com escala visual maior (`lg:scale-105`, shadow forte, borda destacada), Card 3 ocupa 3/12 mais compacto).
 
-### Layout dos cards
-- **Desktop (md+)**: grid de 3 colunas onde o Card A (Shot Matinal) ocupa **2 colunas** (col-span-2) à esquerda e os Cards B e C ficam empilhados na coluna restante à direita. Card A visivelmente maior.
-- **Mobile**: empilhados verticalmente na ordem **Shot Matinal → Gummy → Shot Rush**.
+### Card 1 — LipoVitta Cápsulas (Fórmula principal)
+- `id="card-capsulas"`
+- Etiqueta superior sóbria: "Fórmula principal" (fundo `#1B3A6B`/branco)
+- Imagem: `capsulasImg`
+- Título: "LipoVitta Cápsulas"
+- Descrição conforme briefing
+- Lista (ícone Check): Dimpless® patenteado, Frete grátis incluso, Garantia de 30 dias
+- Preço: "R$357,00" + "ou 3x de R$119,00 sem juros"
+- Botão preenchido GRANDE (`py-5 text-lg`, min-h 56px) cor `#7BA33E`: "COMEÇAR MINHA ROTINA"
+- Link: `https://clarinhacbr.lojavirtualnuvem.com.br/produtos/lipovitta/`
+- Microcopy: "Adicione Shot Matinal, Gummy ou Shot Rush logo abaixo."
 
-### Card A — Shot Matinal (destaque principal)
-- Etiqueta superior em destaque (cor de marca verde): "Combina perfeitamente com a Cápsula"
-- Imagem: `shot-matinal.jpg` + `capsulas-lipovitta.png` lado a lado (composição mostrando os dois juntos)
+### Card 2 — Protocolo Completo (Mais escolhido)
+- `id="card-protocolo"`
+- Etiqueta superior chamativa (verde sólido): "Mais escolhido"
+- Selo canto superior direito (badge absoluto, fundo `#1B3A6B`, texto branco): "Economia de R$79,05"
+- Borda destacada `border-2 border-[#7BA33E]`, shadow-xl, `lg:scale-105`
+- Imagem: `comboImg` (já existe — combo Cápsula + Shot Matinal)
+- Título: "Protocolo Completo LipoVitta"
+- Subtítulo: "Cápsula + Shot Matinal. A rotina completa em um único pedido."
+- Descrição conforme briefing
+- Lista de benefícios (5 itens conforme briefing, com os 2 primeiros em destaque visual semibold)
+- Bloco de comparação (caixa `bg-[#F5F7FA] rounded-xl p-4`):
+  - "Comprando separado: R$527,00"
+  - "No Protocolo: R$447,95"
+  - "Você economiza: R$79,05" (verde, bold)
+- Preço: "R$527,00" riscado + "R$447,95" destaque + "ou 3x de R$166,08 sem juros"
+- Botão preenchido médio-grande (`py-4 text-base`) cor `#7BA33E`: "ESCOLHER PROTOCOLO COMPLETO"
+- Link: `https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-matinal-lipovitta1/` (link atual do combo)
+- Microcopy: "A escolha de 7 em cada 10 clientes."
+
+### Card 3 — Shot Matinal (Complemento matinal)
+- `id="card-shot"`
+- Etiqueta superior discreta (outline cinza): "Complemento matinal"
+- Imagem: `shotMatinalImg`
 - Título: "Shot Matinal LipoVitta"
-- Subtítulo: "O ritual da manhã que potencializa sua Cápsula."
-- Descrição: "A Cápsula cuida da sua rotina ao longo do dia. O Shot Matinal apoia o início da manhã com cuidado para inchaço, intestino e disposição. Juntos, formam a rotina completa."
-- Benefícios:
-  - Apoia o controle do inchaço matinal
-  - Suporte para o intestino logo ao acordar
-  - Sabor agradável, fácil de incluir na rotina
-  - Combina com a Cápsula LipoVitta
-- Preço: "R$170,00" / "ou 3x de R$63,03 sem juros"
-- Bloco de economia (destaque visual, fundo verde claro):
-  "Cápsula + Shot Matinal juntos: economia de R$79,05 no Protocolo Completo."
-- Link discreto: "Ver Protocolo Completo" → âncora `#precos`
-- Botão preenchido cor de marca secundária (azul `#2E5EA6`), tamanho médio: **"Adicionar Shot Matinal à minha rotina"**
-- Link mantém o atual: `https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-matinal-lipovitta/`
-- Microcopy abaixo: "Receba junto com sua Cápsula."
+- Descrição conforme briefing
+- Lista: Suporte para a manhã, Sabor agradável, Fácil de incluir na rotina
+- Preço: "R$170,00" + "ou 3x de R$63,03 sem juros"
+- Botão outline menor (`py-3 text-sm border-2 border-[#2E5EA6] text-[#2E5EA6] hover:bg-[#2E5EA6] hover:text-white`): "ADICIONAR À MINHA ROTINA"
+- Link: `https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-matinal-lipovitta/`
+- Microcopy + âncora `<a href="#card-protocolo">` (com `scroll-behavior: smooth` global já existente) "Ver Protocolo Completo"
 
-### Card B — Gummy VittaGlow
-- Etiqueta superior discreta (cinza/contorno): "Combina com a Cápsula"
-- Imagem: `gummy-vittaglow.png`
-- Título: "Gummy VittaGlow Colágeno"
-- Descrição curta: "Cuidado extra para pele, cabelo e firmeza. Pensado para somar à sua rotina com a Cápsula LipoVitta."
-- Benefícios (3): Colágeno verisol / Sabor agradável / Uso diário simples
-- Preço: **R$260** / **3x R$96,33 sem juros** (mantém preço atual do site)
-- Botão outline (borda azul, texto azul, fundo branco), menor: **"Adicionar à minha rotina"**
-- Link atual mantido
-- Microcopy: "Receba junto com sua Cápsula."
+**Bloco de garantia** (abaixo dos cards)
+- Card branco com ícone `Shield` (lucide), título "Garantia de 30 dias", texto conforme briefing.
 
-### Card C — Shot Rush Pré-Treino
-- Etiqueta superior discreta: "Combina com a Cápsula"
-- Imagem: `shot-rush.jpg`
-- Título: "Shot Rush Pré-Treino"
-- Descrição curta: "Apoio para disposição antes do movimento. Pensado para somar à sua rotina com a Cápsula LipoVitta."
-- Benefícios (3): Energia natural / Fácil de tomar / Sem estimulantes agressivos
-- Preço: **R$225** / **3x R$75 sem juros** (mantém preço atual do site)
-- Botão outline, menor: **"Adicionar à minha rotina"**
-- Link atual mantido
-- Microcopy: "Receba junto com sua Cápsula."
+**Selos de confiança** (linha flex wrap, 4 itens)
+- Lock "Compra segura"
+- Truck "Envio rápido para todo o Brasil"
+- CreditCard "Até 3x sem juros"
+- Shield "Garantia de 30 dias"
 
-### Rodapé da seção
-- Linha de reforço centralizada: "A Cápsula LipoVitta continua sendo a base da rotina. O Shot Matinal é o complemento natural. Gummy e Shot Rush são opcionais conforme sua necessidade."
-- CTA secundário (texto link, sublinhado discreto): **"Voltar para a Cápsula LipoVitta"** → âncora `#precos`
+## Remoções
+- Card "Mais Vendido" antigo
+- Abas Individuais/Kits Duplos/Kit Premium e arrays `individuais`, `kitsDuplos`, `kitPremium`, `tabs`, `tabData`
+- `ProductCard` antigo
+- Imports não utilizados (`gummyImg`, `shotRushImg`, `useState`)
 
-### Hierarquia de botões
-- Card A: preenchido `#2E5EA6`, `py-3 px-6`, texto médio
-- Cards B/C: outline `border-2 border-[#2E5EA6] text-[#2E5EA6]`, `py-2.5`, texto menor
-- Todos visualmente menores que o botão verde "ESCOLHER PROTOCOLO COMPLETO" da OfferSection.
-
-### Regras visuais aplicadas
-- Sem emojis (remover ☀️ ✨ ⚡ atuais).
-- Sem badges "Premium" / "Performance".
-- Sem urgência fake.
-- Mobile-first, espaçamento generoso.
-- Palavra "Cápsula" aparece ≥6 vezes (verificada no copy acima: título, subtítulo, descrição Card A, benefício Card A, bloco economia, descrição Card B, descrição Card C, rodapé, CTA = 9+ ocorrências).
-
-### Não alterado
-- `OfferSection.tsx` (Card 1 Cápsula, Card 2 Protocolo, Card 3 Shot Matinal e seus preços/links).
-- Pixels, scripts, outros componentes.
-- Links de checkout dos 3 produtos (mantidos exatamente como estão em `OfferSection`).
-- Âncoras "Ver Protocolo Completo" e "Voltar para a Cápsula LipoVitta" apontam para `#precos` (id já existente na OfferSection) — sem necessidade de tocar a OfferSection.
+## Regras respeitadas
+- Sem emojis, sem urgência fake, sem "transformação"/"cura"
+- Mobile-first: cards `w-full px-3`, botões `min-h-[48px]`
+- Bloco de comparação visualmente impactante no mobile (texto maior, contraste)
+- Links de checkout reaproveitados exatamente como já configurados
+- `OfferSection.tsx` é o único arquivo modificado; `ProductsSection`, pixels, scripts, Index.tsx ficam intactos
