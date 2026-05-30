@@ -1,26 +1,11 @@
-## Editar apenas `src/components/FAQSection.tsx`
+## Mudanças
 
-Substituir o array `faqs` pelas 8 perguntas solicitadas, mantendo o componente Accordion e o layout atual (mobile-first, sem alterações de estilo).
+1. **`src/pages/Index.tsx`**: remover o import e o uso de `ContactSection`.
+2. **`src/components/Footer.tsx`**: adicionar telefone e e-mail na coluna "Ajuda" (acima dos links existentes), como links clicáveis:
+   - WhatsApp: `https://wa.me/5571996150401` — "(71) 9 9615-0401"
+   - E-mail: `mailto:lipovitta@clarinhacbr.com.br`
+   - Mesma tipografia `text-white/70 text-xs` com hover `#7BA33E`.
+3. Atualizar o link "Contato" do footer para apontar para o WhatsApp (já que a seção `#contato` deixa de existir).
+4. Manter arquivo `ContactSection.tsx` no projeto (não excluir), apenas desreferenciado.
 
-### Nova lista de perguntas
-
-1. **Qual a diferença entre Shot Matinal e Cápsula LipoVitta?** — texto do briefing.
-2. **Preciso comprar os dois?** — texto do briefing.
-3. **Tenho diagnóstico de lipedema. Posso usar?** — texto do briefing.
-4. **Serve para quem suspeita de lipedema?** — texto do briefing.
-5. **Em quanto tempo posso perceber diferença?** — texto do briefing.
-6. **Tem glúten ou açúcar?** — usar informação real já presente no site: a Cápsula LipoVitta é divulgada como "Sem Glúten" no Hero. Sobre açúcar, nenhum dado oficial existe no projeto, então a resposta será conservadora, sem inventar:
-   > "A Cápsula LipoVitta é Sem Glúten. As informações nutricionais completas, incluindo presença de açúcar, estão descritas no rótulo de cada produto. Em caso de dúvida, fale com a gente antes da compra."
-7. **Posso tomar com outros medicamentos?** — texto do briefing.
-8. **Como funciona a garantia?** — texto do briefing.
-
-### Itens preservados
-
-- Componente `FAQSection`, imports, `Accordion`, animações, classes e tokens.
-- Seção, espaçamentos, cores, tipografia e estrutura mobile-first inalterados.
-- Nenhuma outra seção, produto, preço, link, checkout, pixel ou script é tocado.
-
-### Por que esta abordagem
-
-- Mantém linguagem clara, responsável, sem prometer cura nem inventar composição/contraindicações.
-- Pergunta 6 respeita a regra "não inventar": reaproveita apenas o claim "Sem Glúten" já existente e remete ao rótulo para detalhes que não constam no projeto.
+Nada mais é alterado: produtos, preços, links de compra, checkout, pixels e scripts permanecem intactos.

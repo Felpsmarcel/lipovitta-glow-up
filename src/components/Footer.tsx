@@ -7,7 +7,8 @@ const institutionalLinks = [
 
 const helpLinks = [
   { label: "Trocas e Devoluções", href: "#" },
-  { label: "Contato", href: "#contato" },
+  { label: "(71) 9 9615-0401", href: "https://wa.me/5571996150401", external: true },
+  { label: "lipovitta@clarinhacbr.com.br", href: "mailto:lipovitta@clarinhacbr.com.br" },
 ];
 
 const paymentMethods = ["Visa", "Mastercard", "Elo", "Amex", "Pix", "Boleto"];
@@ -58,7 +59,8 @@ const Footer = () => (
               <li key={link.label}>
                 <a
                   href={link.href}
-                  className="text-white/70 text-xs leading-relaxed hover:text-[#7BA33E] transition-colors"
+                  {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="text-white/70 text-xs leading-relaxed hover:text-[#7BA33E] transition-colors break-all"
                 >
                   {link.label}
                 </a>
