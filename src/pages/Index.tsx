@@ -19,8 +19,10 @@ import ExitIntentPopup from "@/components/ExitIntentPopup";
 const Index = () => (
   <div className="min-h-screen bg-background">
     <SEOHead
-      title="Suplemento Natural para Lipedema, Celulite e Inchaço"
-      description="LipoVitta: suplemento 100% natural com Curcumina, Dimpless® e Resveratrol para reduzir inchaço, celulite e sintomas do lipedema. Resultados que você sente e vê."
+      title="Tratamento Natural para Lipedema"
+      description="LipoVitta: Suplemento natural clinicamente testado para reduzir sintomas do lipedema. Alívio da dor, redução do inchaço e melhora da circulação. Fórmula exclusiva com ingredientes naturais."
+      keywords="lipedema tratamento, suplemento para lipedema, como tratar lipedema, lipedema tem cura, LipoVitta"
+      ogType="website"
       canonicalUrl="https://lipovitta.site/"
     />
     <Navbar />
