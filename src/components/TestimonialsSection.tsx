@@ -62,18 +62,29 @@ export default function TestimonialsSection() {
           Prints reais. Resultados reais.
         </p>
 
-        {/* Grid de depoimentos visuais */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-          {testimonials.map((t, i) => (
-            <img
-              key={i}
-              src={t.src}
-              alt={t.alt}
-              loading="lazy"
-              className="w-full aspect-[4/5] object-cover rounded-2xl shadow-sm"
-            />
-          ))}
+        {/* Mosaico assimétrico de depoimentos */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 auto-rows-auto">
+          {testimonials.map((t, i) => {
+            const layouts = [
+              "lg:col-span-3 lg:row-span-2 aspect-[3/4]",
+              "lg:col-span-3 aspect-[4/3] rotate-[-0.4deg]",
+              "lg:col-span-2 aspect-[4/5] rotate-[0.5deg]",
+              "lg:col-span-2 aspect-square rotate-[-0.5deg]",
+              "lg:col-span-2 aspect-[4/5] rotate-[0.4deg]",
+              "lg:col-span-3 aspect-[4/3] lg:translate-y-4 rotate-[-0.3deg]",
+            ];
+            return (
+              <img
+                key={i}
+                src={t.src}
+                alt={t.alt}
+                loading="lazy"
+                className={`w-full object-cover rounded-2xl shadow-sm ${layouts[i]}`}
+              />
+            );
+          })}
         </div>
+
 
         {/* Animated counter */}
         <div ref={counterRef} className="text-center mt-14">

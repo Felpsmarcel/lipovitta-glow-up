@@ -18,9 +18,9 @@ const HeroSection = () => {
       />
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-12">
+        <div className="flex flex-col lg:flex-row lg:items-end gap-6 lg:gap-10">
           {/* Text content */}
-          <div className="flex-1 text-center lg:text-left">
+          <div className="lg:basis-[58%] text-center lg:text-left">
             <span
               className="inline-block text-xs font-semibold mb-4 tracking-[2px] uppercase"
               style={{ color: "#7BA33E" }}
@@ -43,7 +43,7 @@ const HeroSection = () => {
             <div id="cta" className="mb-6">
               <a
                 href="#comprar"
-                className="animate-pulse-cta inline-block font-bold text-base sm:text-lg px-8 sm:px-10 py-4 rounded-full shadow-lg transition-colors w-full sm:w-auto text-center text-white hover:opacity-90"
+                className="animate-pulse-cta inline-block font-bold text-base sm:text-lg px-8 sm:px-10 py-4 rounded-full shadow-lg transition-colors text-center text-white hover:opacity-90 lg:-translate-x-[2px]"
                 style={{ backgroundColor: "#7BA33E" }}
               >
                 CONHECER A ROTINA LIPOVITTA
@@ -64,12 +64,12 @@ const HeroSection = () => {
           </div>
 
           {/* Video column */}
-          <div className="flex-shrink-0 w-full lg:w-auto flex flex-col items-center">
+          <div className="lg:basis-[42%] w-full flex flex-col items-center lg:items-end lg:-translate-y-3">
             <div
-              className="w-full max-w-[326px] max-h-[500px] lg:max-h-none overflow-hidden"
+              className="w-full max-w-[340px] lg:max-w-[360px] overflow-hidden -mr-6 sm:mr-0 lg:rotate-[1deg]"
               style={{
                 aspectRatio: "9/16",
-                maxHeight: "580px",
+                maxHeight: "600px",
                 borderRadius: "16px",
                 boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
               }}
@@ -85,7 +85,7 @@ const HeroSection = () => {
                 title="Vídeo da Clara Caldas"
               />
             </div>
-            <p className="text-sm mt-3" style={{ color: "#999" }}>
+            <p className="text-sm mt-3 lg:mr-2" style={{ color: "#999" }}>
               📍{" "}
               <a
                 href="https://www.instagram.com/clarinhacbr/"
@@ -101,6 +101,23 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
+
+      {/* Linha decorativa orgânica — verde-sálvia */}
+      <svg
+        aria-hidden="true"
+        className="hidden md:block pointer-events-none absolute -bottom-6 left-0 w-full h-12"
+        viewBox="0 0 1440 60"
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M0,40 C240,10 480,55 720,30 C960,5 1200,50 1440,25"
+          fill="none"
+          stroke="#8FAE82"
+          strokeOpacity="0.3"
+          strokeWidth="1.5"
+        />
+      </svg>
+
     </section>
   );
 };
