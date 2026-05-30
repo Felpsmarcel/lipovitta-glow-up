@@ -1,27 +1,45 @@
-# Ritmo vertical entre seções
+# Limpeza de copy "cheirando a IA"
 
-Hoje quase todas as seções usam o mesmo padding (`py-16 md:py-24`), gerando uma cadência uniforme demais. Vou variar os espaçamentos verticais (top/bottom independentes) por seção, sem mexer em conteúdo, cores, links ou scripts.
+Faço apenas substituições de texto, sem mexer em preços, links, scripts, checkout, depoimentos, pixels ou estrutura. Mudanças mínimas e cirúrgicas — só onde aparecem termos da lista do briefing ou frases longas/promissoras demais.
 
-## Mudanças por arquivo
+## Alterações por arquivo
 
-Padrão atual → novo (apenas classes de padding/margin no wrapper `<section>`):
+### `HeroSection.tsx`
+- Parágrafo (linha 36): trocar
+  > "Eu sou Clara Caldas e convivo com o lipedema. Ele não tem cura, mas tem controle. Criei o **sistema** LipoVitta porque sei na pele o que é acordar inchada, com as pernas pesadas e sem energia. Hoje minha rotina mudou — e a sua também pode mudar."
 
-- **HeroSection.tsx** — mantém topo, reduz base: `pt-20 md:pt-28 pb-10 md:pb-16`
-- **RoutineSection.tsx** — respiro maior no topo, base curta: `pt-14 md:pt-20 pb-8 md:pb-12`
-- **TestimonialsSection.tsx** — base generosa pra "soltar" o mosaico: `pt-10 md:pt-14 pb-20 md:pb-28`
-- **BenefitsSection.tsx** — compacto no topo, médio embaixo: `pt-12 md:pt-16 pb-16 md:pb-24`
-- **CTABanner.tsx** — mais apertado, age como pausa: `py-10 md:py-14` (1ª) / `py-8 md:py-12` (2ª instância, se possível via prop ou só ajuste único)
-- **ForWhoSection.tsx** — assimétrico: `pt-20 md:pt-28 pb-12 md:pb-16`
-- **HowToUseSection.tsx** — curto em cima, longo embaixo: `pt-10 md:pt-14 pb-20 md:pb-28`
-- **IngredientsSection.tsx** — bloco "respirado": `pt-16 md:pt-24 pb-20 md:pb-28`
-- **OfferSection.tsx** — destaque com mais ar em cima: `pt-24 md:pt-32 pb-16 md:pb-20`
-- **ProductsSection.tsx** — médio/curto: `pt-12 md:pt-16 pb-16 md:pb-20`
-- **FAQSection.tsx** — padrão equilibrado: `pt-14 md:pt-20 pb-14 md:pb-20`
-- **ContactSection.tsx** — fecha enxuto: `pt-10 md:pt-14 pb-16 md:pb-24`
+  Por (frases curtas, sem "sistema", sem promessa):
+  > "Eu sou Clara Caldas e também convivo com lipedema. Sei o que é acordar inchada, com as pernas pesadas e sem energia. Criei a rotina LipoVitta para o cuidado diário que eu mesma precisava. Hoje minha rotina é outra — e a sua também pode mudar aos poucos."
 
-## Regras
+### `RoutineSection.tsx`
+- Botão (linha 128): `VER A FÓRMULA PRINCIPAL` → `VER A CÁPSULA PRINCIPAL`.
+  (evita a palavra "fórmula" em CTA; mantida só onde descreve o produto em si.)
 
-- Sem alterar conteúdo, classes de cor, gradientes, animações, links, pixels ou checkout.
-- Apenas as classes `py-*` / `pt-*` / `pb-*` do `<section>` raiz de cada componente.
-- Mobile preservado: valores `md:`/`lg:` só ampliam no desktop.
-- Cadência alvo: alternar seções "curtas" (≈ pt-10/pb-12) com "longas" (≈ pt-24/pb-28), evitando dois blocos iguais consecutivos.
+### `HowToUseSection.tsx`
+- Título (linha 17): `Sua rotina de **transformação** em 4 passos` → `Sua rotina em 4 passos`.
+- Passo 4 (descrição): `Dieta equilibrada + atividade física **potencializam** os resultados.` → `Dieta equilibrada e atividade física ajudam nos resultados percebidos.`
+
+### `FAQSection.tsx`
+- Resposta "Em quanto tempo terei resultados?": `O uso contínuo, aliado a hábitos saudáveis, **potencializa** os efeitos percebidos.` → `O uso contínuo, junto com hábitos saudáveis, ajuda nos efeitos percebidos.`
+- Resposta "Como devo usar o LipoVitta?": `Uso diário **potencializa** os efeitos.` → `Use todos os dias para manter a constância.`
+- Resposta "Como usar o Shot Matinal?": `Uso diário fortalece imunidade e reduz inflamações.` → `Uso diário ajuda no apoio à imunidade e ao bem-estar.` (remove promessa absoluta de "reduz inflamações")
+
+### `ExitIntentPopup.tsx`
+- Título: `Espere! Não vá embora sem seu presente 🎁` → `Antes de sair, leve um guia gratuito 🎁` (remove "Espere!", urgência artificial).
+- Botão: `QUERO MEU GUIA GRÁTIS` → `BAIXAR O GUIA`.
+
+## O que **não** muda
+
+- Preços, nomes de produtos (LipoVitta Cápsulas, Shot Matinal, Protocolo Completo, Gummy VittaGlow, Shot Rush, etc.).
+- Todos os `href` de checkout, WhatsApp, e-mail, Instagram.
+- Scripts, pixels, componentes (CountdownTimer, UrgencyBar — este último nem está em uso na página).
+- Depoimentos visuais e textos dos prints.
+- Palavra "fórmula" onde descreve objetivamente o produto (`A fórmula principal da rotina LipoVitta`, `LipoVitta Cápsulas (fórmula principal)`) — o briefing pede para remover "fórmula secreta", não o termo técnico do suplemento.
+- Demais textos da página, que já estão em tom direto e pessoal.
+
+## Checklist de tom aplicado
+
+- Sem "sistema", "transformação", "potencialize/potencializa/potencializam".
+- Sem "Espere!", sem promessas absolutas ("nunca mais", "para sempre").
+- Frases reescritas ficam ≤ 20 palavras.
+- Sem hipérbole adicionada; mantida a voz de primeira pessoa da Clara.

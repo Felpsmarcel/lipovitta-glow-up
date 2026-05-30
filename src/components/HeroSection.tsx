@@ -33,7 +33,7 @@ const HeroSection = () => {
             </h1>
 
             <p className="font-sans font-normal text-base sm:text-lg text-white/90 mb-4 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-              Eu sou Clara Caldas e convivo com o lipedema. Ele não tem cura, mas tem controle. Criei o sistema LipoVitta porque sei na pele o que é acordar inchada, com as pernas pesadas e sem energia. Hoje minha rotina mudou — e a sua também pode mudar.
+              Eu sou Clara Caldas e também convivo com lipedema. Sei o que é acordar inchada, com as pernas pesadas e sem energia. Criei a rotina LipoVitta para o cuidado diário que eu mesma precisava. Hoje minha rotina é outra — e a sua também pode mudar aos poucos.
             </p>
 
             <p className="font-display italic text-lg sm:text-xl mb-8 max-w-xl mx-auto lg:mx-0" style={{ color: "#A8D45A" }}>

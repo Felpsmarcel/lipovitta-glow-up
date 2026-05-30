@@ -34,7 +34,7 @@ const ExitIntentPopup = () => {
         </button>
 
         <h3 className="text-xl md:text-2xl font-bold mb-2" style={{ color: "#1B3A6B", fontFamily: "'Playfair Display', serif" }}>
-          Espere! Não vá embora sem seu presente 🎁
+          Antes de sair, leve um guia gratuito 🎁
         </h3>
         <p className="text-sm mb-6" style={{ color: "#555" }}>
           Baixe grátis o Guia: <strong>5 Hábitos para Aliviar o Lipedema</strong>
@@ -59,7 +59,7 @@ const ExitIntentPopup = () => {
             className="w-full py-3 rounded-xl text-white font-bold transition-colors hover:opacity-90"
             style={{ backgroundColor: "#7BA33E" }}
           >
-            QUERO MEU GUIA GRÁTIS
+            BAIXAR O GUIA
           </button>
         </form>
       </div>

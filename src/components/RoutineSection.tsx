@@ -125,7 +125,7 @@ const RoutineSection = () => {
               (e.currentTarget.style.background = "#7BA33E")
             }
           >
-            VER A FÓRMULA PRINCIPAL
+            VER A CÁPSULA PRINCIPAL
           </button>
         </div>
       </div>
