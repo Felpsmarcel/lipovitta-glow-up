@@ -74,33 +74,33 @@ const RoutineSection = () => {
         {/* Coluna direita — Texto emocional */}
         <div className="flex flex-col gap-5" data-animate>
           <h2
-            className="text-2xl md:text-3xl font-bold leading-snug"
-            style={{ color: "#1B3A6B", fontFamily: "'Playfair Display', serif" }}
+            className="font-display text-3xl md:text-4xl font-medium leading-snug"
+            style={{ color: "#1B3A6B" }}
           >
             Não é falta de força de vontade.
           </h2>
 
-          <p style={{ color: "#555", lineHeight: 1.8 }}>
+          <p className="font-sans font-normal text-base" style={{ color: "#555", lineHeight: 1.8 }}>
             Acordar inchada. Pernas pesadas no fim do dia. Sentir que o corpo
             não responde — mesmo fazendo tudo certo. Eu sei o que é isso.
             Passei anos achando que era culpa minha.
           </p>
 
-          <p style={{ color: "#555", lineHeight: 1.8 }}>
+          <p className="font-sans font-normal text-base" style={{ color: "#555", lineHeight: 1.8 }}>
             Quando descobri que era lipedema, entendi que o problema nunca foi
             esforço. Foi falta do suporte certo para o que o meu corpo
             precisava.
           </p>
 
-          <p style={{ color: "#555", lineHeight: 1.8 }}>
+          <p className="font-sans font-normal text-base" style={{ color: "#555", lineHeight: 1.8 }}>
             O LipoVitta é a rotina que eu mesma uso. Não criei para vender
             suplemento. Criei porque precisava — e porque sei que tem muita
             mulher passando pelo mesmo.
           </p>
 
           <p
-            className="font-semibold"
-            style={{ color: "#1B3A6B", fontFamily: "'Playfair Display', serif" }}
+            className="font-display italic text-lg"
+            style={{ color: "#8FAE82" }}
           >
             — Clara Caldas
           </p>
@@ -109,7 +109,7 @@ const RoutineSection = () => {
             {checkItems.map((item) => (
               <li key={item} className="flex items-center gap-3">
                 <Check size={20} style={{ color: "#7BA33E" }} />
-                <span style={{ color: "#333" }}>{item}</span>
+                <span className="font-sans font-normal text-base" style={{ color: "#333" }}>{item}</span>
               </li>
             ))}
           </ul>

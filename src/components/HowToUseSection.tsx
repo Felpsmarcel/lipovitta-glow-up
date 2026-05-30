@@ -13,7 +13,7 @@ const HowToUseSection = () => {
   <section ref={ref} className="py-16 md:py-24 px-4 bg-white">
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-12">
-        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4" style={{ color: "#1B3A6B", fontFamily: "'Playfair Display', serif" }}>
+        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-4" style={{ color: "#1B3A6B" }}>
           Sua rotina de transformação em 4 passos
         </h2>
         <div className="w-20 h-[3px] mx-auto rounded-full" style={{ background: "linear-gradient(90deg, #2E5EA6, #7BA33E)" }} />
@@ -33,10 +33,10 @@ const HowToUseSection = () => {
                 {i + 1}
               </div>
               <div className="bg-white rounded-xl p-5 border flex-1 transition-shadow hover:shadow-md" style={{ borderColor: "#E8ECF1" }}>
-                <h3 className="font-bold text-lg mb-1" style={{ color: "#1B3A6B" }}>
+                <h3 className="font-sans font-semibold text-lg mb-1" style={{ color: "#1B3A6B" }}>
                   {step.title}
                 </h3>
-                <p className="text-sm leading-relaxed" style={{ color: "#555" }}>{step.description}</p>
+                <p className="font-sans font-normal text-base leading-relaxed" style={{ color: "#555" }}>{step.description}</p>
               </div>
             </div>
           ))}

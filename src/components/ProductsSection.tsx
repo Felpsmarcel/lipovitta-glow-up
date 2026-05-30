@@ -15,13 +15,13 @@ const ProductsSection = () => {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#1B3A6B] mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-[#1B3A6B] mb-4">
             Complementos opcionais para sua rotina
           </h2>
-          <p className="text-base sm:text-lg text-[#444] mb-3">
+          <p className="font-sans font-normal text-base sm:text-lg text-[#444] mb-3">
             Produtos que combinam com a Cápsula LipoVitta para quem quer ir além.
           </p>
-          <p className="text-sm text-[#666]">
+          <p className="font-sans font-normal text-sm text-[#666]">
             Frete grátis em compras a partir de R$323,00.
           </p>
           <div className="mx-auto mt-5 h-1 w-20 rounded-full bg-gradient-to-r from-[#2E5EA6] to-[#7BA33E]" />
@@ -42,10 +42,10 @@ const ProductsSection = () => {
                 loading="lazy"
               />
             </div>
-            <h3 className="text-lg font-bold text-[#1B3A6B] mb-2">
+            <h3 className="font-sans font-semibold text-lg text-[#1B3A6B] mb-2">
               Gummy VittaGlow Colágeno
             </h3>
-            <p className="text-sm text-[#555] mb-3 leading-relaxed">
+            <p className="font-sans font-normal text-base text-[#555] mb-3 leading-relaxed">
               Cuidado extra para pele, cabelo e firmeza. Pensado para somar à
               sua rotina com a Cápsula LipoVitta.
             </p>
@@ -94,10 +94,10 @@ const ProductsSection = () => {
                 loading="lazy"
               />
             </div>
-            <h3 className="text-lg font-bold text-[#1B3A6B] mb-2">
+            <h3 className="font-sans font-semibold text-lg text-[#1B3A6B] mb-2">
               Shot Rush Pré-Treino
             </h3>
-            <p className="text-sm text-[#555] mb-3 leading-relaxed">
+            <p className="font-sans font-normal text-base text-[#555] mb-3 leading-relaxed">
               Apoio para disposição antes do movimento. Pensado para somar à
               sua rotina com a Cápsula LipoVitta.
             </p>

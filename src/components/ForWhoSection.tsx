@@ -16,8 +16,8 @@ const ForWhoSection = () => {
     <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-12">
       <div className="flex-1 text-center lg:text-left">
         <h2
-          className="text-2xl md:text-3xl lg:text-4xl font-bold mb-8"
-          style={{ color: "#7BA33E", fontFamily: "'Playfair Display', serif" }}
+          className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-8"
+          style={{ color: "#A8D45A" }}
         >
           Para quem é o LipoVitta?
         </h2>
@@ -26,7 +26,7 @@ const ForWhoSection = () => {
           {items.map((item) => (
             <li key={item} className="flex items-start gap-3">
               <CheckCircle size={22} color="#7BA33E" className="mt-0.5 shrink-0" />
-              <span className="text-white text-base md:text-lg">{item}</span>
+              <span className="font-sans font-normal text-white text-base md:text-lg">{item}</span>
             </li>
           ))}
         </ul>

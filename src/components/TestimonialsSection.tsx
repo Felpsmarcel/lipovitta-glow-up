@@ -54,11 +54,11 @@ export default function TestimonialsSection() {
     <section className="bg-white py-16 md:py-24 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Title */}
-        <h2 className="text-2xl md:text-4xl font-heading font-bold text-lipovitta-blue-dark text-center">
+        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium text-lipovitta-blue-dark text-center">
           O que nossas clientes dizem
         </h2>
         <div className="mx-auto mt-4 h-[3px] w-20 rounded-full bg-gradient-to-r from-lipovitta-blue-medium to-lipovitta-green" />
-        <p className="text-center text-lg md:text-xl text-lipovitta-text mt-4 mb-12">
+        <p className="font-display italic text-center text-lg md:text-xl mt-4 mb-12" style={{ color: "#8FAE82" }}>
           Prints reais. Resultados reais.
         </p>
 
@@ -77,8 +77,8 @@ export default function TestimonialsSection() {
 
         {/* Animated counter */}
         <div ref={counterRef} className="text-center mt-14">
-          <p className="text-lg md:text-xl text-lipovitta-text">
-            <span className="text-3xl md:text-4xl font-bold text-lipovitta-green">
+          <p className="font-sans font-normal text-base md:text-lg text-lipovitta-text">
+            <span className="font-sans text-3xl md:text-4xl font-semibold text-lipovitta-green">
               Mais de {count.toLocaleString("pt-BR")}
             </span>{" "}
             mulheres já usam LipoVitta na rotina.
