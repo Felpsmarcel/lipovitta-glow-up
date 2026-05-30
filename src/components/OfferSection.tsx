@@ -78,27 +78,32 @@ const OfferSection = () => {
           {/* CARD 2 — Protocolo Completo */}
           <article
             id="card-protocolo"
-            className="lg:col-span-4 relative bg-white rounded-2xl border-2 border-[#7BA33E] p-6 sm:p-7 flex flex-col shadow-2xl overflow-hidden"
+            className="lg:col-span-4 relative bg-white rounded-2xl border-2 border-[#7BA33E] p-6 sm:p-7 flex flex-col shadow-2xl"
           >
-            {/* Mancha orgânica decorativa */}
-            <svg
-              aria-hidden="true"
-              className="hidden md:block pointer-events-none absolute -bottom-16 -right-12 w-64 h-64"
-              viewBox="0 0 400 400"
-            >
-              <path
-                d="M327,275 C297,343 215,377 145,355 C75,333 30,265 42,196 C54,127 117,68 190,62 C263,56 340,108 357,176 C374,244 357,207 327,275 Z"
-                fill="#8FAE82"
-                opacity="0.08"
-              />
-            </svg>
+            {/* Mancha orgânica decorativa (clipada dentro do card) */}
+            <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
+              <svg
+                aria-hidden="true"
+                className="hidden md:block absolute -bottom-16 -right-12 w-64 h-64"
+                viewBox="0 0 400 400"
+              >
+                <path
+                  d="M327,275 C297,343 215,377 145,355 C75,333 30,265 42,196 C54,127 117,68 190,62 C263,56 340,108 357,176 C374,244 357,207 327,275 Z"
+                  fill="#8FAE82"
+                  opacity="0.08"
+                />
+              </svg>
+            </div>
 
-            <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#7BA33E] text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap shadow">
-              MAIS ESCOLHIDO
-            </span>
-            <span className="absolute -top-3 right-3 bg-[#1B3A6B] text-white text-[11px] font-bold px-3 py-1 rounded-full shadow">
-              Economia de R$79,05
-            </span>
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10 max-w-[95%]">
+              <span className="bg-[#7BA33E] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
+                MAIS ESCOLHIDO
+              </span>
+              <span className="bg-[#1B3A6B] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
+                Economia de R$79,05
+              </span>
+            </div>
+
 
             <div className="h-44 sm:h-52 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden mb-5 mt-2">
               <img src={comboImg} alt="Cápsulas LipoVitta com Shot Matinal" className="h-full w-full object-contain" loading="lazy" />
