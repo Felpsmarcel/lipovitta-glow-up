@@ -7,7 +7,7 @@ const institutionalLinks = [
 
 const helpLinks = [
   { label: "Trocas e Devoluções", href: "#" },
-  { label: "(71) 9 9615-0401", href: "https://wa.me/5571996150401", external: true },
+  { label: <span className="whitespace-nowrap">(71) 9 9615-0401</span>, href: "https://wa.me/5571996150401", external: true },
   { label: "lipovitta@clarinhacbr.com.br", href: "mailto:lipovitta@clarinhacbr.com.br" },
 ];
 
