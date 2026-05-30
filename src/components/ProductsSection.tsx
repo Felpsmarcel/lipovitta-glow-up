@@ -10,7 +10,7 @@ const ProductsSection = () => {
     <section
       ref={sectionRef}
       id="complementos"
-      className="pt-20 md:pt-28 pb-16 md:pb-24 bg-white"
+      className="pt-12 md:pt-16 pb-16 md:pb-20 bg-white"
     >
       <div className="container mx-auto px-4">
         {/* Header */}
