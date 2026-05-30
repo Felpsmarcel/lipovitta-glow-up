@@ -59,7 +59,7 @@ const ExitIntentPopup = () => {
             className="w-full py-3 rounded-xl text-white font-bold transition-colors hover:opacity-90"
             style={{ backgroundColor: "#7BA33E" }}
           >
-            QUERO MEU GUIA GRÁTIS
+            BAIXAR O GUIA
           </button>
         </form>
       </div>
