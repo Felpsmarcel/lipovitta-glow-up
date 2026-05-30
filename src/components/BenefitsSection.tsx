@@ -22,28 +22,40 @@ const BenefitsSection = () => {
         <div className="w-20 h-[3px] mx-auto rounded-full" style={{ background: "linear-gradient(90deg, #2E5EA6, #7BA33E)" }} />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {benefits.map(({ icon: Icon, title, description }) => (
-          <div
-            data-animate
-            key={title}
-            style={{ borderColor: "#E8ECF1" }}
-          >
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
+        {benefits.map(({ icon: Icon, title, description }, idx) => {
+          const spans = [
+            "lg:col-span-4",
+            "lg:col-span-2",
+            "lg:col-span-2",
+            "lg:col-span-2",
+            "lg:col-span-2",
+            "lg:col-span-4 lg:col-start-2",
+          ];
+          return (
             <div
-              className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-colors duration-300"
-              style={{ backgroundColor: "rgba(46, 94, 166, 0.1)" }}
+              data-animate
+              key={title}
+              className={`bg-white rounded-2xl p-6 border shadow-sm group ${spans[idx]}`}
+              style={{ borderColor: "#E8ECF1" }}
             >
-              <Icon size={28} color="#2E5EA6" />
+              <div
+                className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-colors duration-300"
+                style={{ backgroundColor: "rgba(46, 94, 166, 0.1)" }}
+              >
+                <Icon size={28} color="#2E5EA6" />
+              </div>
+              <h3 className="font-sans text-lg font-semibold mb-2" style={{ color: "#1B3A6B" }}>{title}</h3>
+              <p className="font-sans text-base font-normal leading-relaxed" style={{ color: "#555" }}>{description}</p>
+              <div
+                className="h-[3px] w-0 group-hover:w-full rounded-full mt-4 transition-all duration-300"
+                style={{ background: "#7BA33E" }}
+              />
             </div>
-            <h3 className="font-sans text-lg font-semibold mb-2" style={{ color: "#1B3A6B" }}>{title}</h3>
-            <p className="font-sans text-base font-normal leading-relaxed" style={{ color: "#555" }}>{description}</p>
-            <div
-              className="h-[3px] w-0 group-hover:w-full rounded-full mt-4 transition-all duration-300"
-              style={{ background: "#7BA33E" }}
-            />
-          </div>
-        ))}
+          );
+        })}
       </div>
+
     </div>
   </section>
   );

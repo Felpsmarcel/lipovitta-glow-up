@@ -2,6 +2,8 @@ import { useState } from "react";
 import * as Collapsible from "@radix-ui/react-collapsible";
 import { ChevronDown } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import capsulasImg from "@/assets/capsulas-lipovitta.png";
+
 
 const ingredients = [
   { name: "Cafeína", dose: "80mg", max: 130, description: "Estimula metabolismo, queima de gordura, melhora circulação." },
@@ -72,17 +74,39 @@ const IngredientCard = ({ item, alwaysOpen }: { item: typeof ingredients[0]; alw
 const IngredientsSection = () => {
   const ref = useScrollAnimation();
   return (
-  <section ref={ref} className="py-16 md:py-24 px-4" style={{ background: "linear-gradient(180deg, #F5F7FA 0%, #FFFFFF 100%)" }}>
-    <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-12">
-        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-3" style={{ color: "#1B3A6B" }}>
+  <section ref={ref} className="relative py-16 md:py-24 px-4 overflow-hidden" style={{ background: "linear-gradient(180deg, #F5F7FA 0%, #FFFFFF 100%)" }}>
+    {/* Mancha orgânica decorativa */}
+    <svg
+      aria-hidden="true"
+      className="hidden md:block pointer-events-none absolute -top-10 -left-10 w-[420px] h-[420px]"
+      viewBox="0 0 400 400"
+    >
+      <path
+        d="M327,275 C297,343 215,377 145,355 C75,333 30,265 42,196 C54,127 117,68 190,62 C263,56 340,108 357,176 C374,244 357,207 327,275 Z"
+        fill="#8FAE82"
+        opacity="0.08"
+      />
+    </svg>
+
+    <div className="relative max-w-4xl mx-auto">
+      <div className="relative mb-12 text-center md:text-left md:pl-2">
+        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-3 max-w-2xl" style={{ color: "#1B3A6B" }}>
           Compostos 100% naturais com dosagens precisas
         </h2>
-        <p className="font-sans font-normal text-base mb-4" style={{ color: "#666" }}>
+        <p className="font-sans font-normal text-base mb-4 max-w-xl" style={{ color: "#666" }}>
           Cada ingrediente foi selecionado para atuar de forma sinérgica no seu corpo
         </p>
-        <div className="w-20 h-[3px] mx-auto rounded-full" style={{ background: "linear-gradient(90deg, #2E5EA6, #7BA33E)" }} />
+        <div className="w-20 h-[3px] mx-auto md:mx-0 rounded-full" style={{ background: "linear-gradient(90deg, #2E5EA6, #7BA33E)" }} />
+
+        {/* Imagem decorativa do produto */}
+        <img
+          src={capsulasImg}
+          alt=""
+          aria-hidden="true"
+          className="hidden md:block absolute right-2 -top-4 w-36 lg:w-44 rotate-[-3deg] opacity-95 drop-shadow-2xl pointer-events-none"
+        />
       </div>
+
 
       {/* Desktop: all expanded */}
       <div className="hidden md:flex flex-col gap-4">
