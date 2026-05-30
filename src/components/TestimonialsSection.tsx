@@ -62,24 +62,17 @@ export default function TestimonialsSection() {
           Prints reais. Resultados reais.
         </p>
 
-        {/* Placeholder grid para prints de WhatsApp (vertical, estilo celular) */}
-        <div className="relative">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-            {placeholderSlots.map((_, i) => (
-              <div
-                key={i}
-                className="aspect-[9/16] rounded-2xl border border-lipovitta-gray bg-lipovitta-ice/40"
-                aria-hidden="true"
-              />
-            ))}
-          </div>
-
-          {/* Texto temporário - remover quando adicionar os prints reais */}
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-6">
-            <p className="text-center text-base md:text-lg font-medium text-lipovitta-blue-dark bg-white/90 backdrop-blur-sm px-6 py-4 rounded-xl shadow-sm">
-              Em breve: depoimentos reais das nossas clientes.
-            </p>
-          </div>
+        {/* Grid de depoimentos visuais */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+          {testimonials.map((t, i) => (
+            <img
+              key={i}
+              src={t.src}
+              alt={t.alt}
+              loading="lazy"
+              className="w-full aspect-[4/5] object-cover rounded-2xl shadow-sm"
+            />
+          ))}
         </div>
 
         {/* Animated counter */}
