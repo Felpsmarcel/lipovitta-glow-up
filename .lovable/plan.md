@@ -1,45 +1,65 @@
-# Limpeza de copy "cheirando a IA"
+# Plano: Rodapé profissional da LipoVitta
 
-Faço apenas substituições de texto, sem mexer em preços, links, scripts, checkout, depoimentos, pixels ou estrutura. Mudanças mínimas e cirúrgicas — só onde aparecem termos da lista do briefing ou frases longas/promissoras demais.
+Editar apenas `src/components/Footer.tsx`. Nenhum outro arquivo é tocado. Sem alterações em produtos, preços, links de compra, checkout, pixels ou scripts.
 
-## Alterações por arquivo
+## O que muda
 
-### `HeroSection.tsx`
-- Parágrafo (linha 36): trocar
-  > "Eu sou Clara Caldas e convivo com o lipedema. Ele não tem cura, mas tem controle. Criei o **sistema** LipoVitta porque sei na pele o que é acordar inchada, com as pernas pesadas e sem energia. Hoje minha rotina mudou — e a sua também pode mudar."
+Hoje o rodapé tem apenas: logo, disclaimer, copyright e 2 links (Política de Privacidade, Termos de Uso). Vamos reorganizá-lo em uma estrutura mobile-first com colunas no desktop.
 
-  Por (frases curtas, sem "sistema", sem promessa):
-  > "Eu sou Clara Caldas e também convivo com lipedema. Sei o que é acordar inchada, com as pernas pesadas e sem energia. Criei a rotina LipoVitta para o cuidado diário que eu mesma precisava. Hoje minha rotina é outra — e a sua também pode mudar aos poucos."
+## Nova estrutura
 
-### `RoutineSection.tsx`
-- Botão (linha 128): `VER A FÓRMULA PRINCIPAL` → `VER A CÁPSULA PRINCIPAL`.
-  (evita a palavra "fórmula" em CTA; mantida só onde descreve o produto em si.)
+```text
+[ Logo + disclaimer curto ]   [ Institucional ]   [ Ajuda ]   [ Pagamento ]
+---------------------------------------------------------------------------
+                © 2026 LipoVitta por Clara Caldas
+```
 
-### `HowToUseSection.tsx`
-- Título (linha 17): `Sua rotina de **transformação** em 4 passos` → `Sua rotina em 4 passos`.
-- Passo 4 (descrição): `Dieta equilibrada + atividade física **potencializam** os resultados.` → `Dieta equilibrada e atividade física ajudam nos resultados percebidos.`
+- Mobile: colunas empilhadas, alinhadas à esquerda.
+- Desktop (md+): 4 colunas.
+- Divisor sutil entre o bloco principal e o copyright.
 
-### `FAQSection.tsx`
-- Resposta "Em quanto tempo terei resultados?": `O uso contínuo, aliado a hábitos saudáveis, **potencializa** os efeitos percebidos.` → `O uso contínuo, junto com hábitos saudáveis, ajuda nos efeitos percebidos.`
-- Resposta "Como devo usar o LipoVitta?": `Uso diário **potencializa** os efeitos.` → `Use todos os dias para manter a constância.`
-- Resposta "Como usar o Shot Matinal?": `Uso diário fortalece imunidade e reduz inflamações.` → `Uso diário ajuda no apoio à imunidade e ao bem-estar.` (remove promessa absoluta de "reduz inflamações")
+### Colunas
 
-### `ExitIntentPopup.tsx`
-- Título: `Espere! Não vá embora sem seu presente 🎁` → `Antes de sair, leve um guia gratuito 🎁` (remove "Espere!", urgência artificial).
-- Botão: `QUERO MEU GUIA GRÁTIS` → `BAIXAR O GUIA`.
+1. **Marca**
+   - Logo (sem centralização forçada no desktop).
+   - Disclaimer atual mantido: "Este produto não substitui orientação médica. Resultados individuais podem variar."
 
-## O que **não** muda
+2. **Institucional**
+   - Política de Privacidade — `#` (mantém href atual)
+   - Termos de Uso — `#` (mantém href atual)
 
-- Preços, nomes de produtos (LipoVitta Cápsulas, Shot Matinal, Protocolo Completo, Gummy VittaGlow, Shot Rush, etc.).
-- Todos os `href` de checkout, WhatsApp, e-mail, Instagram.
-- Scripts, pixels, componentes (CountdownTimer, UrgencyBar — este último nem está em uso na página).
-- Depoimentos visuais e textos dos prints.
-- Palavra "fórmula" onde descreve objetivamente o produto (`A fórmula principal da rotina LipoVitta`, `LipoVitta Cápsulas (fórmula principal)`) — o briefing pede para remover "fórmula secreta", não o termo técnico do suplemento.
-- Demais textos da página, que já estão em tom direto e pessoal.
+3. **Ajuda**
+   - Trocas e Devoluções — `#` (novo, placeholder href)
+   - Contato — `#contato` (âncora para `ContactSection` que já existe na página)
 
-## Checklist de tom aplicado
+4. **Pagamento**
+   - Linha discreta com selos de bandeiras em texto/SVG simples e monocromático: Visa, Mastercard, Elo, Amex, Pix, Boleto.
+   - Renderizados como pequenos badges com borda fina, sem cores chamativas.
+   - Título da coluna: "Formas de pagamento".
 
-- Sem "sistema", "transformação", "potencialize/potencializa/potencializam".
-- Sem "Espere!", sem promessas absolutas ("nunca mais", "para sempre").
-- Frases reescritas ficam ≤ 20 palavras.
-- Sem hipérbole adicionada; mantida a voz de primeira pessoa da Clara.
+### Informações legais
+
+Procurei no projeto e **não existe CNPJ, razão social ou endereço** cadastrados. Conforme a regra de não inventar, deixo apenas a linha de copyright atual: "© 2026 LipoVitta por Clara Caldas. Todos os direitos reservados." Se o usuário fornecer CNPJ/razão social depois, adicionamos.
+
+## Estilo
+
+- Fundo: mantém `#0F2847` (atual).
+- Texto: cinza claro (`text-white/70`) para corpo, `text-white` para títulos das colunas.
+- Tipografia: títulos `text-xs uppercase tracking-wider font-semibold`; links e corpo `text-xs leading-relaxed`; hover `text-[#7BA33E]`.
+- Sem emojis, sem ícones decorativos coloridos, sem elementos lúdicos.
+- Espaçamento generoso: `py-12 md:py-16`, `gap-8 md:gap-12` entre colunas.
+- Divisor: `border-t border-white/10` antes do copyright.
+- Contraste verificado para AA em fundo escuro.
+
+## Detalhes técnicos
+
+- Continua sendo componente funcional sem estado.
+- Badges de pagamento: pequenos `<span>` com borda `border-white/15`, padding `px-2 py-1`, `rounded-sm`, `text-[10px] uppercase tracking-wide text-white/60`. Sem dependências novas.
+- Logo mantém import `@/assets/logo-lipovitta.png`, altura reduzida para `h-9` e alinhamento `text-left` no md+.
+- Links existentes (`Política de Privacidade`, `Termos de Uso`) preservam o `href="#"` atual; novos links também usam `#` como placeholder até receberem URLs reais.
+
+## Fora de escopo
+
+- Não toco em `Index.tsx`, seções, scripts, pixels, checkout, preços ou produtos.
+- Não adiciono CNPJ, endereço ou razão social inventados.
+- Não troco a paleta nem o fundo do rodapé.
