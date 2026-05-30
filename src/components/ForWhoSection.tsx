@@ -1,4 +1,5 @@
-import { CheckCircle, User } from "lucide-react";
+import { CheckCircle } from "lucide-react";
+import claraFoto from "@/assets/clara-foto.jpg";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const items = [
