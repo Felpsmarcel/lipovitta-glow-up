@@ -29,18 +29,19 @@ const OfferSection = () => {
         </div>
 
         {/* 3 Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-5 max-w-6xl mx-auto items-stretch mb-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-5 max-w-6xl mx-auto items-start mb-10">
           {/* CARD 1 — Cápsulas */}
           <article
             id="card-capsulas"
-            className="lg:col-span-5 bg-white rounded-2xl border border-[#E8ECF1] p-6 sm:p-7 flex flex-col shadow-md"
+            className="lg:col-span-5 bg-white rounded-2xl border border-[#E8ECF1] p-7 sm:p-9 flex flex-col shadow-xl lg:-translate-y-2"
           >
             <span className="inline-block self-start text-xs font-semibold uppercase tracking-wide text-white bg-[#1B3A6B] px-3 py-1 rounded-full mb-4">
               Fórmula principal
             </span>
-            <div className="h-44 sm:h-52 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden mb-5">
+            <div className="h-56 sm:h-64 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden mb-5">
               <img src={capsulasImg} alt="LipoVitta Cápsulas" className="h-full w-full object-contain" loading="lazy" />
             </div>
+
             <h3 className="font-sans font-semibold text-2xl sm:text-3xl text-[#1B3A6B] mb-2">
               LipoVitta Cápsulas
             </h3>
@@ -77,8 +78,21 @@ const OfferSection = () => {
           {/* CARD 2 — Protocolo Completo */}
           <article
             id="card-protocolo"
-            className="lg:col-span-4 relative bg-white rounded-2xl border-2 border-[#7BA33E] p-6 sm:p-7 flex flex-col shadow-2xl lg:scale-[1.03]"
+            className="lg:col-span-4 relative bg-white rounded-2xl border-2 border-[#7BA33E] p-6 sm:p-7 flex flex-col shadow-2xl overflow-hidden"
           >
+            {/* Mancha orgânica decorativa */}
+            <svg
+              aria-hidden="true"
+              className="hidden md:block pointer-events-none absolute -bottom-16 -right-12 w-64 h-64"
+              viewBox="0 0 400 400"
+            >
+              <path
+                d="M327,275 C297,343 215,377 145,355 C75,333 30,265 42,196 C54,127 117,68 190,62 C263,56 340,108 357,176 C374,244 357,207 327,275 Z"
+                fill="#8FAE82"
+                opacity="0.08"
+              />
+            </svg>
+
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#7BA33E] text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap shadow">
               MAIS ESCOLHIDO
             </span>
@@ -153,14 +167,15 @@ const OfferSection = () => {
           {/* CARD 3 — Shot Matinal */}
           <article
             id="card-shot"
-            className="lg:col-span-3 bg-white rounded-2xl border border-[#E8ECF1] p-5 sm:p-6 flex flex-col shadow-sm"
+            className="lg:col-span-3 bg-white rounded-2xl border border-[#E8ECF1] p-5 sm:p-6 flex flex-col shadow-sm lg:translate-y-6"
           >
             <span className="inline-block self-start text-xs font-medium text-[#666] border border-[#D1D5DB] px-3 py-1 rounded-full mb-4">
               Complemento matinal
             </span>
-            <div className="h-36 sm:h-40 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden mb-4">
+            <div className="h-32 sm:h-36 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden mb-4">
               <img src={shotMatinalImg} alt="Shot Matinal LipoVitta" className="h-full w-full object-contain" loading="lazy" />
             </div>
+
             <h3 className="font-sans font-semibold text-xl sm:text-2xl text-[#1B3A6B] mb-2">
               Shot Matinal LipoVitta
             </h3>
