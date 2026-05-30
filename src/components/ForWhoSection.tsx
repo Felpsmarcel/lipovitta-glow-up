@@ -1,4 +1,5 @@
-import { CheckCircle, User } from "lucide-react";
+import { CheckCircle } from "lucide-react";
+import claraFoto from "@/assets/clara-foto.jpg";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const items = [
@@ -41,12 +42,12 @@ const ForWhoSection = () => {
       </div>
 
       <div className="flex-1 flex justify-center">
-        <div
-          className="w-72 h-80 md:w-80 md:h-96 rounded-2xl flex items-center justify-center"
-          style={{ backgroundColor: "rgba(255,255,255,0.08)", border: "2px solid rgba(123,163,62,0.4)" }}
-        >
-          <User size={80} color="rgba(255,255,255,0.25)" />
-        </div>
+        <img
+          src={claraFoto}
+          alt="Clara — LipoVitta"
+          className="w-72 h-80 md:w-80 md:h-96 rounded-2xl object-cover border-2 border-[rgba(123,163,62,0.4)] shadow-lg"
+        />
+
       </div>
     </div>
   </section>
