@@ -4,7 +4,7 @@ const steps = [
   { title: "Autocuidado", description: "Comece o dia cuidando de você: atividade física, descanso e equilíbrio ajudam a aliviar o lipedema." },
   { title: "Pós-café da manhã", description: "Tome 1 cápsula de LipoVitta após o café com bastante água para efeito anti-inflamatório e antioxidante." },
   { title: "Alívio progressivo", description: "Com uso contínuo, você percebe melhora no aspecto da celulite, inchaço e peso." },
-  { title: "Constância", description: "Faça do LipoVitta parte da sua rotina. Dieta equilibrada + atividade física potencializam os resultados." },
+  { title: "Constância", description: "Faça do LipoVitta parte da sua rotina. Dieta equilibrada e atividade física ajudam nos resultados percebidos." },
 ];
 
 const HowToUseSection = () => {
