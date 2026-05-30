@@ -6,9 +6,9 @@ const institutionalLinks = [
 ];
 
 const helpLinks = [
-  { label: "Trocas e Devoluções", href: "#" },
-  { label: "(71) 9 9615-0401", href: "https://wa.me/5571996150401", external: true },
-  { label: "lipovitta@clarinhacbr.com.br", href: "mailto:lipovitta@clarinhacbr.com.br" },
+  { key: "trocas", label: "Trocas e Devoluções", href: "#" },
+  { key: "telefone", label: <span className="whitespace-nowrap">(71) 9 9615-0401</span>, href: "https://wa.me/5571996150401", external: true },
+  { key: "email", label: "lipovitta@clarinhacbr.com.br", href: "mailto:lipovitta@clarinhacbr.com.br" },
 ];
 
 const paymentMethods = ["Visa", "Mastercard", "Elo", "Amex", "Pix", "Boleto"];
@@ -56,7 +56,7 @@ const Footer = () => (
           </h3>
           <ul className="space-y-2">
             {helpLinks.map((link) => (
-              <li key={link.label}>
+              <li key={link.key}>
                 <a
                   href={link.href}
                   {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
