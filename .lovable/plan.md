@@ -1,25 +1,30 @@
-## Problema
+# Adicionar SEOHead na home
 
-No card "Protocolo Completo LipoVitta" (OfferSection), dois selos aparecem sobrepostos e cortados:
-- "MAIS ESCOLHIDO" (verde, centralizado no topo)
-- "Economia de R$79,05" (azul, canto superior direito)
+## O que fazer
 
-Ambos usam `-top-3` e colidem no centro/direita. Além disso, o container do card tem `overflow-hidden` (para conter a mancha decorativa), o que corta as bordas arredondadas dos selos que ficam acima da borda.
+1. **Instalar dependência**
+   - `react-helmet-async`
 
-## Mudanças propostas
+2. **Registrar o provider** em `src/main.tsx`
+   - Envolver o `<App />` com `<HelmetProvider>`.
 
-Arquivo: `src/components/OfferSection.tsx` (somente o card do Protocolo, linhas 80–101)
+3. **Criar `src/components/SEOHead.tsx`**
+   - Componente igual ao enviado, com pequenos ajustes:
+     - `siteUrl = "https://lipovitta.site"` (domínio real do projeto, não `lipovita.club`).
+     - Remover a tag `<meta name="facebook-domain-verification" content="seu_codigo_aqui" />` (placeholder inválido) — pode ser adicionada depois quando houver o código real.
+     - Manter `ogImage` default usando a imagem que já está no `index.html` (`https://cdn.abacus.ai/images/4b9c67ed-695b-4262-881c-483c94f51e98.png`) em vez do placehold.co.
 
-1. Remover `overflow-hidden` do container do card e aplicar o clipping apenas no SVG decorativo, usando um wrapper interno `absolute inset-0 overflow-hidden rounded-2xl pointer-events-none` ao redor do `<svg>`. Assim os selos deixam de ser cortados.
+4. **Usar na home** (`src/pages/Index.tsx`)
+   - Renderizar `<SEOHead />` no topo do componente com:
+     - `title`: "Suplemento Natural para Lipedema, Celulite e Inchaço"
+     - `description`: mesma descrição que está hoje no `index.html`.
+     - `canonicalUrl`: `https://lipovitta.site/`
 
-2. Reposicionar os selos para não colidirem:
-   - "MAIS ESCOLHIDO" continua centralizado no topo (`-top-3 left-1/2 -translate-x-1/2`).
-   - "Economia de R$79,05" passa para logo abaixo, alinhado ao centro também (`top-6 left-1/2 -translate-x-1/2`) OU, alternativa mais limpa: unificar em uma única "fita" superior contendo os dois rótulos lado a lado dentro de um mesmo container centralizado (flex gap-2), com fundo dividido (verde + azul). 
-   
-   Proposta a implementar: container único centralizado no topo com dois pills lado a lado (`flex items-center gap-2`), evitando qualquer sobreposição em qualquer largura.
+5. **Evitar canonical duplicada** em `index.html`
+   - O `index.html` atual não tem `<link rel="canonical">`, então não há nada a remover. As demais tags de `index.html` permanecem como fallback para crawlers que não executam JS (LinkedIn, Slack, Facebook).
 
-3. Adicionar `mt-3` ao conteúdo interno se necessário, para compensar o espaço dos selos.
+## Fora de escopo
 
-## Não alterado
-
-Nenhuma outra seção, produto, preço, link, checkout, pixel, script ou copy. Apenas posicionamento visual dos dois selos do card central.
+- Não alterar pixels, scripts, conteúdo das seções, preços ou links.
+- Não criar SEOHead em outras páginas (apenas a home agora).
+- Não adicionar JSON-LD nesta etapa.
