@@ -1,7 +1,7 @@
 import { MessageCircle, Mail } from "lucide-react";
 
 const ContactSection = () => (
-  <section className="py-16 sm:py-20 bg-[#1B3A6B]">
+  <section className="pt-10 md:pt-14 pb-16 md:pb-24 bg-[#1B3A6B]">
     <div className="container mx-auto px-4 text-center">
       <h2 className="text-2xl sm:text-3xl font-extrabold text-[#7BA33E] mb-8">
         Ficou com dúvida?
