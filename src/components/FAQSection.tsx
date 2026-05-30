@@ -13,15 +13,15 @@ const faqs = [
   },
   {
     q: "Em quanto tempo terei resultados?",
-    a: "Varia de organismo para organismo. Algumas clientes relatam sensação de leveza nas primeiras semanas. O uso contínuo, aliado a hábitos saudáveis, potencializa os efeitos percebidos.",
+    a: "Varia de organismo para organismo. Algumas clientes relatam sensação de leveza nas primeiras semanas. O uso contínuo, junto com hábitos saudáveis, ajuda nos efeitos percebidos.",
   },
   {
     q: "Como devo usar o LipoVitta?",
-    a: "1 cápsula por dia, após o café da manhã, com um copo cheio de água. Uso diário potencializa os efeitos.",
+    a: "1 cápsula por dia, após o café da manhã, com um copo cheio de água. Use todos os dias para manter a constância.",
   },
   {
     q: "Como usar o Shot Matinal?",
-    a: "1 dose (5g) diluída em água, logo ao acordar em jejum. Uso diário fortalece imunidade e reduz inflamações.",
+    a: "1 dose (5g) diluída em água, logo ao acordar em jejum. Uso diário ajuda no apoio à imunidade e ao bem-estar.",
   },
   {
     q: "Tem contraindicação?",
