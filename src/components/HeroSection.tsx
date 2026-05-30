@@ -1,3 +1,5 @@
+import heroVideo from "@/assets/hero-video.mp4";
+
 const HeroSection = () => {
 
   return (
@@ -73,8 +75,7 @@ const HeroSection = () => {
               }}
             >
               <video
-                src="https://assets.cdn.filesafe.space/GlpDUog4tP50uH0NOPjz/media/69c95b313204cc15746c0dfb.mp4"
-                poster="https://assets.cdn.filesafe.space/GlpDUog4tP50uH0NOPjz/media/69c95b313204cc15746c0dfb.mp4#t=0.5"
+                src={heroVideo}
                 autoPlay
                 muted
                 loop
