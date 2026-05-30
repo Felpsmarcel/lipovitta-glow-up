@@ -6,9 +6,9 @@ const institutionalLinks = [
 ];
 
 const helpLinks = [
-  { label: "Trocas e Devoluções", href: "#" },
-  { label: <span className="whitespace-nowrap">(71) 9 9615-0401</span>, href: "https://wa.me/5571996150401", external: true },
-  { label: "lipovitta@clarinhacbr.com.br", href: "mailto:lipovitta@clarinhacbr.com.br" },
+  { key: "trocas", label: "Trocas e Devoluções", href: "#" },
+  { key: "telefone", label: <span className="whitespace-nowrap">(71) 9 9615-0401</span>, href: "https://wa.me/5571996150401", external: true },
+  { key: "email", label: "lipovitta@clarinhacbr.com.br", href: "mailto:lipovitta@clarinhacbr.com.br" },
 ];
 
 const paymentMethods = ["Visa", "Mastercard", "Elo", "Amex", "Pix", "Boleto"];
