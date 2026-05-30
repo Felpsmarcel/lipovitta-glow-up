@@ -14,7 +14,7 @@ const HowToUseSection = () => {
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-12">
         <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-4" style={{ color: "#1B3A6B" }}>
-          Sua rotina de transformação em 4 passos
+          Sua rotina em 4 passos
         </h2>
         <div className="w-20 h-[3px] mx-auto rounded-full" style={{ background: "linear-gradient(90deg, #2E5EA6, #7BA33E)" }} />
       </div>
