@@ -56,7 +56,7 @@ const Footer = () => (
           </h3>
           <ul className="space-y-2">
             {helpLinks.map((link) => (
-              <li key={link.label}>
+              <li key={link.key}>
                 <a
                   href={link.href}
                   {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
