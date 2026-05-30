@@ -16,7 +16,7 @@ const BenefitsSection = () => {
   <section ref={ref} className="py-16 md:py-24 px-4" style={{ background: "linear-gradient(180deg, #F5F7FA 0%, #FFFFFF 100%)" }}>
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-12">
-        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4" style={{ color: "#1B3A6B", fontFamily: "'Playfair Display', serif" }}>
+        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-4" style={{ color: "#1B3A6B" }}>
           6 benefícios que você sente no corpo
         </h2>
         <div className="w-20 h-[3px] mx-auto rounded-full" style={{ background: "linear-gradient(90deg, #2E5EA6, #7BA33E)" }} />
@@ -35,8 +35,8 @@ const BenefitsSection = () => {
             >
               <Icon size={28} color="#2E5EA6" />
             </div>
-            <h3 className="text-lg font-bold mb-2" style={{ color: "#1B3A6B" }}>{title}</h3>
-            <p className="text-sm leading-relaxed" style={{ color: "#555" }}>{description}</p>
+            <h3 className="font-sans text-lg font-semibold mb-2" style={{ color: "#1B3A6B" }}>{title}</h3>
+            <p className="font-sans text-base font-normal leading-relaxed" style={{ color: "#555" }}>{description}</p>
             <div
               className="h-[3px] w-0 group-hover:w-full rounded-full mt-4 transition-all duration-300"
               style={{ background: "#7BA33E" }}

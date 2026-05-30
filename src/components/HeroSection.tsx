@@ -28,15 +28,15 @@ const HeroSection = () => {
               Por Clara Caldas
             </span>
 
-            <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-[3.25rem] font-bold leading-snug md:leading-tight text-white mb-4 md:mb-6">
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-medium leading-snug md:leading-tight text-white mb-4 md:mb-6">
               Lipedema não tem cura. Mas tem controle — e eu aprendi isso na pele.
             </h1>
 
-            <p className="font-sans text-base sm:text-lg text-white/90 mb-4 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            <p className="font-sans font-normal text-base sm:text-lg text-white/90 mb-4 max-w-xl mx-auto lg:mx-0 leading-relaxed">
               Eu sou Clara Caldas e convivo com o lipedema. Ele não tem cura, mas tem controle. Criei o sistema LipoVitta porque sei na pele o que é acordar inchada, com as pernas pesadas e sem energia. Hoje minha rotina mudou — e a sua também pode mudar.
             </p>
 
-            <p className="font-sans text-base text-white/80 italic mb-8 max-w-xl mx-auto lg:mx-0">
+            <p className="font-display italic text-lg sm:text-xl mb-8 max-w-xl mx-auto lg:mx-0" style={{ color: "#A8D45A" }}>
               "Lipedema não tem cura, mas tem controle."
             </p>
 

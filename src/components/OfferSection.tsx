@@ -16,13 +16,13 @@ const OfferSection = () => {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-10 max-w-2xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#1B3A6B] mb-3">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-[#1B3A6B] mb-3">
             Comece sua rotina LipoVitta
           </h2>
-          <p className="text-[#555] text-base sm:text-lg">
+          <p className="font-sans font-normal text-[#555] text-base sm:text-lg">
             Escolha como quer começar. Você pode adicionar complementos depois.
           </p>
-          <p className="text-sm text-[#888] mt-2">
+          <p className="font-sans font-normal text-sm text-[#888] mt-2">
             Frete grátis em compras a partir de R$323,00.
           </p>
           <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-gradient-to-r from-[#2E5EA6] to-[#7BA33E]" />
@@ -41,10 +41,10 @@ const OfferSection = () => {
             <div className="h-44 sm:h-52 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden mb-5">
               <img src={capsulasImg} alt="LipoVitta Cápsulas" className="h-full w-full object-contain" loading="lazy" />
             </div>
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-[#1B3A6B] mb-2">
+            <h3 className="font-sans font-semibold text-2xl sm:text-3xl text-[#1B3A6B] mb-2">
               LipoVitta Cápsulas
             </h3>
-            <p className="text-[#555] text-base mb-4">
+            <p className="font-sans font-normal text-[#555] text-base mb-4">
               A fórmula principal da rotina LipoVitta. Apoia o cuidado diário com circulação, sensação de pernas pesadas e bem-estar.
             </p>
             <ul className="space-y-2 mb-5">
@@ -89,13 +89,13 @@ const OfferSection = () => {
             <div className="h-44 sm:h-52 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden mb-5 mt-2">
               <img src={comboImg} alt="Cápsulas LipoVitta com Shot Matinal" className="h-full w-full object-contain" loading="lazy" />
             </div>
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-[#1B3A6B] mb-1">
+            <h3 className="font-sans font-semibold text-2xl sm:text-3xl text-[#1B3A6B] mb-1">
               Protocolo Completo LipoVitta
             </h3>
-            <p className="text-[#2E5EA6] font-semibold text-sm sm:text-base mb-3">
+            <p className="font-sans font-medium text-[#2E5EA6] text-sm sm:text-base mb-3">
               Cápsula + Shot Matinal. A rotina completa em um único pedido.
             </p>
-            <p className="text-[#555] text-sm sm:text-base mb-4">
+            <p className="font-sans font-normal text-[#555] text-sm sm:text-base mb-4">
               A combinação pensada para quem quer começar com a rotina completa: a Cápsula como base diária e o Shot Matinal apoiando o início da manhã.
             </p>
             <ul className="space-y-2 mb-5">
@@ -161,10 +161,10 @@ const OfferSection = () => {
             <div className="h-36 sm:h-40 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden mb-4">
               <img src={shotMatinalImg} alt="Shot Matinal LipoVitta" className="h-full w-full object-contain" loading="lazy" />
             </div>
-            <h3 className="text-xl sm:text-2xl font-bold text-[#1B3A6B] mb-2">
+            <h3 className="font-sans font-semibold text-xl sm:text-2xl text-[#1B3A6B] mb-2">
               Shot Matinal LipoVitta
             </h3>
-            <p className="text-[#555] text-sm mb-4">
+            <p className="font-sans font-normal text-[#555] text-sm mb-4">
               Apoia o início da manhã com cuidado para inchaço matinal, intestino e disposição. Pensado para combinar com a Cápsula LipoVitta.
             </p>
             <ul className="space-y-2 mb-5">
