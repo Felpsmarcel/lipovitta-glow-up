@@ -1,4 +1,10 @@
 import { useState, useEffect, useRef } from "react";
+import desinchar from "@/assets/testimonials/desinchar.jpg";
+import pesoPernas from "@/assets/testimonials/peso-pernas.jpg";
+import inflamacao from "@/assets/testimonials/inflamacao.jpg";
+import corpoPedindoAjuda from "@/assets/testimonials/corpo-pedindo-ajuda.jpg";
+import peleMelhora from "@/assets/testimonials/pele-melhora.jpg";
+import naoEraEsforco from "@/assets/testimonials/nao-era-esforco.jpg";
 
 function useAnimatedCounter(target: number, duration = 2000) {
   const [count, setCount] = useState(0);
@@ -32,13 +38,17 @@ function useAnimatedCounter(target: number, duration = 2000) {
   return { count, ref };
 }
 
+const testimonials = [
+  { src: desinchar, alt: "Você começa a desinchar de verdade — depoimento visual LipoVitta" },
+  { src: pesoPernas, alt: "A sensação de peso nas pernas diminui — depoimento visual LipoVitta" },
+  { src: inflamacao, alt: "A inflamação do corpo começa a reduzir — depoimento visual LipoVitta" },
+  { src: corpoPedindoAjuda, alt: "Não era só inchaço, era seu corpo pedindo ajuda — depoimento LipoVitta" },
+  { src: peleMelhora, alt: "A aparência da pele melhora — depoimento visual LipoVitta" },
+  { src: naoEraEsforco, alt: "Não era falta de esforço — depoimento visual LipoVitta" },
+];
+
 export default function TestimonialsSection() {
   const { count, ref: counterRef } = useAnimatedCounter(2000);
-
-  // Placeholder grid: ajuste entre 3 e 9 slots conforme necessário.
-  // Quando adicionar os prints reais, substitua o array abaixo pelas imagens
-  // e remova o bloco "Em breve: depoimentos reais das nossas clientes.".
-  const placeholderSlots = Array.from({ length: 6 });
 
   return (
     <section className="bg-white py-16 md:py-24 px-4">
