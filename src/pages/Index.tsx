@@ -19,10 +19,10 @@ import ExitIntentPopup from "@/components/ExitIntentPopup";
 const Index = () => (
   <div className="min-h-screen bg-background">
     <SEOHead
-      title="Tratamento Natural para Lipedema"
-      description="LipoVitta: Suplemento natural clinicamente testado para reduzir sintomas do lipedema. Alívio da dor, redução do inchaço e melhora da circulação. Fórmula exclusiva com ingredientes naturais."
-      keywords="lipedema tratamento, suplemento para lipedema, como tratar lipedema, lipedema tem cura, LipoVitta"
-      ogType="website"
+      title="Comprar LipoVitta - Oferta Exclusiva"
+      description="Adquira LipoVitta com desconto exclusivo. Frete grátis, garantia de 30 dias e resultados comprovados. Aproveite a promoção limitada!"
+      keywords="comprar LipoVitta, LipoVitta preço, LipoVitta onde comprar"
+      ogType="product"
       canonicalUrl="https://lipovitta.site/"
     />
     <Navbar />
