@@ -4,7 +4,7 @@ const HeroSection = () => {
 
   return (
     <section
-      className="relative overflow-hidden pt-16 pb-16 md:pt-16 md:pb-24"
+      className="relative overflow-hidden pt-20 md:pt-28 pb-10 md:pb-16"
       style={{
         background: "hsl(214 59% 26%)",
       }}
