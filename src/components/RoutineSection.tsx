@@ -22,7 +22,7 @@ const RoutineSection = () => {
     <section
       id="rotina"
       ref={sectionRef}
-      className="py-12 md:py-20 px-4"
+      className="pt-14 md:pt-20 pb-8 md:pb-12 px-4"
       style={{ background: "#F5F7FA" }}
     >
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
