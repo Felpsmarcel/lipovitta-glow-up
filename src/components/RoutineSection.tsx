@@ -38,7 +38,7 @@ const RoutineSection = () => {
           >
             {!iframeError ? (
               <iframe
-                src="https://www.instagram.com/p/DWRSgEfEYW8/embed"
+                src="https://www.instagram.com/p/DQcTXQrkStl/embed"
                 width="100%"
                 height="100%"
                 frameBorder="0"
@@ -50,7 +50,7 @@ const RoutineSection = () => {
               />
             ) : (
               <a
-                href="https://www.instagram.com/p/DWRSgEfEYW8/"
+                href="https://www.instagram.com/p/DQcTXQrkStl/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex flex-col items-center justify-center w-full h-full gap-4"
