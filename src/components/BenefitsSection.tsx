@@ -13,7 +13,7 @@ const benefits = [
 const BenefitsSection = () => {
   const ref = useScrollAnimation();
   return (
-  <section ref={ref} className="py-16 md:py-24 px-4" style={{ background: "linear-gradient(180deg, #F5F7FA 0%, #FFFFFF 100%)" }}>
+  <section ref={ref} className="pt-12 md:pt-16 pb-16 md:pb-24 px-4" style={{ background: "linear-gradient(180deg, #F5F7FA 0%, #FFFFFF 100%)" }}>
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-12">
         <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-4" style={{ color: "#1B3A6B" }}>

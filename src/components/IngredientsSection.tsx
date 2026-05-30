@@ -74,7 +74,7 @@ const IngredientCard = ({ item, alwaysOpen }: { item: typeof ingredients[0]; alw
 const IngredientsSection = () => {
   const ref = useScrollAnimation();
   return (
-  <section ref={ref} className="relative py-16 md:py-24 px-4 overflow-hidden" style={{ background: "linear-gradient(180deg, #F5F7FA 0%, #FFFFFF 100%)" }}>
+  <section ref={ref} className="relative pt-16 md:pt-24 pb-20 md:pb-28 px-4 overflow-hidden" style={{ background: "linear-gradient(180deg, #F5F7FA 0%, #FFFFFF 100%)" }}>
     {/* Mancha orgânica decorativa */}
     <svg
       aria-hidden="true"

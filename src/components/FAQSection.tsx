@@ -36,7 +36,7 @@ const faqs = [
 const FAQSection = () => {
   const ref = useScrollAnimation();
   return (
-  <section ref={ref} className="py-16 sm:py-20" style={{ background: "#F5F7FA" }}>
+  <section ref={ref} className="pt-14 md:pt-20 pb-14 md:pb-20" style={{ background: "#F5F7FA" }}>
     <div className="container mx-auto px-4 max-w-3xl">
       <div className="text-center mb-10">
         <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-[#1B3A6B] mb-3">

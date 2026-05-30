@@ -10,7 +10,7 @@ const steps = [
 const HowToUseSection = () => {
   const ref = useScrollAnimation();
   return (
-  <section ref={ref} className="py-16 md:py-24 px-4 bg-white">
+  <section ref={ref} className="pt-10 md:pt-14 pb-20 md:pb-28 px-4 bg-white">
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-12">
         <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-4" style={{ color: "#1B3A6B" }}>

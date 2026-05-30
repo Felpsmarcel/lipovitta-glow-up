@@ -13,7 +13,7 @@ const items = [
 const ForWhoSection = () => {
   const ref = useScrollAnimation();
   return (
-  <section ref={ref} className="py-16 md:py-24 px-4" style={{ backgroundColor: "#1B3A6B" }}>
+  <section ref={ref} className="pt-20 md:pt-28 pb-12 md:pb-16 px-4" style={{ backgroundColor: "#1B3A6B" }}>
     <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-12">
       <div className="flex-1 text-center lg:text-left">
         <h2

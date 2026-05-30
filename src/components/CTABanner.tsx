@@ -1,5 +1,5 @@
 const CTABanner = () => (
-  <div className="py-10 px-4 text-center" style={{ background: "linear-gradient(180deg, #FFFFFF 0%, #F5F7FA 100%)" }}>
+  <div className="py-8 md:py-12 px-4 text-center" style={{ background: "linear-gradient(180deg, #FFFFFF 0%, #F5F7FA 100%)" }}>
     <a
       href="#precos"
       onClick={(e) => {
