@@ -1,7 +1,9 @@
 import { Shield, Lock, Truck, CreditCard, Check } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import capsulasImg from "@/assets/capsulas-lipovitta.png";
-import shotMatinalImg from "@/assets/shot-matinal.jpg";
+import shotMatinalAbacaxiImg from "@/assets/shot-matinal-abacaxi.jpg";
+import shotMatinalLimaoImg from "@/assets/shot-matinal-limao.jpg";
+import shotMatinalTangerinaImg from "@/assets/shot-matinal-tangerina.jpg";
 import comboImg from "@/assets/combo-lipovitta.jpg";
 
 const LINK_CAPSULAS = "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/lipovitta/";
@@ -177,9 +179,12 @@ const OfferSection = () => {
             <span className="inline-block self-start text-xs font-medium text-[#666] border border-[#D1D5DB] px-3 py-1 rounded-full mb-4">
               Complemento matinal
             </span>
-            <div className="h-32 sm:h-36 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden mb-4">
-              <img src={shotMatinalImg} alt="Shot Matinal LipoVitta" className="h-full w-full object-contain" loading="lazy" />
+            <div className="h-32 sm:h-36 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center gap-2 px-2 overflow-hidden mb-2">
+              <img src={shotMatinalAbacaxiImg} alt="Shot Matinal LipoVitta sabor Abacaxi" className="h-full w-auto object-contain" loading="lazy" />
+              <img src={shotMatinalLimaoImg} alt="Shot Matinal LipoVitta sabor Limão" className="h-full w-auto object-contain" loading="lazy" />
+              <img src={shotMatinalTangerinaImg} alt="Shot Matinal LipoVitta sabor Tangerina" className="h-full w-auto object-contain" loading="lazy" />
             </div>
+            <p className="text-xs text-center text-[#666] mb-4">Sabores: Abacaxi, Limão e Tangerina</p>
 
             <h3 className="font-sans font-semibold text-xl sm:text-2xl text-[#1B3A6B] mb-2">
               Shot Matinal LipoVitta
