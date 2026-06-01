@@ -71,16 +71,15 @@ const ProductsSection = () => {
               </span>
               <p className="text-xs text-[#555]">ou 3x R$96,33 sem juros</p>
             </div>
-            <a
-              href="https://clarinhacbr.lojavirtualnuvem.com.br/produtos/gummy-skin-glow/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-auto block text-center border-2 border-[#2E5EA6] text-[#2E5EA6] hover:bg-[#2E5EA6] hover:text-white font-semibold py-2.5 rounded-full transition-colors text-sm"
+            <button
+              type="button"
+              disabled
+              className="mt-auto block w-full text-center border-2 border-[#CCC] bg-[#EEE] text-[#888] font-semibold py-2.5 rounded-full text-sm cursor-not-allowed"
             >
-              Adicionar à minha rotina
-            </a>
+              Esgotado
+            </button>
             <p className="text-[11px] text-[#777] text-center mt-2">
-              Receba junto com sua Cápsula.
+              Em breve disponível novamente.
             </p>
           </article>
 
