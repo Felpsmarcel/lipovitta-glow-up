@@ -1,1 +1,1 @@
-Em `src/components/IngredientsSection.tsx` (linha 12), remover a dose `"50mg"` do item Dimpless (deixar `dose: ""`), para que apareça apenas `Dimpless® PATENTEADO`.
+Em `src/components/OfferSection.tsx`, adicionar uma tag/badge "10% OFF comprando hoje" visível próximo ao preço (acima do "R$357,00"). Estilo: pill verde (mesma paleta do badge "PATENTEADO"), texto branco em maiúsculas, com pequeno ícone de tag/relógio (lucide-react) para reforçar urgência. Apenas mudança visual — sem alterar o valor exibido.
