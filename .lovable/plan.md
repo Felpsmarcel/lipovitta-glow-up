@@ -1,35 +1,57 @@
-## Faixas de status nos complementos
+## Conectar o site ao catálogo de loja.lipovita.club
 
-Acho a abordagem boa — comunica honestidade (não esconde indisponibilidade) e ainda cria expectativa no Shot Rush ("novo estoque chegando"), o que mantém o produto vivo na página em vez de simplesmente sumir. Sugiro só dois cuidados:
+A loja roda em **Nuvemshop (Tiendanube)**. Não há um conector nativo do Lovable para Nuvemshop, então a integração é feita via API oficial usando credenciais que você gera no painel da Nuvemshop e uma edge function que faz a ponte (a chave nunca é exposta no navegador).
 
-- No **Gummy (Esgotado)**: desabilitar o botão "Adicionar à minha rotina" e trocar o texto para "Esgotado", com a imagem levemente esmaecida, para evitar frustração de quem clica e cai numa página sem estoque.
-- No **Shot Rush (Novo estoque)**: manter o botão ativo, mas trocar para "Avise-me quando chegar" ou manter o link atual — me diga qual prefere.
+### O que você precisará fornecer
 
-### Mudanças em `src/components/ProductsSection.tsx`
+Você vai criar um App "Privado/Próprio" no Partners Portal da Nuvemshop e me enviar dois valores (vou pedi-los pela tela segura de secrets, não cole em chat):
 
-1. **Card Gummy VittaGlow Colágeno**
-   - Adicionar faixa diagonal/canto vermelha "ESGOTADO" sobre a área da imagem.
-   - Aplicar `opacity-60 grayscale` na imagem.
-   - Substituir o link por um botão desabilitado cinza com texto "Esgotado".
+- `NUVEMSHOP_STORE_ID` — ID numérico da sua loja
+- `NUVEMSHOP_ACCESS_TOKEN` — Access Token gerado ao instalar seu app na loja
 
-2. **Card Shot Rush Pré-Treino**
-   - Adicionar faixa no canto da imagem em tom âmbar/azul: "NOVO ESTOQUE EM BREVE".
-   - Manter botão como está (ou trocar texto — aguardando sua decisão).
+Passos resumidos para obter:
+1. Acesse `https://partners.nuvemshop.com.br/` e crie um app.
+2. Em "Escopos", marque ao menos `read_products`.
+3. Instale o app na sua loja `loja.lipovita.club` — isso gera o `store_id` e o `access_token`.
 
-### Estilo das faixas
-
-Faixa posicionada no canto superior esquerdo da área da imagem, em formato pílula com sombra leve:
+### Como ficará o fluxo
 
 ```text
-┌─────────────────────────┐
-│ [ESGOTADO]              │
-│                         │
-│      [imagem]           │
-│                         │
-└─────────────────────────┘
+Browser (site)  →  Edge Function `nuvemshop-products`  →  API Nuvemshop
+                          ↑                                     ↓
+                  cache curto (60s)                       JSON produtos
 ```
 
-- Esgotado: fundo `#C0392B`, texto branco, uppercase, bold.
-- Novo estoque: fundo `#E8A317` (âmbar), texto branco, uppercase, bold.
+### O que vou construir
 
-Confirma se mantenho o botão do Shot Rush clicável ou troco para "Avise-me quando chegar"?
+1. **Edge function `nuvemshop-products`**
+   - Lê `NUVEMSHOP_STORE_ID` e `NUVEMSHOP_ACCESS_TOKEN` do ambiente.
+   - Chama `https://api.tiendanube.com/v1/{store_id}/products?published=true&per_page=50`.
+   - Normaliza para um shape enxuto: `{ id, name, handle, price, compare_at_price, currency, stock, image, url }`.
+   - Suporta filtro opcional `?handle=shot-rush-pre-treino` para buscar 1 produto específico.
+   - CORS habilitado, cache de 60s.
+
+2. **Hook `useNuvemshopProducts`** em `src/hooks/`
+   - Usa React Query para chamar a edge function via `supabase.functions.invoke`.
+   - Estados: `loading`, `error`, `data`.
+
+3. **Atualizar `src/components/ProductsSection.tsx`**
+   - Substituir as imagens/preços/links hardcoded pelos dados vindos da API.
+   - Mapear os 2 produtos atuais (Gummy VittaGlow e Shot Rush) pelo `handle` no Nuvemshop.
+   - Lógica de badge automática:
+     - `stock === 0` → faixa vermelha **"Esgotado"** + botão desabilitado.
+     - `stock > 0` → botão ativo apontando para a URL real do produto em `loja.lipovita.club`.
+   - Fallback: se a API falhar, mostra os dados estáticos atuais (graceful degradation).
+
+4. **(Opcional, sugerido) Seção "Todos os produtos"**
+   - Posso adicionar uma grade dinâmica listando todos os produtos publicados da loja, para não ficar limitado aos 2 cards atuais. Me avise se quer isso já nesta entrega ou em uma próxima.
+
+### Observações
+
+- O checkout continua **inteiramente em loja.lipovita.club** — o site só exibe o catálogo e leva o usuário até a página do produto. Sem cart próprio, sem dados de pagamento passando aqui.
+- A faixa "Novo estoque em breve" do Shot Rush deixa de ser manual — vira automática conforme o estoque real.
+- A chave da Nuvemshop fica armazenada como secret no backend, nunca no código do site.
+
+### Próximo passo
+
+Quando aprovar o plano, vou abrir o formulário seguro para você colar `NUVEMSHOP_STORE_ID` e `NUVEMSHOP_ACCESS_TOKEN`, e em seguida implemento tudo.
