@@ -64,7 +64,12 @@ const OfferSection = () => {
                   <Tag className="w-3.5 h-3.5" />
                   10% OFF comprando hoje
                 </span>
-                <p className="text-[#1B3A6B] font-extrabold text-3xl sm:text-4xl leading-none">R$357,00</p>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <p className="text-[#1B3A6B] font-extrabold text-3xl sm:text-4xl leading-none">R$357,00</p>
+                  <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
+                    Economize 10%
+                  </span>
+                </div>
                 <p className="text-sm text-[#666] mt-1">ou 3x de R$119,00 sem juros</p>
               </div>
               <a
