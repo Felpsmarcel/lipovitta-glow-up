@@ -34,11 +34,14 @@ const ProductsSection = () => {
             <span className="self-start text-[11px] font-semibold uppercase tracking-wide text-[#2E5EA6] border border-[#2E5EA6]/30 px-3 py-1 rounded-full mb-3">
               Combina com a Cápsula
             </span>
-            <div className="rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] h-44 flex items-center justify-center mb-4 overflow-hidden">
+            <div className="relative rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] h-44 flex items-center justify-center mb-4 overflow-hidden">
+              <span className="absolute top-2 left-2 z-10 bg-[#C0392B] text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full shadow-md">
+                Esgotado
+              </span>
               <img
                 src={gummyImg}
                 alt="Pote do Gummy VittaGlow Colágeno"
-                className="h-full w-auto object-contain"
+                className="h-full w-auto object-contain opacity-60 grayscale"
                 loading="lazy"
               />
             </div>
@@ -68,16 +71,15 @@ const ProductsSection = () => {
               </span>
               <p className="text-xs text-[#555]">ou 3x R$96,33 sem juros</p>
             </div>
-            <a
-              href="https://clarinhacbr.lojavirtualnuvem.com.br/produtos/gummy-skin-glow/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-auto block text-center border-2 border-[#2E5EA6] text-[#2E5EA6] hover:bg-[#2E5EA6] hover:text-white font-semibold py-2.5 rounded-full transition-colors text-sm"
+            <button
+              type="button"
+              disabled
+              className="mt-auto block w-full text-center border-2 border-[#CCC] bg-[#EEE] text-[#888] font-semibold py-2.5 rounded-full text-sm cursor-not-allowed"
             >
-              Adicionar à minha rotina
-            </a>
+              Esgotado
+            </button>
             <p className="text-[11px] text-[#777] text-center mt-2">
-              Receba junto com sua Cápsula.
+              Em breve disponível novamente.
             </p>
           </article>
 
@@ -86,7 +88,10 @@ const ProductsSection = () => {
             <span className="self-start text-[11px] font-semibold uppercase tracking-wide text-[#2E5EA6] border border-[#2E5EA6]/30 px-3 py-1 rounded-full mb-3">
               Combina com a Cápsula
             </span>
-            <div className="rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] h-44 flex items-center justify-center mb-4 overflow-hidden">
+            <div className="relative rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] h-44 flex items-center justify-center mb-4 overflow-hidden">
+              <span className="absolute top-2 left-2 z-10 bg-[#E8A317] text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full shadow-md">
+                Novo estoque em breve
+              </span>
               <img
                 src={shotRushImg}
                 alt="Frasco do Shot Rush Pré-Treino"
