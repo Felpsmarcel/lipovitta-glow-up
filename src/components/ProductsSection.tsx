@@ -34,11 +34,14 @@ const ProductsSection = () => {
             <span className="self-start text-[11px] font-semibold uppercase tracking-wide text-[#2E5EA6] border border-[#2E5EA6]/30 px-3 py-1 rounded-full mb-3">
               Combina com a Cápsula
             </span>
-            <div className="rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] h-44 flex items-center justify-center mb-4 overflow-hidden">
+            <div className="relative rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] h-44 flex items-center justify-center mb-4 overflow-hidden">
+              <span className="absolute top-2 left-2 z-10 bg-[#C0392B] text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full shadow-md">
+                Esgotado
+              </span>
               <img
                 src={gummyImg}
                 alt="Pote do Gummy VittaGlow Colágeno"
-                className="h-full w-auto object-contain"
+                className="h-full w-auto object-contain opacity-60 grayscale"
                 loading="lazy"
               />
             </div>
