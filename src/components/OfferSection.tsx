@@ -60,6 +60,10 @@ const OfferSection = () => {
             </ul>
             <div className="mt-auto">
               <div className="mb-4">
+                <span className="inline-flex items-center gap-1.5 bg-[#7BA33E] text-white text-[11px] sm:text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2 shadow-sm">
+                  <Tag className="w-3.5 h-3.5" />
+                  10% OFF comprando hoje
+                </span>
                 <p className="text-[#1B3A6B] font-extrabold text-3xl sm:text-4xl leading-none">R$357,00</p>
                 <p className="text-sm text-[#666] mt-1">ou 3x de R$119,00 sem juros</p>
               </div>
