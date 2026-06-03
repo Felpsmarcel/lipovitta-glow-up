@@ -13,27 +13,27 @@ const HowToUseSection = () => {
   <section ref={ref} className="pt-10 md:pt-14 pb-20 md:pb-28 px-4 bg-white">
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-12">
-        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-4" style={{ color: "#1B3A6B" }}>
+        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-4" style={{ color: "#4667B4" }}>
           Sua rotina em 4 passos
         </h2>
-        <div className="w-20 h-[3px] mx-auto rounded-full" style={{ background: "linear-gradient(90deg, #2E5EA6, #7BA33E)" }} />
+        <div className="w-20 h-[3px] mx-auto rounded-full" style={{ background: "linear-gradient(90deg, #4667B4, #9BAE52)" }} />
       </div>
 
       <div className="relative">
         {/* Vertical connector line — desktop only */}
-        <div className="hidden md:block absolute left-6 top-4 bottom-4 w-[2px]" style={{ backgroundColor: "#2E5EA6" }} />
+        <div className="hidden md:block absolute left-6 top-4 bottom-4 w-[2px]" style={{ backgroundColor: "#4667B4" }} />
 
         <div className="space-y-8 md:space-y-10">
           {steps.map((step, i) => (
             <div key={step.title} className="flex items-start gap-5 md:gap-8">
               <div
                 className="relative z-10 shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md"
-                style={{ backgroundColor: "#7BA33E" }}
+                style={{ backgroundColor: "#9BAE52" }}
               >
                 {i + 1}
               </div>
               <div className="bg-white rounded-xl p-5 border flex-1 transition-shadow hover:shadow-md" style={{ borderColor: "#E8ECF1" }}>
-                <h3 className="font-sans font-semibold text-lg mb-1" style={{ color: "#1B3A6B" }}>
+                <h3 className="font-sans font-semibold text-lg mb-1" style={{ color: "#4667B4" }}>
                   {step.title}
                 </h3>
                 <p className="font-sans font-normal text-base leading-relaxed" style={{ color: "#555" }}>{step.description}</p>

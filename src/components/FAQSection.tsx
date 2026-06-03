@@ -48,10 +48,10 @@ const FAQSection = () => {
   <section ref={ref} className="pt-14 md:pt-20 pb-14 md:pb-20" style={{ background: "#F5F7FA" }}>
     <div className="container mx-auto px-4 max-w-3xl">
       <div className="text-center mb-10">
-        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-[#1B3A6B] mb-3">
+        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-[#4667B4] mb-3">
           Perguntas Frequentes
         </h2>
-        <div className="mx-auto h-1 w-20 rounded-full bg-gradient-to-r from-[#2E5EA6] to-[#7BA33E]" />
+        <div className="mx-auto h-1 w-20 rounded-full bg-gradient-to-r from-[#4667B4] to-[#9BAE52]" />
       </div>
 
       <Accordion type="single" collapsible className="space-y-3">
@@ -61,7 +61,7 @@ const FAQSection = () => {
             value={`faq-${i}`}
             className="bg-white rounded-xl border border-[#E8ECF1] px-5 overflow-hidden"
           >
-            <AccordionTrigger className="font-sans font-semibold text-base text-left text-[#1B3A6B] hover:no-underline [&>svg]:text-[#2E5EA6]">
+            <AccordionTrigger className="font-sans font-semibold text-base text-left text-[#4667B4] hover:no-underline [&>svg]:text-[#4667B4]">
               {faq.q}
             </AccordionTrigger>
             <AccordionContent className="font-sans font-normal text-base text-[#555] leading-relaxed">

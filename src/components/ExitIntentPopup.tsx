@@ -23,7 +23,7 @@ const ExitIntentPopup = () => {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" style={{ backgroundColor: "rgba(27, 58, 107, 0.8)" }}>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" style={{ backgroundColor: "rgba(70, 103, 180, 0.8)" }}>
       <div className="bg-white rounded-2xl max-w-md w-full p-8 relative shadow-2xl animate-scale-in">
         <button
           onClick={() => setShow(false)}
@@ -33,7 +33,7 @@ const ExitIntentPopup = () => {
           <X size={24} />
         </button>
 
-        <h3 className="text-xl md:text-2xl font-bold mb-2" style={{ color: "#1B3A6B", fontFamily: "'Playfair Display', serif" }}>
+        <h3 className="text-xl md:text-2xl font-bold mb-2" style={{ color: "#4667B4", fontFamily: "'Playfair Display', serif" }}>
           Antes de sair, leve um guia gratuito 🎁
         </h3>
         <p className="text-sm mb-6" style={{ color: "#555" }}>
@@ -52,12 +52,12 @@ const ExitIntentPopup = () => {
             required
             placeholder="Seu melhor e-mail"
             className="w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:ring-2"
-            style={{ borderColor: "#E8ECF1", outlineColor: "#2E5EA6" }}
+            style={{ borderColor: "#E8ECF1", outlineColor: "#4667B4" }}
           />
           <button
             type="submit"
             className="w-full py-3 rounded-xl text-white font-bold transition-colors hover:opacity-90"
-            style={{ backgroundColor: "#7BA33E" }}
+            style={{ backgroundColor: "#9BAE52" }}
           >
             BAIXAR O GUIA
           </button>

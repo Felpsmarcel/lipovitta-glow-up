@@ -56,10 +56,10 @@ const RoutineSection = () => {
                 className="flex flex-col items-center justify-center w-full h-full gap-4"
                 style={{ background: "#E8ECF1", minHeight: 480 }}
               >
-                <Instagram size={48} style={{ color: "#2E5EA6" }} />
+                <Instagram size={48} style={{ color: "#4667B4" }} />
                 <span
                   className="font-semibold text-sm"
-                  style={{ color: "#2E5EA6" }}
+                  style={{ color: "#4667B4" }}
                 >
                   Ver no Instagram
                 </span>
@@ -75,7 +75,7 @@ const RoutineSection = () => {
         <div className="flex flex-col gap-5" data-animate>
           <h2
             className="font-display text-3xl md:text-4xl font-medium leading-snug"
-            style={{ color: "#1B3A6B" }}
+            style={{ color: "#4667B4" }}
           >
             Não é falta de força de vontade.
           </h2>
@@ -108,7 +108,7 @@ const RoutineSection = () => {
           <ul className="flex flex-col gap-3">
             {checkItems.map((item) => (
               <li key={item} className="flex items-center gap-3">
-                <Check size={20} style={{ color: "#7BA33E" }} />
+                <Check size={20} style={{ color: "#9BAE52" }} />
                 <span className="font-sans font-normal text-base" style={{ color: "#333" }}>{item}</span>
               </li>
             ))}
@@ -117,12 +117,12 @@ const RoutineSection = () => {
           <button
             onClick={scrollToProducts}
             className="mt-2 w-full md:w-auto px-8 py-4 text-white font-bold rounded-full transition-colors text-sm tracking-wide cursor-pointer"
-            style={{ background: "#7BA33E" }}
+            style={{ background: "#9BAE52" }}
             onMouseEnter={(e) =>
-              (e.currentTarget.style.background = "#A8D45A")
+              (e.currentTarget.style.background = "#B8C77A")
             }
             onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "#7BA33E")
+              (e.currentTarget.style.background = "#9BAE52")
             }
           >
             VER A CÁPSULA PRINCIPAL

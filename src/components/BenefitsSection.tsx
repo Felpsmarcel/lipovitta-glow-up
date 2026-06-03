@@ -16,10 +16,10 @@ const BenefitsSection = () => {
   <section ref={ref} className="pt-12 md:pt-16 pb-16 md:pb-24 px-4" style={{ background: "linear-gradient(180deg, #F5F7FA 0%, #FFFFFF 100%)" }}>
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-12">
-        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-4" style={{ color: "#1B3A6B" }}>
+        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-4" style={{ color: "#4667B4" }}>
           6 benefícios que você sente no corpo
         </h2>
-        <div className="w-20 h-[3px] mx-auto rounded-full" style={{ background: "linear-gradient(90deg, #2E5EA6, #7BA33E)" }} />
+        <div className="w-20 h-[3px] mx-auto rounded-full" style={{ background: "linear-gradient(90deg, #4667B4, #9BAE52)" }} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
@@ -41,15 +41,15 @@ const BenefitsSection = () => {
             >
               <div
                 className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-colors duration-300"
-                style={{ backgroundColor: "rgba(46, 94, 166, 0.1)" }}
+                style={{ backgroundColor: "rgba(70, 103, 180, 0.1)" }}
               >
-                <Icon size={28} color="#2E5EA6" />
+                <Icon size={28} color="#4667B4" />
               </div>
-              <h3 className="font-sans text-lg font-semibold mb-2" style={{ color: "#1B3A6B" }}>{title}</h3>
+              <h3 className="font-sans text-lg font-semibold mb-2" style={{ color: "#4667B4" }}>{title}</h3>
               <p className="font-sans text-base font-normal leading-relaxed" style={{ color: "#555" }}>{description}</p>
               <div
                 className="h-[3px] w-0 group-hover:w-full rounded-full mt-4 transition-all duration-300"
-                style={{ background: "#7BA33E" }}
+                style={{ background: "#9BAE52" }}
               />
             </div>
           );
