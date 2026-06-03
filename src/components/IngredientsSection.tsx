@@ -39,7 +39,7 @@ const IngredientCard = ({ item, alwaysOpen }: { item: typeof ingredients[0]; alw
 
   if (alwaysOpen) {
     return (
-      <div className="bg-white rounded-xl p-5 border" style={{ borderColor: "#E8ECF1", borderLeftWidth: 4, borderLeftColor: borderColor }}>
+      <div data-animate className="bg-white rounded-xl p-5 border" style={{ borderColor: "#E8ECF1", borderLeftWidth: 4, borderLeftColor: borderColor }}>
         {content}
       </div>
     );
