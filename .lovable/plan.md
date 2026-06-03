@@ -1,73 +1,43 @@
-# Atualização do Design System — Identidade Oficial LipoVitta
+# Redesign da Hero Section
 
-Substituir o azul navy atual (#1B3A6B) pelo azul royal oficial (#4667B4), ajustar o verde para #9BAE52, e trocar a tipografia para Poppins (display + corpo).
+Reformular a `HeroSection.tsx` removendo o pattern de cruzinhas, aplicando fundo da marca, swoosh decorativo, novo layout título+foto e CTA com gradiente e hover refinado.
 
-## 1. Tipografia (`index.html` + `src/index.css` + `tailwind.config.ts`)
+## 1. Fundo
 
-- Remover import de `Cormorant Garamond` e `DM Sans`.
-- Importar do Google Fonts: `Poppins` nos pesos `300;400;500;600;700;800`.
-- "Hugolers" não está no Google Fonts → usar **Poppins 700/800** como fonte display (fallback oficial conforme briefing).
-- `font-display` → Poppins 700/800
-- `font-sans` (corpo) → Poppins 300/400/500/600
-- Atualizar `tailwind.config.ts` `fontFamily.display` e `fontFamily.sans` para Poppins.
-- Atualizar regras `h1, h2, h3` e `h4, h5, h6` no `@layer base` para Poppins.
+- Remover o `<div>` com `backgroundImage` SVG (cruzinhas).
+- Trocar o fundo navy escuro atual (`hsl(214 59% 26%)`) por **gradiente sutil diagonal** da marca:
+  - `background: linear-gradient(135deg, hsl(var(--primary) / 0.06) 0%, #ffffff 45%, hsl(var(--accent) / 0.06) 100%)`
+- Texto passa a ser escuro (`text-foreground`) sobre fundo claro. Badges e detalhes ajustados para contraste em fundo branco.
 
-## 2. Tokens de cor (`src/index.css`)
+## 2. Swoosh decorativo
 
-Converter para HSL e aplicar globalmente:
+- Adicionar um SVG absoluto, atrás do conteúdo (`-z-0`, `pointer-events-none`, `opacity-70`), com uma curva ampla preenchida por gradiente `#4667B4 → #9BAE52` (definido via `<defs><linearGradient>` no próprio SVG).
+- Posição: atravessando a base do título à esquerda e descendo até o canto inferior direito da seção — reforço visual de marca.
+- Manter a linha orgânica fina atual na base como apoio, mas recolorida com o gradiente da marca (ou removida se conflitar).
 
-- `--primary`: `#4667B4` → `hsl(220 42% 49%)` (azul royal)
-- `--secondary`: manter como tom complementar do azul royal
-- `--accent`: `#9BAE52` → `hsl(74 36% 50%)` (verde oliva)
-- `--accent-light`: tom mais claro do verde oliva
-- `--ring` / `--primary-foreground` ajustados conforme
+## 3. Layout
 
-Definir variáveis de gradiente da marca:
-```
---gradient-brand: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
---gradient-brand-soft: linear-gradient(180deg, hsl(var(--primary)/0.05), hsl(var(--accent)/0.05));
-```
+- Coluna esquerda (`lg:basis-[58%]`): mantém kicker, H1 grande na fonte display, parágrafo, citação, CTA e badges.
+  - Cores ajustadas para fundo claro: kicker em `text-primary`, H1 em `text-foreground` (com palavra-chave destacada em `text-gradient-brand`, ex.: "controle"), citação em `text-accent`, badges em `bg-muted text-foreground`.
+- Coluna direita (`lg:basis-[42%]`): substituir o vídeo por **placeholder de foto profissional da Clara**:
+  - Container `aspect-[4/5]` ou `9/16`, `rounded-2xl`, sombra suave, com `bg-gradient-brand-soft` e ícone/legenda "Foto profissional da Clara — em breve".
+  - Pequeno selo decorativo (badge circular gradiente) sobreposto no canto, reforçando identidade.
+- Legenda do Instagram permanece abaixo do placeholder.
 
-E uma utility `.bg-gradient-brand` no `@layer utilities`.
+## 4. CTA principal
 
-## 3. Substituir cores hardcoded nos componentes
+- Manter texto e link, mas refinar interação:
+  - Classes: `bg-gradient-brand text-white font-bold rounded-full px-10 py-4 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl`
+  - Remover `animate-pulse-cta` (com fundo claro o pulse fica agressivo) **ou** suavizar o keyframe — proposta: remover do hero e manter pulse apenas no CTA do CTABanner.
 
-Buscar e substituir em todos os componentes que usam hex inline:
+## 5. Detalhes técnicos
 
-- `#1B3A6B` (navy antigo) → `hsl(var(--primary))` (azul royal #4667B4)
-- `#7BA33E` (verde antigo) → `hsl(var(--accent))` (verde oliva #9BAE52)
-- `#A8D45A` (verde claro antigo) → tom claro derivado do novo verde oliva
-- `#2E5EA6` → `hsl(var(--primary))`
+- Arquivo único alterado: `src/components/HeroSection.tsx`.
+- Sem mudanças em `index.css` / `tailwind.config.ts` (tokens `--gradient-brand`, `--gradient-brand-soft` e classes utilitárias já existem).
+- Manter responsividade mobile (430px): coluna única, placeholder com `max-w-[340px]`, swoosh reposicionado/escalado em mobile para não cobrir texto (`hidden md:block` se necessário, ou versão reduzida via `md:` variants).
+- Acessibilidade: contraste do texto novo sobre fundo claro validado; swoosh com `aria-hidden`.
 
-Arquivos afetados (varredura inicial):
-- `HeroSection.tsx` — bg navy, badges verdes, CTA
-- `Navbar.tsx` — bg scrolled navy, CTA verde
-- `ForWhoSection.tsx` — bg navy, ícones e títulos verdes, CTA
-- `CTABanner.tsx` — CTA verde
-- `OfferSection.tsx` — cores de preço/badge
-- `IngredientsSection.tsx`, `BenefitsSection.tsx`, `RoutineSection.tsx`, `TestimonialsSection.tsx`, `FAQSection.tsx`, `HowToUseSection.tsx`, `ProductsSection.tsx`, `Footer.tsx`, `WhatsAppButton.tsx`, `ExitIntentPopup.tsx`, `UrgencyBar.tsx`, `CountdownTimer.tsx`, `SEOHead.tsx`
+## 6. Verificação
 
-Padrão de substituição: trocar `style={{ backgroundColor: "#..." }}` por classes Tailwind semânticas (`bg-primary`, `bg-accent`, `text-accent`, etc.) sempre que possível.
-
-## 4. Gradientes da marca
-
-Aplicar `bg-gradient-brand`:
-- CTA principal do Hero (`HeroSection.tsx`)
-- Botões CTA grandes (CTABanner, Navbar opcional)
-- Elementos divisores/swoosh entre seções (linha decorativa SVG no Hero, e adicionar separadores sutis entre seções principais)
-
-## 5. Animação `pulse-cta`
-
-Atualizar `box-shadow` no keyframe `pulse-cta` para usar `hsl(var(--primary)/0.4)` ou tom do gradiente, em vez do verde antigo.
-
-## 6. Verificação final
-
-- Confirmar que nenhuma referência a `#1B3A6B`, `#7BA33E`, `Cormorant`, `DM Sans` permanece.
-- Conferir contraste WCAG do azul royal com texto branco e do verde oliva com branco.
-- Validar visualmente no preview mobile (430px) o Hero, Navbar, ForWho, Offer e CTAs.
-
-## Detalhes técnicos
-
-- Todas as cores no `index.css` em formato HSL (sem `hsl(...)` no valor da variável).
-- Não modificar `src/integrations/supabase/*` nem arquivos auto-gerados.
-- Manter estrutura de seções, copy e layout — apenas tokens visuais.
+- Conferir mobile 430px e desktop: H1 legível, CTA destacado, placeholder visível, swoosh decorativo sem cobrir texto.
+- Nenhuma referência ao pattern SVG de cruzinhas permanece.
