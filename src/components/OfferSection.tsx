@@ -1,4 +1,4 @@
-import { Shield, Lock, Truck, CreditCard, Check, Tag } from "lucide-react";
+import { Shield, Check, Tag } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import capsulasImg from "@/assets/capsulas-lipovitta.png";
 import shotMatinalAbacaxiImg from "@/assets/shot-matinal-abacaxi.jpg";
@@ -246,26 +246,9 @@ const OfferSection = () => {
             Se não fizer sentido para a sua rotina, devolvemos seu dinheiro. Sem perguntas.
           </p>
         </div>
-
-        {/* Trust Seals */}
-        <div className="flex flex-wrap justify-center gap-3">
-          {[
-            { icon: Lock, text: "Compra segura" },
-            { icon: Truck, text: "Envio rápido para todo o Brasil" },
-            { icon: CreditCard, text: "Até 3x sem juros" },
-            { icon: Shield, text: "Garantia de 30 dias" },
-          ].map(({ icon: Icon, text }) => (
-            <div
-              key={text}
-              className="flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm border border-[#E8ECF1]"
-            >
-              <Icon className="w-4 h-4 text-[#4667B4]" />
-              <span className="text-xs sm:text-sm font-semibold text-[#4667B4]">{text}</span>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
+
   );
 };
 
