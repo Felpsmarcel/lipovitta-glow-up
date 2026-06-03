@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import desinchar from "@/assets/testimonials/desinchar.jpg";
 import pesoPernas from "@/assets/testimonials/peso-pernas.jpg";
 import inflamacao from "@/assets/testimonials/inflamacao.jpg";
@@ -49,9 +50,10 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   const { count, ref: counterRef } = useAnimatedCounter(2000);
+  const sectionRef = useScrollAnimation();
 
   return (
-    <section className="bg-white pt-10 md:pt-14 pb-20 md:pb-28 px-4">
+    <section ref={sectionRef} className="bg-white py-12 md:py-16 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Title */}
         <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium text-lipovitta-blue-dark text-center">
