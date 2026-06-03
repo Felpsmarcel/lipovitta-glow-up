@@ -12,6 +12,7 @@ import ProductsSection from "@/components/ProductsSection";
 import OfferSection from "@/components/OfferSection";
 import FAQSection from "@/components/FAQSection";
 import SectionSwoosh from "@/components/SectionSwoosh";
+import TrustBar from "@/components/TrustBar";
 
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -70,8 +71,15 @@ const Index = () => (
       {/* → FAQ: AZUL */}
       <SectionSwoosh direction="white-to-blue" />
       <FAQSection />
+
+      {/* → TrustBar: branco */}
       <SectionSwoosh direction="blue-to-white" />
+      <TrustBar />
     </main>
+
+    {/* → Footer: AZUL */}
+    <SectionSwoosh direction="white-to-blue" />
+
     <Footer />
     <WhatsAppButton />
     <ExitIntentPopup />

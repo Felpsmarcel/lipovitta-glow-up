@@ -1,4 +1,4 @@
-import { Shield, Lock, Truck, CreditCard, Check, Tag } from "lucide-react";
+import { Shield, Check, Tag } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import capsulasImg from "@/assets/capsulas-lipovitta.png";
 import shotMatinalAbacaxiImg from "@/assets/shot-matinal-abacaxi.jpg";
