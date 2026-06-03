@@ -246,11 +246,9 @@ const OfferSection = () => {
             Se não fizer sentido para a sua rotina, devolvemos seu dinheiro. Sem perguntas.
           </p>
         </div>
-
-      </div>
-
       </div>
     </section>
+
   );
 };
 
