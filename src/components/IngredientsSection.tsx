@@ -17,22 +17,22 @@ const IngredientCard = ({ item, alwaysOpen }: { item: typeof ingredients[0]; alw
   const [open, setOpen] = useState(false);
   const pct = (parseInt(item.dose) / item.max) * 100;
   const isDimpless = !!item.badge;
-  const borderColor = isDimpless ? "#7BA33E" : "#2E5EA6";
+  const borderColor = isDimpless ? "#9BAE52" : "#4667B4";
 
   const content = (
     <>
       <div className="flex items-center gap-2 flex-wrap">
-        <span className="font-sans font-semibold text-base" style={{ color: "#1B3A6B" }}>{item.name}</span>
-        <span className="font-sans font-medium text-sm" style={{ color: "#7BA33E" }}>({item.dose})</span>
+        <span className="font-sans font-semibold text-base" style={{ color: "#4667B4" }}>{item.name}</span>
+        <span className="font-sans font-medium text-sm" style={{ color: "#9BAE52" }}>({item.dose})</span>
         {item.badge && (
-          <span className="text-[10px] font-bold text-white px-2 py-0.5 rounded-full" style={{ backgroundColor: "#7BA33E" }}>
+          <span className="text-[10px] font-bold text-white px-2 py-0.5 rounded-full" style={{ backgroundColor: "#9BAE52" }}>
             {item.badge}
           </span>
         )}
       </div>
       <p className="font-sans font-normal text-base mt-2 leading-relaxed" style={{ color: "#555" }}>{item.description}</p>
       <div className="mt-3 h-2 rounded-full overflow-hidden" style={{ backgroundColor: "#E8ECF1" }}>
-        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: "#2E5EA6" }} />
+        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: "#4667B4" }} />
       </div>
     </>
   );
@@ -50,20 +50,20 @@ const IngredientCard = ({ item, alwaysOpen }: { item: typeof ingredients[0]; alw
       <div className="bg-white rounded-xl border overflow-hidden" style={{ borderColor: "#E8ECF1", borderLeftWidth: 4, borderLeftColor: borderColor }}>
         <Collapsible.Trigger className="w-full flex items-center justify-between p-4 text-left">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-sans font-semibold text-base" style={{ color: "#1B3A6B" }}>{item.name}</span>
-            <span className="font-sans font-medium text-sm" style={{ color: "#7BA33E" }}>({item.dose})</span>
+            <span className="font-sans font-semibold text-base" style={{ color: "#4667B4" }}>{item.name}</span>
+            <span className="font-sans font-medium text-sm" style={{ color: "#9BAE52" }}>({item.dose})</span>
             {item.badge && (
-              <span className="text-[10px] font-bold text-white px-2 py-0.5 rounded-full" style={{ backgroundColor: "#7BA33E" }}>
+              <span className="text-[10px] font-bold text-white px-2 py-0.5 rounded-full" style={{ backgroundColor: "#9BAE52" }}>
                 {item.badge}
               </span>
             )}
           </div>
-          <ChevronDown size={18} className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`} color="#1B3A6B" />
+          <ChevronDown size={18} className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`} color="#4667B4" />
         </Collapsible.Trigger>
         <Collapsible.Content className="px-4 pb-4">
           <p className="font-sans font-normal text-base leading-relaxed" style={{ color: "#555" }}>{item.description}</p>
           <div className="mt-3 h-2 rounded-full overflow-hidden" style={{ backgroundColor: "#E8ECF1" }}>
-            <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: "#2E5EA6" }} />
+            <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: "#4667B4" }} />
           </div>
         </Collapsible.Content>
       </div>
@@ -90,13 +90,13 @@ const IngredientsSection = () => {
 
     <div className="relative max-w-4xl mx-auto">
       <div className="relative mb-12 text-center md:text-left md:pl-2">
-        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-3 max-w-2xl" style={{ color: "#1B3A6B" }}>
+        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-3 max-w-2xl" style={{ color: "#4667B4" }}>
           Compostos 100% naturais com dosagens precisas
         </h2>
         <p className="font-sans font-normal text-base mb-4 max-w-xl" style={{ color: "#666" }}>
           Cada ingrediente foi selecionado para atuar de forma sinérgica no seu corpo
         </p>
-        <div className="w-20 h-[3px] mx-auto md:mx-0 rounded-full" style={{ background: "linear-gradient(90deg, #2E5EA6, #7BA33E)" }} />
+        <div className="w-20 h-[3px] mx-auto md:mx-0 rounded-full" style={{ background: "linear-gradient(90deg, #4667B4, #9BAE52)" }} />
 
         {/* Imagem decorativa do produto */}
         <img

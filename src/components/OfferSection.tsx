@@ -18,7 +18,7 @@ const OfferSection = () => {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-10 max-w-2xl mx-auto">
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-[#1B3A6B] mb-3">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-[#4667B4] mb-3">
             Comece sua rotina LipoVitta
           </h2>
           <p className="font-sans font-normal text-[#555] text-base sm:text-lg">
@@ -27,7 +27,7 @@ const OfferSection = () => {
           <p className="font-sans font-normal text-sm text-[#888] mt-2">
             Frete grátis em compras a partir de R$323,00.
           </p>
-          <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-gradient-to-r from-[#2E5EA6] to-[#7BA33E]" />
+          <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-gradient-to-r from-[#4667B4] to-[#9BAE52]" />
         </div>
 
         {/* 3 Cards Grid */}
@@ -37,14 +37,14 @@ const OfferSection = () => {
             id="card-capsulas"
             className="lg:col-span-5 bg-white rounded-2xl border border-[#E8ECF1] p-7 sm:p-9 flex flex-col shadow-xl lg:-translate-y-2"
           >
-            <span className="inline-block self-start text-xs font-semibold uppercase tracking-wide text-white bg-[#1B3A6B] px-3 py-1 rounded-full mb-4">
+            <span className="inline-block self-start text-xs font-semibold uppercase tracking-wide text-white bg-[#4667B4] px-3 py-1 rounded-full mb-4">
               Fórmula principal
             </span>
             <div className="h-56 sm:h-64 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden mb-5">
               <img src={capsulasImg} alt="LipoVitta Cápsulas" className="h-full w-full object-contain" loading="lazy" />
             </div>
 
-            <h3 className="font-sans font-semibold text-2xl sm:text-3xl text-[#1B3A6B] mb-2">
+            <h3 className="font-sans font-semibold text-2xl sm:text-3xl text-[#4667B4] mb-2">
               LipoVitta Cápsulas
             </h3>
             <p className="font-sans font-normal text-[#555] text-base mb-4">
@@ -53,20 +53,20 @@ const OfferSection = () => {
             <ul className="space-y-2 mb-5">
               {["Contém Dimpless® patenteado", "Frete grátis incluso", "Garantia de 30 dias"].map((b) => (
                 <li key={b} className="flex items-start gap-2 text-[#333] text-sm sm:text-base">
-                  <Check className="w-5 h-5 text-[#7BA33E] shrink-0 mt-0.5" />
+                  <Check className="w-5 h-5 text-[#9BAE52] shrink-0 mt-0.5" />
                   <span>{b}</span>
                 </li>
               ))}
             </ul>
             <div className="mt-auto">
               <div className="mb-4">
-                <span className="inline-flex items-center gap-1.5 bg-[#7BA33E] text-white text-[11px] sm:text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2 shadow-sm">
+                <span className="inline-flex items-center gap-1.5 bg-[#9BAE52] text-white text-[11px] sm:text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2 shadow-sm">
                   <Tag className="w-3.5 h-3.5" />
                   10% OFF comprando hoje
                 </span>
                 <div className="flex items-center gap-3 flex-wrap">
                   <span className="text-[#999] line-through text-sm">R$357,00</span>
-                  <p className="text-[#1B3A6B] font-extrabold text-3xl sm:text-4xl leading-none">R$321,30</p>
+                  <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">R$321,30</p>
                   <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
                     Economize 10%
                   </span>
@@ -77,7 +77,7 @@ const OfferSection = () => {
                 href={LINK_CAPSULAS}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block text-center bg-[#7BA33E] hover:bg-[#6B9334] text-white font-bold rounded-full transition-colors text-base sm:text-lg py-4 sm:py-5 min-h-[56px]"
+                className="block text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base sm:text-lg py-4 sm:py-5 min-h-[56px]"
               >
                 COMEÇAR MINHA ROTINA
               </a>
@@ -90,7 +90,7 @@ const OfferSection = () => {
           {/* CARD 2 — Protocolo Completo */}
           <article
             id="card-protocolo"
-            className="lg:col-span-4 relative bg-white rounded-2xl border-2 border-[#7BA33E] p-6 sm:p-7 flex flex-col shadow-2xl"
+            className="lg:col-span-4 relative bg-white rounded-2xl border-2 border-[#9BAE52] p-6 sm:p-7 flex flex-col shadow-2xl"
           >
             {/* Mancha orgânica decorativa (clipada dentro do card) */}
             <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
@@ -108,10 +108,10 @@ const OfferSection = () => {
             </div>
 
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10 max-w-[95%]">
-              <span className="bg-[#7BA33E] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
+              <span className="bg-[#9BAE52] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
                 MAIS ESCOLHIDO
               </span>
-              <span className="bg-[#1B3A6B] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
+              <span className="bg-[#4667B4] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
                 Economia de R$79,05
               </span>
             </div>
@@ -120,27 +120,27 @@ const OfferSection = () => {
             <div className="h-44 sm:h-52 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden mb-5 mt-2">
               <img src={comboImg} alt="Cápsulas LipoVitta com Shot Matinal" className="h-full w-full object-contain" loading="lazy" />
             </div>
-            <h3 className="font-sans font-semibold text-2xl sm:text-3xl text-[#1B3A6B] mb-1">
+            <h3 className="font-sans font-semibold text-2xl sm:text-3xl text-[#4667B4] mb-1">
               Protocolo Completo LipoVitta
             </h3>
-            <p className="font-sans font-medium text-[#2E5EA6] text-sm sm:text-base mb-3">
+            <p className="font-sans font-medium text-[#4667B4] text-sm sm:text-base mb-3">
               Cápsula + Shot Matinal. A rotina completa em um único pedido.
             </p>
             <p className="font-sans font-normal text-[#555] text-sm sm:text-base mb-4">
               A combinação pensada para quem quer começar com a rotina completa: a Cápsula como base diária e o Shot Matinal apoiando o início da manhã.
             </p>
             <ul className="space-y-2 mb-5">
-              <li className="flex items-start gap-2 text-[#1B3A6B] font-semibold text-sm sm:text-base">
-                <Check className="w-5 h-5 text-[#7BA33E] shrink-0 mt-0.5" />
+              <li className="flex items-start gap-2 text-[#4667B4] font-semibold text-sm sm:text-base">
+                <Check className="w-5 h-5 text-[#9BAE52] shrink-0 mt-0.5" />
                 <span>LipoVitta Cápsulas (fórmula principal)</span>
               </li>
-              <li className="flex items-start gap-2 text-[#1B3A6B] font-semibold text-sm sm:text-base">
-                <Check className="w-5 h-5 text-[#7BA33E] shrink-0 mt-0.5" />
+              <li className="flex items-start gap-2 text-[#4667B4] font-semibold text-sm sm:text-base">
+                <Check className="w-5 h-5 text-[#9BAE52] shrink-0 mt-0.5" />
                 <span>Shot Matinal (ritual da manhã)</span>
               </li>
               {["Frete grátis incluso", "Economia de R$79,05 em relação à compra separada", "Garantia de 30 dias"].map((b) => (
                 <li key={b} className="flex items-start gap-2 text-[#333] text-sm sm:text-base">
-                  <Check className="w-5 h-5 text-[#7BA33E] shrink-0 mt-0.5" />
+                  <Check className="w-5 h-5 text-[#9BAE52] shrink-0 mt-0.5" />
                   <span>{b}</span>
                 </li>
               ))}
@@ -151,11 +151,11 @@ const OfferSection = () => {
                 <span>Comprando separado:</span>
                 <span className="line-through">R$527,00</span>
               </div>
-              <div className="flex justify-between text-sm sm:text-base font-semibold text-[#1B3A6B]">
+              <div className="flex justify-between text-sm sm:text-base font-semibold text-[#4667B4]">
                 <span>No Protocolo:</span>
                 <span>R$447,95</span>
               </div>
-              <div className="flex justify-between text-sm sm:text-base font-bold text-[#7BA33E] pt-1.5 border-t border-[#E8ECF1]">
+              <div className="flex justify-between text-sm sm:text-base font-bold text-[#9BAE52] pt-1.5 border-t border-[#E8ECF1]">
                 <span>Você economiza:</span>
                 <span>R$79,05</span>
               </div>
@@ -164,14 +164,14 @@ const OfferSection = () => {
             <div className="mt-auto">
               <div className="mb-4">
                 <span className="text-[#999] line-through text-sm mr-2">R$527,00</span>
-                <p className="text-[#1B3A6B] font-extrabold text-3xl sm:text-4xl leading-none">R$447,95</p>
+                <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">R$447,95</p>
                 <p className="text-sm text-[#666] mt-1">ou 3x de R$166,08 sem juros</p>
               </div>
               <a
                 href={LINK_PROTOCOLO}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block text-center bg-[#7BA33E] hover:bg-[#6B9334] text-white font-bold rounded-full transition-colors text-base py-4 min-h-[52px]"
+                className="block text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base py-4 min-h-[52px]"
               >
                 ESCOLHER PROTOCOLO COMPLETO
               </a>
@@ -196,7 +196,7 @@ const OfferSection = () => {
             </div>
             <p className="text-xs text-center text-[#666] mb-4">Sabores: Abacaxi, Limão e Tangerina</p>
 
-            <h3 className="font-sans font-semibold text-xl sm:text-2xl text-[#1B3A6B] mb-2">
+            <h3 className="font-sans font-semibold text-xl sm:text-2xl text-[#4667B4] mb-2">
               Shot Matinal LipoVitta
             </h3>
             <p className="font-sans font-normal text-[#555] text-sm mb-4">
@@ -205,21 +205,21 @@ const OfferSection = () => {
             <ul className="space-y-2 mb-5">
               {["Suporte para a manhã", "Sabor agradável", "Fácil de incluir na rotina"].map((b) => (
                 <li key={b} className="flex items-start gap-2 text-[#333] text-sm">
-                  <Check className="w-4 h-4 text-[#7BA33E] shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
                   <span>{b}</span>
                 </li>
               ))}
             </ul>
             <div className="mt-auto">
               <div className="mb-4">
-                <p className="text-[#1B3A6B] font-bold text-2xl sm:text-3xl leading-none">R$170,00</p>
+                <p className="text-[#4667B4] font-bold text-2xl sm:text-3xl leading-none">R$170,00</p>
                 <p className="text-xs sm:text-sm text-[#666] mt-1">ou 3x de R$63,03 sem juros</p>
               </div>
               <a
                 href={LINK_SHOT}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block text-center border-2 border-[#2E5EA6] text-[#2E5EA6] hover:bg-[#2E5EA6] hover:text-white font-bold rounded-full transition-colors text-sm py-3 min-h-[48px]"
+                className="block text-center border-2 border-[#4667B4] text-[#4667B4] hover:bg-[#4667B4] hover:text-white font-bold rounded-full transition-colors text-sm py-3 min-h-[48px]"
               >
                 ADICIONAR À MINHA ROTINA
               </a>
@@ -228,7 +228,7 @@ const OfferSection = () => {
               </p>
               <a
                 href="#card-protocolo"
-                className="block text-center text-xs text-[#2E5EA6] underline underline-offset-2 hover:text-[#1B3A6B] mt-2"
+                className="block text-center text-xs text-[#4667B4] underline underline-offset-2 hover:text-[#4667B4] mt-2"
               >
                 Ver Protocolo Completo
               </a>
@@ -239,8 +239,8 @@ const OfferSection = () => {
         {/* Guarantee Block */}
         <div className="max-w-3xl mx-auto bg-white border border-[#E8ECF1] rounded-2xl p-6 text-center mb-6 shadow-sm">
           <div className="flex items-center justify-center gap-3 mb-2">
-            <Shield className="w-7 h-7 text-[#2E5EA6]" />
-            <span className="text-lg font-bold text-[#1B3A6B]">Garantia de 30 dias</span>
+            <Shield className="w-7 h-7 text-[#4667B4]" />
+            <span className="text-lg font-bold text-[#4667B4]">Garantia de 30 dias</span>
           </div>
           <p className="text-[#555] text-sm max-w-lg mx-auto">
             Se não fizer sentido para a sua rotina, devolvemos seu dinheiro. Sem perguntas.
@@ -259,8 +259,8 @@ const OfferSection = () => {
               key={text}
               className="flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm border border-[#E8ECF1]"
             >
-              <Icon className="w-4 h-4 text-[#2E5EA6]" />
-              <span className="text-xs sm:text-sm font-semibold text-[#1B3A6B]">{text}</span>
+              <Icon className="w-4 h-4 text-[#4667B4]" />
+              <span className="text-xs sm:text-sm font-semibold text-[#4667B4]">{text}</span>
             </div>
           ))}
         </div>

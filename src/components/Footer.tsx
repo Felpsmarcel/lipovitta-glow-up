@@ -14,7 +14,7 @@ const helpLinks = [
 const paymentMethods = ["Visa", "Mastercard", "Elo", "Amex", "Pix", "Boleto"];
 
 const Footer = () => (
-  <footer className="bg-[#0F2847] py-12 md:py-16">
+  <footer className="bg-[#2D4A7A] py-12 md:py-16">
     <div className="container mx-auto px-4">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
         {/* Marca */}
@@ -40,7 +40,7 @@ const Footer = () => (
               <li key={link.label}>
                 <a
                   href={link.href}
-                  className="text-white/70 text-xs leading-relaxed hover:text-[#7BA33E] transition-colors"
+                  className="text-white/70 text-xs leading-relaxed hover:text-[#9BAE52] transition-colors"
                 >
                   {link.label}
                 </a>
@@ -60,7 +60,7 @@ const Footer = () => (
                 <a
                   href={link.href}
                   {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                  className="text-white/70 text-xs leading-relaxed hover:text-[#7BA33E] transition-colors break-all"
+                  className="text-white/70 text-xs leading-relaxed hover:text-[#9BAE52] transition-colors break-all"
                 >
                   {link.label}
                 </a>

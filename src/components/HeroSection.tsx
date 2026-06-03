@@ -23,7 +23,7 @@ const HeroSection = () => {
           <div className="lg:basis-[58%] text-center lg:text-left">
             <span
               className="inline-block text-xs font-semibold mb-4 tracking-[2px] uppercase"
-              style={{ color: "#7BA33E" }}
+              style={{ color: "#9BAE52" }}
             >
               Por Clara Caldas
             </span>
@@ -36,15 +36,14 @@ const HeroSection = () => {
               Eu sou Clara Caldas e também convivo com lipedema. Sei o que é acordar inchada, com as pernas pesadas e sem energia. Criei a rotina LipoVitta para o cuidado diário que eu mesma precisava. Hoje minha rotina é outra — e a sua também pode mudar aos poucos.
             </p>
 
-            <p className="font-display italic text-lg sm:text-xl mb-8 max-w-xl mx-auto lg:mx-0" style={{ color: "#A8D45A" }}>
+            <p className="font-display italic text-lg sm:text-xl mb-8 max-w-xl mx-auto lg:mx-0" style={{ color: "#B8C77A" }}>
               "Lipedema não tem cura, mas tem controle."
             </p>
 
             <div id="cta" className="mb-6">
               <a
                 href="#comprar"
-                className="animate-pulse-cta inline-block font-bold text-base sm:text-lg px-8 sm:px-10 py-4 rounded-full shadow-lg transition-colors text-center text-white hover:opacity-90 lg:-translate-x-[2px]"
-                style={{ backgroundColor: "#7BA33E" }}
+                className="animate-pulse-cta inline-block font-bold text-base sm:text-lg px-8 sm:px-10 py-4 rounded-full shadow-lg transition-transform text-center text-white hover:scale-105 lg:-translate-x-[2px] bg-gradient-brand"
               >
                 CONHECER A ROTINA LIPOVITTA
               </a>
