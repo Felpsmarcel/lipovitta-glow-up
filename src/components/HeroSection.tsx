@@ -43,8 +43,7 @@ const HeroSection = () => {
             <div id="cta" className="mb-6">
               <a
                 href="#comprar"
-                className="animate-pulse-cta inline-block font-bold text-base sm:text-lg px-8 sm:px-10 py-4 rounded-full shadow-lg transition-colors text-center text-white hover:opacity-90 lg:-translate-x-[2px]"
-                style={{ backgroundColor: "#9BAE52" }}
+                className="animate-pulse-cta inline-block font-bold text-base sm:text-lg px-8 sm:px-10 py-4 rounded-full shadow-lg transition-transform text-center text-white hover:scale-105 lg:-translate-x-[2px] bg-gradient-brand"
               >
                 CONHECER A ROTINA LIPOVITTA
               </a>
