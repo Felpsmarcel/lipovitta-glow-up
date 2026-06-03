@@ -1,28 +1,66 @@
-## Redesign dos Cards da Seção de Benefícios
+## Ritmo visual — alternância, swooshes divisores, densidade e fade-in-up
 
-Atualizar `src/components/BenefitsSection.tsx` para elevar o visual dos 6 cards de benefícios com elementos de marca.
+### 1. Alternância de fundos (branco ↔ azul royal)
 
-### Alterações nos Cards
+Definir ordem das seções no `Index.tsx` com cores alternadas:
 
-1. **Bordas arredondadas maiores**
-   - Trocar `rounded-2xl` por `rounded-[20px]` (20px).
+```
+Hero              → branco (gradiente sutil já existe)
+RoutineSection    → AZUL #4667B4 (texto branco)
+TestimonialsSection → branco (denso)
+BenefitsSection   → AZUL #4667B4 (texto branco)
+CTABanner         → branco
+ForWhoSection     → AZUL (já é)
+HowToUseSection   → branco
+IngredientsSection → AZUL #4667B4 (texto branco)
+CTABanner         → branco
+OfferSection      → AZUL #4667B4
+ProductsSection   → branco
+FAQSection        → AZUL #4667B4 (texto branco)
+```
 
-2. **Sombra suave e elegante**
-   - Substituir `shadow-sm` flat por sombra brand suave: `shadow-[0_8px_30px_rgba(70,103,180,0.07)]`.
+Para cada seção que vira azul: ajustar cores de títulos (branco), corpo (`text-white/85`), cards internos (fundo branco mantém contraste), bordas/detalhes em verde oliva `#9BAE52`.
 
-3. **Efeito hover: levantamento + sombra crescente**
-   - Adicionar `hover:-translate-y-2` + `hover:shadow-[0_12px_40px_rgba(70,103,180,0.12)]` com `transition-all duration-300`.
-   - Remover a barra de largura animada no hover atual (estilo flat).
+### 2. Swoosh divisor entre transições de cor
 
-4. **Ícones em círculos com identidade da marca**
-   - Ícone: cor `#9BAE52` (verde oliva).
-   - Container do ícone: `rounded-full` (círculo), fundo `rgba(70,103,180,0.12)` (azul royal 12%).
+Criar componente `src/components/SectionSwoosh.tsx` — SVG curvo gradiente `#4667B4 → #9BAE52` que ocupa largura total, ~80–120px de altura. Duas variantes via prop `direction`:
+- `white-to-blue` (curva desce, fundo superior branco)
+- `blue-to-white` (curva sobe, fundo superior azul)
 
-5. **Detalhe de borda superior em gradiente**
-   - Adicionar uma faixa de 3px no topo de cada card com gradiente `from-[#4667B4] to-[#9BAE52]` via elemento posicionado absolutamente.
+Inserir entre cada par de seções com cor diferente em `Index.tsx`. Seções que mantêm a mesma cor ficam sem swoosh (corte limpo natural).
 
-### Escopo
+Remover `pt-*` redundantes das seções que receberem o swoosh acima para não criar espaço duplo.
 
-- Apenas o arquivo `src/components/BenefitsSection.tsx` será modificado.
-- O layout da grid (`lg:grid-cols-6` com spans alternados) permanece inalterado.
-- Nenhuma mudança em tokens globais de CSS ou Tailwind.
+### 3. Densidade variável (quebra do espaçamento uniforme)
+
+Ajustar paddings verticais por papel da seção:
+
+- **Densas (prova social, depoimentos, FAQ):** `py-12 md:py-16`
+  - `TestimonialsSection`, `BenefitsSection` (grid), `FAQSection`
+  - Reduzir gap interno dos grids de `gap-6` para `gap-4 md:gap-5` em Testimonials
+- **Respiro amplo (hero, oferta, "para quem"):** `py-24 md:py-32`
+  - `HeroSection`, `OfferSection`, `ForWhoSection`
+- **Médias (rotina, como usar, ingredientes, produtos):** `py-16 md:py-20`
+
+### 4. Animação fade-in-up no scroll
+
+Já existe `useScrollAnimation` (translateY 24px → 0, opacity 0 → 1) aplicado em algumas seções. Padronizar e estender:
+
+- Aplicar o hook em todas as seções que ainda não usam (`HeroSection`, `TestimonialsSection`, `IngredientsSection`, `ProductsSection`, `OfferSection`, `FAQSection`, `CTABanner`).
+- Marcar títulos H2 e cada card/item com `data-animate` para herdar o stagger já implementado no hook (delay 100ms × índice).
+- Manter duração 0.5–0.6s e easing `ease-out` que já estão no hook (suave, não exagerado).
+
+### Detalhes técnicos
+
+- Cores via tokens já existentes (`#4667B4`, `#9BAE52`) — sem mexer em `tailwind.config.ts` nem `index.css`.
+- Swoosh: SVG inline com `<defs><linearGradient>` reaproveitando os stops da marca, `preserveAspectRatio="none"`, `aria-hidden`, `pointer-events-none`, `block` (sem gap inline-SVG), `-mt-px` para evitar hairline.
+- Em seções azuis, sobrescrever cor dos títulos (hoje hardcoded `#4667B4`) para `text-white` e divisor decorativo do título passa a `linear-gradient(90deg, #FFFFFF, #9BAE52)`.
+- Não alterar conteúdo, lógica, dados ou estrutura de componentes — apenas estilos, ordem visual, divisores e wrapper de animação.
+
+### Arquivos afetados
+
+- novo: `src/components/SectionSwoosh.tsx`
+- editar: `src/pages/Index.tsx` (inserir swooshes + reordenar wrappers de cor)
+- editar: `RoutineSection`, `BenefitsSection`, `IngredientsSection`, `OfferSection`, `FAQSection` (variante azul: cores de texto/títulos)
+- editar: `TestimonialsSection`, `HeroSection`, `ProductsSection`, `CTABanner` (adicionar `useScrollAnimation` + `data-animate`)
+- ajustar paddings nas seções listadas acima
