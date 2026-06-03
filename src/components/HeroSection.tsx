@@ -1,4 +1,6 @@
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import claraVideo from "@/assets/clara-hero.mp4.asset.json";
+
 
 const HeroSection = () => {
   const sectionRef = useScrollAnimation();
