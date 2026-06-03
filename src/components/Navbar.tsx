@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import lipovittaLogo from "@/assets/lipovitta-logo.png.asset.json";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -18,9 +19,9 @@ const Navbar = () => {
     >
       <div className="container mx-auto flex items-center justify-between py-3 px-4">
         <img
-          src="https://cdn.abacus.ai/images/4b9c67ed-695b-4262-881c-483c94f51e98.png"
+          src={lipovittaLogo.url}
           alt="LipoVitta por Clara Caldas"
-          className="h-10 w-auto"
+          className="h-10 w-auto rounded"
           loading="lazy"
         />
         <a
