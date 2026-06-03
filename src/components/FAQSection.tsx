@@ -45,13 +45,13 @@ const faqs = [
 const FAQSection = () => {
   const ref = useScrollAnimation();
   return (
-  <section ref={ref} className="pt-14 md:pt-20 pb-14 md:pb-20" style={{ background: "#F5F7FA" }}>
+  <section ref={ref} className="py-12 md:py-16" style={{ backgroundColor: "#4667B4" }}>
     <div className="container mx-auto px-4 max-w-3xl">
-      <div className="text-center mb-10">
-        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-[#4667B4] mb-3">
+      <div className="text-center mb-10" data-animate>
+        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-white mb-3">
           Perguntas Frequentes
         </h2>
-        <div className="mx-auto h-1 w-20 rounded-full bg-gradient-to-r from-[#4667B4] to-[#9BAE52]" />
+        <div className="mx-auto h-1 w-20 rounded-full bg-gradient-to-r from-white to-[#9BAE52]" />
       </div>
 
       <Accordion type="single" collapsible className="space-y-3">

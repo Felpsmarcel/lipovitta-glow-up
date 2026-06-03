@@ -74,7 +74,7 @@ const IngredientCard = ({ item, alwaysOpen }: { item: typeof ingredients[0]; alw
 const IngredientsSection = () => {
   const ref = useScrollAnimation();
   return (
-  <section ref={ref} className="relative pt-16 md:pt-24 pb-20 md:pb-28 px-4 overflow-hidden" style={{ background: "linear-gradient(180deg, #F5F7FA 0%, #FFFFFF 100%)" }}>
+  <section ref={ref} className="relative py-16 md:py-20 px-4 overflow-hidden" style={{ backgroundColor: "#4667B4" }}>
     {/* Mancha orgânica decorativa */}
     <svg
       aria-hidden="true"
@@ -83,20 +83,21 @@ const IngredientsSection = () => {
     >
       <path
         d="M327,275 C297,343 215,377 145,355 C75,333 30,265 42,196 C54,127 117,68 190,62 C263,56 340,108 357,176 C374,244 357,207 327,275 Z"
-        fill="#8FAE82"
-        opacity="0.08"
+        fill="#FFFFFF"
+        opacity="0.07"
       />
     </svg>
 
     <div className="relative max-w-4xl mx-auto">
-      <div className="relative mb-12 text-center md:text-left md:pl-2">
-        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-3 max-w-2xl" style={{ color: "#4667B4" }}>
+      <div className="relative mb-10 text-center md:text-left md:pl-2" data-animate>
+        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-3 max-w-2xl text-white">
           Compostos 100% naturais com dosagens precisas
         </h2>
-        <p className="font-sans font-normal text-base mb-4 max-w-xl" style={{ color: "#666" }}>
+        <p className="font-sans font-normal text-base mb-4 max-w-xl text-white/85">
           Cada ingrediente foi selecionado para atuar de forma sinérgica no seu corpo
         </p>
-        <div className="w-20 h-[3px] mx-auto md:mx-0 rounded-full" style={{ background: "linear-gradient(90deg, #4667B4, #9BAE52)" }} />
+        <div className="w-20 h-[3px] mx-auto md:mx-0 rounded-full" style={{ background: "linear-gradient(90deg, #FFFFFF, #9BAE52)" }} />
+
 
         {/* Imagem decorativa do produto */}
         <img
