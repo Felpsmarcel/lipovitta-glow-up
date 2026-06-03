@@ -11,6 +11,7 @@ import IngredientsSection from "@/components/IngredientsSection";
 import ProductsSection from "@/components/ProductsSection";
 import OfferSection from "@/components/OfferSection";
 import FAQSection from "@/components/FAQSection";
+import SectionSwoosh from "@/components/SectionSwoosh";
 
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -27,19 +28,49 @@ const Index = () => (
     />
     <Navbar />
     <main>
+      {/* Hero: branco */}
       <HeroSection />
+
+      {/* Routine: light grey */}
       <RoutineSection />
+
+      {/* Testimonials: branco (denso) */}
       <TestimonialsSection />
+
+      {/* → Benefits: AZUL */}
+      <SectionSwoosh direction="white-to-blue" />
       <BenefitsSection />
+
+      {/* → CTA: branco/soft */}
+      <SectionSwoosh direction="blue-to-white" />
       <CTABanner />
+
+      {/* → ForWho: AZUL */}
+      <SectionSwoosh direction="white-to-blue" />
       <ForWhoSection />
+
+      {/* → HowToUse: branco */}
+      <SectionSwoosh direction="blue-to-white" />
       <HowToUseSection />
+
+      {/* → Ingredients: AZUL */}
+      <SectionSwoosh direction="white-to-blue" />
       <IngredientsSection />
+
+      {/* → CTA: branco/soft */}
+      <SectionSwoosh direction="blue-to-white" />
       <CTABanner />
+
+      {/* Offer: light grey */}
       <OfferSection />
+
+      {/* Products: branco */}
       <ProductsSection />
+
+      {/* → FAQ: AZUL */}
+      <SectionSwoosh direction="white-to-blue" />
       <FAQSection />
-      
+      <SectionSwoosh direction="blue-to-white" />
     </main>
     <Footer />
     <WhatsAppButton />

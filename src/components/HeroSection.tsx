@@ -1,7 +1,11 @@
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+
 const HeroSection = () => {
+  const sectionRef = useScrollAnimation();
   return (
     <section
-      className="relative overflow-hidden pt-20 md:pt-28 pb-12 md:pb-20"
+      ref={sectionRef}
+      className="relative overflow-hidden pt-20 md:pt-28 pb-16 md:pb-24"
       style={{
         background:
           "linear-gradient(135deg, hsl(var(--primary) / 0.07) 0%, #ffffff 45%, hsl(var(--accent) / 0.08) 100%)",

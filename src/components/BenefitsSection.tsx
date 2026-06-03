@@ -13,13 +13,13 @@ const benefits = [
 const BenefitsSection = () => {
   const ref = useScrollAnimation();
   return (
-  <section ref={ref} className="pt-12 md:pt-16 pb-16 md:pb-24 px-4" style={{ background: "linear-gradient(180deg, #F5F7FA 0%, #FFFFFF 100%)" }}>
+  <section ref={ref} className="py-12 md:py-16 px-4" style={{ backgroundColor: "#4667B4" }}>
     <div className="max-w-6xl mx-auto">
-      <div className="text-center mb-12">
-        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-4" style={{ color: "#4667B4" }}>
+      <div className="text-center mb-10" data-animate>
+        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium mb-4 text-white">
           6 benefícios que você sente no corpo
         </h2>
-        <div className="w-20 h-[3px] mx-auto rounded-full" style={{ background: "linear-gradient(90deg, #4667B4, #9BAE52)" }} />
+        <div className="w-20 h-[3px] mx-auto rounded-full" style={{ background: "linear-gradient(90deg, #FFFFFF, #9BAE52)" }} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">

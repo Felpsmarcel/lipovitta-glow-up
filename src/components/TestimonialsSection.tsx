@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import desinchar from "@/assets/testimonials/desinchar.jpg";
 import pesoPernas from "@/assets/testimonials/peso-pernas.jpg";
 import inflamacao from "@/assets/testimonials/inflamacao.jpg";
@@ -49,21 +50,22 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   const { count, ref: counterRef } = useAnimatedCounter(2000);
+  const sectionRef = useScrollAnimation();
 
   return (
-    <section className="bg-white pt-10 md:pt-14 pb-20 md:pb-28 px-4">
+    <section ref={sectionRef} className="bg-white py-12 md:py-16 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Title */}
-        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-medium text-lipovitta-blue-dark text-center">
+        <h2 data-animate className="font-display text-3xl md:text-4xl lg:text-5xl font-medium text-lipovitta-blue-dark text-center">
           O que nossas clientes dizem
         </h2>
         <div className="mx-auto mt-4 h-[3px] w-20 rounded-full bg-gradient-to-r from-lipovitta-blue-medium to-lipovitta-green" />
-        <p className="font-display italic text-center text-lg md:text-xl mt-4 mb-12" style={{ color: "#8FAE82" }}>
+        <p data-animate className="font-display italic text-center text-lg md:text-xl mt-4 mb-10" style={{ color: "#8FAE82" }}>
           Prints reais. Resultados reais.
         </p>
 
         {/* Mosaico assimétrico de depoimentos */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 auto-rows-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 md:gap-4 auto-rows-auto">
           {testimonials.map((t, i) => {
             const layouts = [
               "lg:col-span-3 lg:row-span-2 aspect-[3/4]",
