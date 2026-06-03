@@ -1,66 +1,66 @@
-## Ritmo visual — alternância, swooshes divisores, densidade e fade-in-up
+## Redesign do Footer e da Barra de Confiança
 
-### 1. Alternância de fundos (branco ↔ azul royal)
+### 1. Footer (`src/components/Footer.tsx`)
 
-Definir ordem das seções no `Index.tsx` com cores alternadas:
+**Estrutura visual**
+- Fundo: azul royal `#4667B4` (substitui `#2D4A7A`)
+- Swoosh gradiente azul→verde no topo do footer (via `SectionSwoosh direction="white-to-blue"` inserido logo antes do `<footer>` no `Index.tsx`, e um detalhe interno de linha gradiente fina no topo do footer `linear-gradient(90deg, #4667B4, #9BAE52)` de 2px para reforçar a "costura")
+- Logo LipoVitta em branco: aplicar `brightness-0 invert` na `<img>` (a logo atual é colorida) para forçar versão branca sem precisar de outro asset
+- Colunas mantidas (4 colunas em desktop): Marca / Institucional / Ajuda / Pagamento — apenas refinadas em hierarquia, espaçamento (gap maior) e tipografia
+- Títulos de coluna em verde oliva claro (`#B8C77A`) para criar acento de marca, links em `text-white/80` com hover `text-white`
+- Borda divisória inferior `border-white/15`, copyright centralizado com selo "feito com cuidado por Clara Caldas"
+
+**Bandeiras de pagamento (ícones reais, não texto)**
+- Remover os chips de texto "VISA / MASTERCARD / ELO / AMEX / PIX / BOLETO"
+- Renderizar ícones SVG reais inline em pílulas brancas arredondadas (fundo `bg-white`, padding pequeno) — uma pílula por bandeira, com o logo colorido oficial dentro
+- Bandeiras incluídas: Visa, Mastercard, Elo, American Express, Pix, Boleto
+- Implementação: criar `src/components/PaymentIcons.tsx` exportando 6 componentes SVG inline (paths simplificados/reconhecíveis das marcas, em viewBox padronizado, cores oficiais)
+- Layout em flex-wrap, gap consistente, cada pílula com altura uniforme (~28px) para alinhamento limpo
+
+### 2. Barra de confiança (3 selos)
+
+A barra de selos atual está no rodapé da `OfferSection` com 4 itens (`Compra segura`, `Envio rápido`, `Até 3x sem juros`, `Garantia 30 dias`). Será **substituída por uma versão dedicada com 3 selos premium**, conforme pedido:
+
+- **Compra Segura** (ícone `ShieldCheck`)
+- **Frete Grátis** (ícone `Truck`)
+- **Garantia 30 dias** (ícone `BadgeCheck`)
+
+**Design premium de cada selo**
+- Card branco `rounded-2xl`, sombra suave `shadow-[0_8px_24px_rgba(70,103,180,0.08)]`
+- Borda superior de 2px com gradiente azul→verde (mesmo motivo dos cards de benefícios)
+- Ícone em verde oliva `#9BAE52` dentro de círculo `rgba(70,103,180,0.12)` (56×56, `rounded-full`)
+- Título em `#4667B4` semibold, subtítulo curto em `#666`
+- Layout grid `md:grid-cols-3 gap-6`, hover `-translate-y-1` com transição suave
+
+**Onde fica**
+- Remover o bloco "Trust Seals" antigo de `OfferSection.tsx` (4 chips)
+- Manter o bloco "Garantia de 30 dias" maior que já existe em OfferSection
+- Inserir um novo componente `TrustBar` (`src/components/TrustBar.tsx`) com os 3 selos premium imediatamente **antes do Footer** no `Index.tsx`, sobre fundo branco — funciona como "selo final" antes do rodapé azul
+
+### 3. Encadeamento visual (Index.tsx)
 
 ```
-Hero              → branco (gradiente sutil já existe)
-RoutineSection    → AZUL #4667B4 (texto branco)
-TestimonialsSection → branco (denso)
-BenefitsSection   → AZUL #4667B4 (texto branco)
-CTABanner         → branco
-ForWhoSection     → AZUL (já é)
-HowToUseSection   → branco
-IngredientsSection → AZUL #4667B4 (texto branco)
-CTABanner         → branco
-OfferSection      → AZUL #4667B4
-ProductsSection   → branco
-FAQSection        → AZUL #4667B4 (texto branco)
+... FAQSection (azul)
+SectionSwoosh blue-to-white
+TrustBar              ← novo, fundo branco
+SectionSwoosh white-to-blue   ← entrada do footer
+Footer                ← agora azul royal
 ```
 
-Para cada seção que vira azul: ajustar cores de títulos (branco), corpo (`text-white/85`), cards internos (fundo branco mantém contraste), bordas/detalhes em verde oliva `#9BAE52`.
-
-### 2. Swoosh divisor entre transições de cor
-
-Criar componente `src/components/SectionSwoosh.tsx` — SVG curvo gradiente `#4667B4 → #9BAE52` que ocupa largura total, ~80–120px de altura. Duas variantes via prop `direction`:
-- `white-to-blue` (curva desce, fundo superior branco)
-- `blue-to-white` (curva sobe, fundo superior azul)
-
-Inserir entre cada par de seções com cor diferente em `Index.tsx`. Seções que mantêm a mesma cor ficam sem swoosh (corte limpo natural).
-
-Remover `pt-*` redundantes das seções que receberem o swoosh acima para não criar espaço duplo.
-
-### 3. Densidade variável (quebra do espaçamento uniforme)
-
-Ajustar paddings verticais por papel da seção:
-
-- **Densas (prova social, depoimentos, FAQ):** `py-12 md:py-16`
-  - `TestimonialsSection`, `BenefitsSection` (grid), `FAQSection`
-  - Reduzir gap interno dos grids de `gap-6` para `gap-4 md:gap-5` em Testimonials
-- **Respiro amplo (hero, oferta, "para quem"):** `py-24 md:py-32`
-  - `HeroSection`, `OfferSection`, `ForWhoSection`
-- **Médias (rotina, como usar, ingredientes, produtos):** `py-16 md:py-20`
-
-### 4. Animação fade-in-up no scroll
-
-Já existe `useScrollAnimation` (translateY 24px → 0, opacity 0 → 1) aplicado em algumas seções. Padronizar e estender:
-
-- Aplicar o hook em todas as seções que ainda não usam (`HeroSection`, `TestimonialsSection`, `IngredientsSection`, `ProductsSection`, `OfferSection`, `FAQSection`, `CTABanner`).
-- Marcar títulos H2 e cada card/item com `data-animate` para herdar o stagger já implementado no hook (delay 100ms × índice).
-- Manter duração 0.5–0.6s e easing `ease-out` que já estão no hook (suave, não exagerado).
+A swoosh já existente no fim do main (`<SectionSwoosh direction="blue-to-white" />` após FAQ) é mantida; entre TrustBar e Footer adicionamos uma swoosh `white-to-blue` para a transição final.
 
 ### Detalhes técnicos
 
-- Cores via tokens já existentes (`#4667B4`, `#9BAE52`) — sem mexer em `tailwind.config.ts` nem `index.css`.
-- Swoosh: SVG inline com `<defs><linearGradient>` reaproveitando os stops da marca, `preserveAspectRatio="none"`, `aria-hidden`, `pointer-events-none`, `block` (sem gap inline-SVG), `-mt-px` para evitar hairline.
-- Em seções azuis, sobrescrever cor dos títulos (hoje hardcoded `#4667B4`) para `text-white` e divisor decorativo do título passa a `linear-gradient(90deg, #FFFFFF, #9BAE52)`.
-- Não alterar conteúdo, lógica, dados ou estrutura de componentes — apenas estilos, ordem visual, divisores e wrapper de animação.
+- Sem novas dependências — todos os ícones de pagamento são SVG inline em um novo arquivo
+- Sem novos tokens — cores reaproveitam `#4667B4` / `#9BAE52` / `#B8C77A` já usados
+- Logo branca sem novo asset: filtro CSS `brightness(0) invert(1)` aplicado à `<img>` existente
+- Sem mudanças em conteúdo dos links, telefone, e-mail ou copyright
+- Acessibilidade: cada SVG de bandeira recebe `<title>` + `aria-label`; selos da TrustBar mantêm contraste AA
 
 ### Arquivos afetados
 
-- novo: `src/components/SectionSwoosh.tsx`
-- editar: `src/pages/Index.tsx` (inserir swooshes + reordenar wrappers de cor)
-- editar: `RoutineSection`, `BenefitsSection`, `IngredientsSection`, `OfferSection`, `FAQSection` (variante azul: cores de texto/títulos)
-- editar: `TestimonialsSection`, `HeroSection`, `ProductsSection`, `CTABanner` (adicionar `useScrollAnimation` + `data-animate`)
-- ajustar paddings nas seções listadas acima
+- novo: `src/components/PaymentIcons.tsx` (SVGs Visa, Mastercard, Elo, Amex, Pix, Boleto)
+- novo: `src/components/TrustBar.tsx` (3 selos premium)
+- editar: `src/components/Footer.tsx` (fundo azul, logo branca, ícones reais, hierarquia)
+- editar: `src/components/OfferSection.tsx` (remover bloco antigo de 4 chips "Trust Seals")
+- editar: `src/pages/Index.tsx` (inserir `<TrustBar />` + swoosh antes do Footer)
