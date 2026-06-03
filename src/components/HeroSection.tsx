@@ -1,4 +1,6 @@
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import claraVideo from "@/assets/clara-hero.mp4.asset.json";
+
 
 const HeroSection = () => {
   const sectionRef = useScrollAnimation();
@@ -87,21 +89,22 @@ const HeroSection = () => {
           <div className="lg:basis-[42%] w-full flex flex-col items-center lg:items-end">
             <div className="relative w-full max-w-[360px]">
               <div
-                className="relative w-full overflow-hidden rounded-2xl bg-gradient-brand-soft flex items-center justify-center"
+                className="relative w-full overflow-hidden rounded-2xl bg-black"
                 style={{
                   aspectRatio: "4/5",
                   boxShadow: "0 20px 60px hsl(var(--primary) / 0.18)",
                 }}
               >
-                <div className="text-center px-6">
-                  <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-gradient-brand flex items-center justify-center text-white text-2xl shadow-md">
-                    📸
-                  </div>
-                  <p className="font-display text-base text-foreground/70 font-semibold">
-                    Foto profissional da Clara
-                  </p>
-                  <p className="text-sm text-foreground/50 mt-1">em breve</p>
-                </div>
+                <video
+                  src={claraVideo.url}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-label="Clara Caldas — criadora da rotina LipoVitta"
+                  className="w-full h-full object-cover"
+                />
               </div>
 
               {/* Selo gradiente decorativo */}
