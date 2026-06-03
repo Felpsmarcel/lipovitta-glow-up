@@ -36,21 +36,21 @@ const BenefitsSection = () => {
             <div
               data-animate
               key={title}
-              className={`bg-white rounded-2xl p-6 border shadow-sm group ${spans[idx]}`}
-              style={{ borderColor: "#E8ECF1" }}
+              className={`relative bg-white rounded-[20px] p-6 overflow-hidden shadow-[0_8px_30px_rgba(70,103,180,0.07)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_18px_45px_rgba(70,103,180,0.14)] ${spans[idx]}`}
             >
               <div
-                className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-colors duration-300"
-                style={{ backgroundColor: "rgba(70, 103, 180, 0.1)" }}
+                className="absolute top-0 left-0 right-0 h-[3px]"
+                style={{ background: "linear-gradient(90deg, #4667B4, #9BAE52)" }}
+                aria-hidden="true"
+              />
+              <div
+                className="w-14 h-14 rounded-full flex items-center justify-center mb-4"
+                style={{ backgroundColor: "rgba(70, 103, 180, 0.12)" }}
               >
-                <Icon size={28} color="#4667B4" />
+                <Icon size={28} color="#9BAE52" />
               </div>
               <h3 className="font-sans text-lg font-semibold mb-2" style={{ color: "#4667B4" }}>{title}</h3>
               <p className="font-sans text-base font-normal leading-relaxed" style={{ color: "#555" }}>{description}</p>
-              <div
-                className="h-[3px] w-0 group-hover:w-full rounded-full mt-4 transition-all duration-300"
-                style={{ background: "#9BAE52" }}
-              />
             </div>
           );
         })}
