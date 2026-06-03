@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 216 33% 97%;
+    --background: 0 0% 100%;
     --foreground: 0 0% 20%;
 
     --card: 0 0% 100%;
@@ -15,28 +15,34 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 20%;
 
-    --primary: 214 59% 26%;
+    /* Brand: Royal Blue #4667B4 */
+    --primary: 220 42% 49%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 216 56% 41%;
+    --secondary: 220 42% 60%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 214 24% 92%;
-    --muted-foreground: 214 10% 40%;
+    --muted: 220 20% 94%;
+    --muted-foreground: 220 10% 40%;
 
-    --accent: 90 49% 44%;
+    /* Brand: Olive Green #9BAE52 */
+    --accent: 74 36% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --accent-light: 84 62% 59%;
+    --accent-light: 74 40% 65%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 213 24% 92%;
-    --input: 213 24% 92%;
-    --ring: 214 59% 26%;
+    --border: 220 20% 92%;
+    --input: 220 20% 92%;
+    --ring: 220 42% 49%;
 
     --radius: 0.5rem;
+
+    /* Brand gradient */
+    --gradient-brand: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    --gradient-brand-soft: linear-gradient(180deg, hsl(var(--primary) / 0.05), hsl(var(--accent) / 0.05));
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -56,48 +62,66 @@
 
   body {
     @apply bg-background text-foreground font-sans;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
     font-size: 16px;
   }
 
-  h1, h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 500;
-    letter-spacing: -0.01em;
+  h1, h2, h3 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.02em;
   }
 
-  h3, h4, h5, h6 {
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 600;
-    letter-spacing: -0.005em;
+  h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 }
 
 @layer utilities {
   .font-display {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.02em;
   }
 
   .font-body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
   }
 
   .font-quote {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Poppins', sans-serif;
     font-style: italic;
-    font-weight: 400;
-    color: #8FAE82;
+    font-weight: 500;
+    color: hsl(var(--accent));
+  }
+
+  .bg-gradient-brand {
+    background-image: var(--gradient-brand);
+  }
+
+  .bg-gradient-brand-soft {
+    background-image: var(--gradient-brand-soft);
+  }
+
+  .text-gradient-brand {
+    background-image: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 }
 
 @keyframes pulse-cta {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 4px 20px hsl(90 49% 44% / 0.4);
+    box-shadow: 0 4px 20px hsl(var(--primary) / 0.4);
   }
   50% {
     transform: scale(1.03);
-    box-shadow: 0 6px 30px hsl(90 49% 44% / 0.6);
+    box-shadow: 0 6px 30px hsl(var(--primary) / 0.55);
   }
 }
 
@@ -118,7 +142,7 @@
 a:focus-visible,
 button:focus-visible,
 input:focus-visible {
-  outline: 2px solid #4667B4;
+  outline: 2px solid hsl(var(--primary));
   outline-offset: 2px;
   border-radius: 4px;
 }
