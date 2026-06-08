@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check, Tag } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import gummyImg from "@/assets/gummy-vittaglow.png";
 import shotRushImg from "@/assets/shot-rush.jpg";
@@ -122,10 +122,20 @@ const ProductsSection = () => {
               ))}
             </ul>
             <div className="mb-3">
-              <span className="text-[#4667B4] font-extrabold text-xl">
-                R$225,00
+              <span className="inline-flex items-center gap-1.5 bg-[#9BAE52] text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2 shadow-sm">
+                <Tag className="w-3.5 h-3.5" />
+                10% OFF comprando hoje
               </span>
-              <p className="text-xs text-[#555]">ou 3x R$75,00 sem juros</p>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[#999] line-through text-xs">R$225,00</span>
+                <span className="text-[#4667B4] font-extrabold text-xl">
+                  R$202,50
+                </span>
+                <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-[11px] font-bold px-2 py-0.5 rounded-full">
+                  Economize 10%
+                </span>
+              </div>
+              <p className="text-xs text-[#555] mt-1">ou 3x R$67,50 sem juros</p>
             </div>
             <a
               href="https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-rush-pre-treino/"

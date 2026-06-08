@@ -112,7 +112,7 @@ const OfferSection = () => {
                 MAIS ESCOLHIDO
               </span>
               <span className="bg-[#4667B4] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
-                Economia de R$79,05
+                Economize 10%
               </span>
             </div>
 
@@ -144,7 +144,7 @@ const OfferSection = () => {
                 <Check className="w-5 h-5 text-[#9BAE52] shrink-0 mt-0.5" />
                 <span>Shot Matinal (ritual da manhã)</span>
               </li>
-              {["Frete grátis incluso", "Economia de R$79,05 em relação à compra separada", "Garantia de 30 dias"].map((b) => (
+              {["Cápsula + Shot juntos em um pedido", "Frete grátis incluso", "Garantia de 30 dias"].map((b) => (
                 <li key={b} className="flex items-start gap-2 text-[#333] text-sm sm:text-base">
                   <Check className="w-5 h-5 text-[#9BAE52] shrink-0 mt-0.5" />
                   <span>{b}</span>
@@ -152,26 +152,20 @@ const OfferSection = () => {
               ))}
             </ul>
 
-            <div className="bg-[#F5F7FA] rounded-xl p-4 mb-4 space-y-1.5">
-              <div className="flex justify-between text-sm text-[#666]">
-                <span>Comprando separado:</span>
-                <span className="line-through">R$527,00</span>
-              </div>
-              <div className="flex justify-between text-sm sm:text-base font-semibold text-[#4667B4]">
-                <span>No Protocolo:</span>
-                <span>R$447,95</span>
-              </div>
-              <div className="flex justify-between text-sm sm:text-base font-bold text-[#9BAE52] pt-1.5 border-t border-[#E8ECF1]">
-                <span>Você economiza:</span>
-                <span>R$79,05</span>
-              </div>
-            </div>
-
             <div className="mt-auto">
               <div className="mb-4">
-                <span className="text-[#999] line-through text-sm mr-2">R$527,00</span>
-                <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">R$447,95</p>
-                <p className="text-sm text-[#666] mt-1">ou 3x de R$166,08 sem juros</p>
+                <span className="inline-flex items-center gap-1.5 bg-[#9BAE52] text-white text-[11px] sm:text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2 shadow-sm">
+                  <Tag className="w-3.5 h-3.5" />
+                  10% OFF comprando hoje
+                </span>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="text-[#999] line-through text-sm">R$527,00</span>
+                  <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">R$474,30</p>
+                  <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
+                    Economize 10%
+                  </span>
+                </div>
+                <p className="text-sm text-[#666] mt-1">ou 3x de R$158,10 sem juros</p>
               </div>
               <a
                 href={LINK_PROTOCOLO}
@@ -218,8 +212,18 @@ const OfferSection = () => {
             </ul>
             <div className="mt-auto">
               <div className="mb-4">
-                <p className="text-[#4667B4] font-bold text-2xl sm:text-3xl leading-none">R$170,00</p>
-                <p className="text-xs sm:text-sm text-[#666] mt-1">ou 3x de R$63,03 sem juros</p>
+                <span className="inline-flex items-center gap-1.5 bg-[#9BAE52] text-white text-[11px] sm:text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2 shadow-sm">
+                  <Tag className="w-3.5 h-3.5" />
+                  10% OFF comprando hoje
+                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[#999] line-through text-xs">R$170,00</span>
+                  <p className="text-[#4667B4] font-bold text-2xl sm:text-3xl leading-none">R$153,00</p>
+                  <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-[11px] font-bold px-2 py-0.5 rounded-full">
+                    Economize 10%
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-[#666] mt-1">ou 3x de R$51,00 sem juros</p>
               </div>
               <a
                 href={LINK_SHOT}
@@ -230,7 +234,7 @@ const OfferSection = () => {
                 ADICIONAR À MINHA ROTINA
               </a>
               <p className="text-xs text-[#777] text-center mt-3">
-                Combine com a Cápsula para liberar frete grátis e economizar R$79,05 escolhendo o Protocolo Completo.
+                Combine com a Cápsula para liberar frete grátis escolhendo o Protocolo Completo.
               </p>
               <a
                 href="#card-protocolo"
