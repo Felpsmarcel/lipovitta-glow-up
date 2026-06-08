@@ -9,7 +9,7 @@ const ingredients = [
   { name: "Cafeína", dose: "80mg", max: 130, description: "Estimula metabolismo, queima de gordura, melhora circulação." },
   { name: "Curcumina", dose: "130mg", max: 130, description: "Anti-inflamatório natural, reduz dores, melhora circulação." },
   { name: "Quercetina", dose: "100mg", max: 130, description: "Antioxidante, proteção celular, equilíbrio imunológico." },
-  { name: "Dimpless®", dose: "", max: 130, description: "SOD do melão Cantaloupe, firmeza da pele, reduz celulite.", badge: "PATENTEADO" },
+  { name: "Dimpless®", dose: "5mg", max: 130, description: "SOD do melão Cantaloupe, firmeza da pele, reduz celulite.", badge: "PATENTEADO" },
   { name: "Trans-Resveratrol", dose: "20mg", max: 130, description: "Antioxidante, saúde vascular, potencializa outros compostos." },
 ];
 
