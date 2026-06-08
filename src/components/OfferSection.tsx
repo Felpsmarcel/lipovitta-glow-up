@@ -112,7 +112,7 @@ const OfferSection = () => {
                 MAIS ESCOLHIDO
               </span>
               <span className="bg-[#4667B4] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
-                Economia de R$79,05
+                Economize 10%
               </span>
             </div>
 
