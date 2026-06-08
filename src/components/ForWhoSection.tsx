@@ -23,11 +23,11 @@ const ForWhoSection = () => {
           Para quem é o LipoVitta?
         </h2>
 
-        <ul className="space-y-4 mb-8">
+        <ul className="space-y-3 md:space-y-4 mb-8 text-left">
           {items.map((item) => (
             <li key={item} className="flex items-start gap-3">
               <CheckCircle size={22} color="#9BAE52" className="mt-0.5 shrink-0" />
-              <span className="font-sans font-normal text-white text-base md:text-lg">{item}</span>
+              <span className="flex-1 font-sans font-normal text-white text-base md:text-lg">{item}</span>
             </li>
           ))}
         </ul>

@@ -1,13 +1,13 @@
-## Trocar logo da barra fixa do Hero
+## Problema
+Em mobile, na seção "Para quem é o LipoVitta?" (`ForWhoSection.tsx`), os itens da lista ficam com o texto centralizado, deixando o ícone de check muito distante do texto e quebrando o alinhamento visual.
 
-A barra fixa (`src/components/Navbar.tsx`) hoje usa uma logo hospedada na CDN externa (`cdn.abacus.ai`). Vou substituí-la pela imagem enviada (`2 4.PNG` — "LipoVitta por Clara Caldas" em branco sobre fundo azul royal).
+Isso acontece porque o container pai usa `text-center lg:text-left`, e o `text-center` é herdado pelos `<li>`, centralizando o texto dentro do flex item.
 
-### Passos
-1. Subir a nova logo via `lovable-assets` a partir de `/mnt/user-uploads/2_4.PNG` gerando `src/assets/lipovitta-logo.png.asset.json`.
-2. Em `src/components/Navbar.tsx`:
-   - Importar o pointer da nova logo.
-   - Trocar o `src` do `<img>` para `logo.url`.
-   - Como a logo já tem fundo azul, ajustar para ficar legível tanto no estado inicial (navbar branca) quanto no estado scrolled (azul #4667B4): aplicar `rounded` + leve padding quando a navbar está branca, ou usar `mix-blend` — solução simples: manter a imagem como está (o azul da logo combina com o estado scrolled e fica como "selo" no estado branco). Altura mantida em `h-10`.
+## Solução
+Em `src/components/ForWhoSection.tsx`:
 
-### Sem mudanças
-- Botão "COMPRAR AGORA", comportamento de scroll, layout do restante da página.
+1. Forçar o alinhamento da lista (`<ul>`) à esquerda em todas as larguras (`text-left`), mantendo o título e o botão centralizados em mobile.
+2. Reduzir o `space-y-4` da lista no mobile para melhorar a densidade vertical (ex.: `space-y-3 md:space-y-4`).
+3. Garantir que o texto do item não quebre desalinhado: usar `flex-1` no `<span>` para ocupar o espaço restante ao lado do ícone.
+
+Nenhuma outra alteração de layout, cores ou conteúdo.
