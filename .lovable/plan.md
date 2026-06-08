@@ -1,8 +1,15 @@
-### Contexto
-O usuário quer incluir o item "Combate a Celulite" na lista de benefícios do componente `RoutineSection.tsx`, que já exibe a citação da Clara Caldas e os demais itens.
+## Adicionar ingrediente Opuntia fícus à seção de ingredientes
 
-### O que será feito
-- Editar o array `checkItems` em `src/components/RoutineSection.tsx` para inserir "Combate a Celulite" após "Inchaço reduzido".
+O usuário solicitou incluir o ingrediente **Opuntia fícus** na seção "Cada ingrediente foi selecionado para atuar de forma sinérgica no seu corpo".
 
-### Arquivo alterado
-- `src/components/RoutineSection.tsx`
+### Alteração
+- **Arquivo:** `src/components/IngredientsSection.tsx`
+- **Ação:** Adicionar novo objeto ao array `ingredients` com:
+  - `name`: "Opuntia fícus"
+  - `dose`: "50mg"
+  - `description`: "Auxilia na retenção de líquidos e saciedade."
+  - `max`: 130 (mesma escala dos demais para a barra visual)
+- **Posição:** Ao final do array, após Trans-Resveratrol.
+
+### Resultado
+O novo ingrediente aparecerá tanto na visualização desktop (cards expandidos) quanto mobile (accordion) com nome, dosagem, descrição e barra de proporção visual.

@@ -11,6 +11,7 @@ const ingredients = [
   { name: "Quercetina", dose: "100mg", max: 130, description: "Antioxidante, proteção celular, equilíbrio imunológico." },
   { name: "Dimpless®", dose: "5mg", max: 130, description: "SOD do melão Cantaloupe, firmeza da pele, reduz celulite.", badge: "PATENTEADO" },
   { name: "Trans-Resveratrol", dose: "20mg", max: 130, description: "Antioxidante, saúde vascular, potencializa outros compostos." },
+  { name: "Opuntia fícus", dose: "50mg", max: 130, description: "Auxilia na retenção de líquidos e saciedade." },
 ];
 
 const IngredientCard = ({ item, alwaysOpen }: { item: typeof ingredients[0]; alwaysOpen: boolean }) => {
