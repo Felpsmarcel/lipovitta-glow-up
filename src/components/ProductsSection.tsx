@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check, Tag } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import gummyImg from "@/assets/gummy-vittaglow.png";
 import shotRushImg from "@/assets/shot-rush.jpg";
