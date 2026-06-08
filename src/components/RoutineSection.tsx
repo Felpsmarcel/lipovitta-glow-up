@@ -4,6 +4,7 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const checkItems = [
   "Inchaço reduzido",
+  "Combate a Celulite",
   "Pernas mais leves",
   "Menos dor",
   "Pele com melhor aparência",
