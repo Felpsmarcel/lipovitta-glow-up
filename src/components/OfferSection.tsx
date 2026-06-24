@@ -6,7 +6,7 @@ import shotMatinalLimaoImg from "@/assets/shot-matinal-limao.jpg";
 import shotMatinalTangerinaImg from "@/assets/shot-matinal-tangerina.jpg";
 import comboImg from "@/assets/combo-lipovitta.jpg";
 
-const LINK_CAPSULAS = "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/lipovitta/";
+const LINK_CAPSULAS = "https://lipovitta2.pay.yampi.com.br/r/RMTIX51GQN";
 const LINK_PROTOCOLO = "https://loja.lipovita.club/produtos/shot-matinal-sabor-limao-lipovitta-capsulas/";
 const LINK_SHOT = "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-matinal-lipovitta/";
 
