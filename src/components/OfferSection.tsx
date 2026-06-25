@@ -6,9 +6,9 @@ import shotMatinalLimaoImg from "@/assets/shot-matinal-limao.jpg";
 import shotMatinalTangerinaImg from "@/assets/shot-matinal-tangerina.jpg";
 import comboImg from "@/assets/combo-lipovitta.jpg";
 
-const LINK_CAPSULAS = "https://lipovitta2.pay.yampi.com.br/r/RMTIX51GQN";
-const LINK_PROTOCOLO = "https://lipovitta2.pay.yampi.com.br/r/3QE08AQ4XM";
-const LINK_SHOT = "https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-matinal-lipovitta/";
+const LINK_CAPSULAS = "https://seguro.lipovitta.site/r/RMTIX51GQN";
+const LINK_PROTOCOLO = "https://seguro.lipovitta.site/b/RPQ0CD6N6Q8C";
+const LINK_SHOT = "https://seguro.lipovitta.site/r/PW60UM0Y2J";
 
 const OfferSection = () => {
   const sectionRef = useScrollAnimation();
