@@ -4,7 +4,7 @@ import capsulasImg from "@/assets/capsulas-lipovitta.png";
 import shotMatinalAbacaxiImg from "@/assets/shot-matinal-abacaxi.jpg";
 import shotMatinalLimaoImg from "@/assets/shot-matinal-limao.jpg";
 import shotMatinalTangerinaImg from "@/assets/shot-matinal-tangerina.jpg";
-import comboImg from "@/assets/combo-lipovitta.jpg";
+import comboImg from "@/assets/combo-lipovitta.png.asset.json";
 
 const LINK_CAPSULAS = "https://seguro.lipovitta.site/r/RMTIX51GQN";
 const LINK_PROTOCOLO = "https://seguro.lipovitta.site/b/RPQ0CD6N6Q8C";
