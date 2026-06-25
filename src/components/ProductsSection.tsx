@@ -89,8 +89,8 @@ const ProductsSection = () => {
               Combina com a Cápsula
             </span>
             <div className="relative rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] h-44 flex items-center justify-center mb-4 overflow-hidden">
-              <span className="absolute top-2 left-2 z-10 bg-[#E8A317] text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full shadow-md">
-                Novo estoque em breve
+              <span className="absolute top-2 left-2 z-10 bg-[#9BAE52] text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full shadow-md">
+                Temos estoque
               </span>
               <img
                 src={shotRushImg}
