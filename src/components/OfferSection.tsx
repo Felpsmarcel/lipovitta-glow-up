@@ -4,7 +4,7 @@ import capsulasImg from "@/assets/capsulas-lipovitta.png";
 import shotMatinalAbacaxiImg from "@/assets/shot-matinal-abacaxi.jpg";
 import shotMatinalLimaoImg from "@/assets/shot-matinal-limao.jpg";
 import shotMatinalTangerinaImg from "@/assets/shot-matinal-tangerina.jpg";
-import comboImg from "@/assets/combo-lipovitta.jpg";
+import comboImg from "@/assets/combo-lipovitta.png.asset.json";
 
 const LINK_CAPSULAS = "https://seguro.lipovitta.site/r/RMTIX51GQN";
 const LINK_PROTOCOLO = "https://seguro.lipovitta.site/b/RPQ0CD6N6Q8C";
@@ -124,7 +124,7 @@ const OfferSection = () => {
               aria-label="Comprar Protocolo Completo LipoVitta"
               className="block h-44 sm:h-52 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] overflow-hidden mb-5 mt-2 transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#9BAE52]"
             >
-              <img src={comboImg} alt="Cápsulas LipoVitta com Shot Matinal" className="h-full w-full object-contain" loading="lazy" />
+              <img src={comboImg.url} alt="Cápsulas LipoVitta com Shot Matinal" className="h-full w-full object-contain" loading="lazy" />
             </a>
             <h3 className="font-sans font-semibold text-2xl sm:text-3xl text-[#4667B4] mb-1">
               Protocolo Completo LipoVitta
