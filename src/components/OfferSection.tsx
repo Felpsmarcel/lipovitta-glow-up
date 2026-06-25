@@ -356,6 +356,10 @@ const OfferSection = () => {
             Se não fizer sentido para a sua rotina, devolvemos seu dinheiro. Sem perguntas.
           </p>
         </div>
+
+        <p className="max-w-3xl mx-auto text-[11px] text-[#888] text-center leading-relaxed px-4">
+          Este produto não é medicamento. Não substitui uma alimentação equilibrada. Não tem finalidade de diagnosticar, tratar, curar ou prevenir doenças. Gestantes, lactantes, crianças, pessoas com doenças ou em uso de medicamentos devem consultar um profissional de saúde antes do uso.
+        </p>
       </div>
     </section>
 
