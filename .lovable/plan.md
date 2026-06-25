@@ -1,24 +1,12 @@
-## Plano: dar visibilidade ao Kit Rush (sem mexer no card em si)
+## Goal
+Resolve the medium-severity dependency advisories flagged by the supply-chain scanner.
 
-O card do Kit Shot Rush + Cápsulas já existe e funciona (asset CDN responde 200, link de checkout ok, preço R$546,30). O problema é que ele está "escondido" abaixo dos 3 cards principais. Mantendo o card exatamente como está hoje (conteúdo, preço, layout interno), vou só criar caminhos para encontrá-lo:
+## Changes
+- Bump `react-router-dom` from 6.30.1 to the latest patched 6.x release (>=6.31 / current 6.x) to pick up the fixed `react-router` that addresses the open-redirect advisories.
+- Bump `recharts` from 2.15.4 to the latest 2.x release that ships a patched `lodash` (>=4.17.21 transitively) to clear the prototype-pollution advisories.
+- Run `bun install` to refresh the lockfile, then re-run the dependency scan to confirm both findings are cleared.
+- Mark the finding as fixed via `manage_security_finding` once resolved.
 
-### 1. Mover o Kit para o topo da seção de ofertas
-- Em `OfferSection.tsx`, renderizar o bloco do Kit (linha destacada full-width) **antes** do grid de 3 cards.
-- Manter o header "Comece sua rotina LipoVitta" acima.
-- Adicionar `scroll-margin-top` no `#card-kit-rush` para a âncora não ficar atrás da navbar fixa.
-
-### 2. Chamada no Hero
-- Em `HeroSection.tsx`, adicionar um pill discreto abaixo do CTA principal:
-  "Novo: Kit Shot Rush + Cápsulas →" linkando para `#card-kit-rush`.
-
-### 3. Item no menu
-- Em `Navbar.tsx`, incluir link "Kit Rush" apontando para `#card-kit-rush` (desktop e mobile).
-
-### O que NÃO muda
-- Conteúdo, imagem, selos, benefícios, preço (R$546,30 / 3x R$182,10), botão e link do Kit ficam idênticos.
-- Nenhuma alteração nos outros 3 cards, pixels, checkout ou backend.
-
-### Arquivos afetados
-- `src/components/OfferSection.tsx` (reordenar)
-- `src/components/HeroSection.tsx` (pill)
-- `src/components/Navbar.tsx` (link)
+## Notes
+- Staying within the same major versions (react-router 6.x, recharts 2.x) to avoid breaking API changes in the app's routing and charts.
+- No application code changes expected; this is a dependency-only update.
