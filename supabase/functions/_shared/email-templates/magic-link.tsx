@@ -10,6 +10,7 @@ import {
   Heading,
   Html,
   Preview,
+  Section,
   Text,
 } from 'npm:@react-email/components@0.0.22'
 
@@ -22,22 +23,27 @@ export const MagicLinkEmail = ({
   siteName,
   confirmationUrl,
 }: MagicLinkEmailProps) => (
-  <Html lang="en" dir="ltr">
+  <Html lang="pt-BR" dir="ltr">
     <Head />
-    <Preview>Your login link for {siteName}</Preview>
+    <Preview>Seu link de acesso ao {siteName}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Your login link</Heading>
-        <Text style={text}>
-          Click the button below to log in to {siteName}. This link will expire
-          shortly.
-        </Text>
-        <Button style={button} href={confirmationUrl}>
-          Log In
-        </Button>
-        <Text style={footer}>
-          If you didn't request this link, you can safely ignore this email.
-        </Text>
+        <Section style={brandBar}>
+          <Text style={brandText}>LipoVitta</Text>
+          <Text style={brandSubtext}>por Clara Caldas</Text>
+        </Section>
+        <Section style={card}>
+          <Heading style={h1}>Seu link de acesso</Heading>
+          <Text style={text}>
+            Clique no botão abaixo para entrar no {siteName}. Esse link expira em alguns minutos.
+          </Text>
+          <Button style={button} href={confirmationUrl}>
+            Entrar agora
+          </Button>
+          <Text style={footer}>
+            Se você não pediu este link, pode ignorar este e-mail com tranquilidade.
+          </Text>
+        </Section>
       </Container>
     </Body>
   </Html>
@@ -45,26 +51,51 @@ export const MagicLinkEmail = ({
 
 export default MagicLinkEmail
 
-const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '20px 25px' }
+const main = {
+  backgroundColor: '#ffffff',
+  fontFamily: "Poppins, 'Helvetica Neue', Arial, sans-serif",
+}
+const container = { padding: '24px 16px', maxWidth: '560px', margin: '0 auto' }
+const brandBar = {
+  textAlign: 'center' as const,
+  padding: '24px 0 16px',
+  borderBottom: '3px solid #9BAE52',
+}
+const brandText = {
+  fontSize: '28px',
+  fontWeight: 700 as const,
+  color: '#4667B4',
+  letterSpacing: '-0.5px',
+  margin: '0',
+}
+const brandSubtext = {
+  fontSize: '12px',
+  color: '#9BAE52',
+  margin: '2px 0 0',
+  letterSpacing: '1px',
+  textTransform: 'uppercase' as const,
+}
+const card = { padding: '32px 8px' }
 const h1 = {
-  fontSize: '22px',
-  fontWeight: 'bold' as const,
-  color: '#000000',
+  fontSize: '24px',
+  fontWeight: 600 as const,
+  color: '#4667B4',
   margin: '0 0 20px',
 }
 const text = {
-  fontSize: '14px',
-  color: '#55575d',
-  lineHeight: '1.5',
-  margin: '0 0 25px',
+  fontSize: '15px',
+  color: '#444444',
+  lineHeight: '1.6',
+  margin: '0 0 24px',
 }
 const button = {
-  backgroundColor: '#000000',
+  backgroundColor: '#9BAE52',
   color: '#ffffff',
-  fontSize: '14px',
-  borderRadius: '8px',
-  padding: '12px 20px',
+  fontSize: '15px',
+  fontWeight: 700 as const,
+  borderRadius: '999px',
+  padding: '14px 28px',
   textDecoration: 'none',
+  display: 'inline-block',
 }
-const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
+const footer = { fontSize: '12px', color: '#888888', margin: '32px 0 0', lineHeight: '1.5' }
