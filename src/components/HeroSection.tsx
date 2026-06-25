@@ -64,7 +64,7 @@ const HeroSection = () => {
               "Lipedema não tem cura, mas tem controle."
             </p>
 
-            <div id="cta" className="mb-6">
+            <div id="cta" className="mb-4">
               <a
                 href="#comprar"
                 className="inline-block bg-gradient-brand text-white font-bold text-base sm:text-lg px-10 py-4 rounded-full shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
@@ -72,6 +72,22 @@ const HeroSection = () => {
                 CONHECER A ROTINA LIPOVITTA
               </a>
             </div>
+
+            <div className="mb-6">
+              <a
+                href="#card-kit-rush-top"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("card-kit-rush-top")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="inline-flex items-center gap-2 text-sm font-semibold text-[#4667B4] bg-white/80 backdrop-blur border border-[#D9E2F1] hover:border-[#9BAE52] hover:text-[#8A9D45] px-4 py-2 rounded-full transition-colors shadow-sm"
+              >
+                <span className="inline-block text-[10px] font-bold uppercase tracking-wide text-white bg-[#E63946] px-2 py-0.5 rounded-full">Novo</span>
+                Kit Shot Rush + Cápsulas
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+
 
             <div className="flex flex-wrap justify-center lg:justify-start gap-2 sm:gap-3">
               {["100% Natural", "Sem Glúten", "+2.000 mulheres"].map((badge) => (
