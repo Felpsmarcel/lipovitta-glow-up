@@ -6,11 +6,17 @@ import shotMatinalLimaoImg from "@/assets/shot-matinal-limao.jpg";
 import shotMatinalTangerinaImg from "@/assets/shot-matinal-tangerina.jpg";
 import comboImg from "@/assets/combo-lipovitta.png.asset.json";
 import kitShotRushImg from "@/assets/kit-shot-rush-capsulas.png.asset.json";
+import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
 
 const LINK_CAPSULAS = "https://seguro.lipovitta.site/r/RMTIX51GQN";
 const LINK_PROTOCOLO = "https://seguro.lipovitta.site/b/RPQ0CD6N6Q8C";
 const LINK_SHOT = "https://seguro.lipovitta.site/r/PW60UM0Y2J";
 const LINK_KIT_RUSH = "https://seguro.lipovitta.site/b/3QUPWLJZ74U8";
+
+const KIT_CAPSULAS: SelectedKit = { id: "capsulas", name: "LipoVitta Cápsulas", productCount: 1, checkoutUrl: LINK_CAPSULAS };
+const KIT_SHOT: SelectedKit = { id: "shot-matinal", name: "Shot Matinal LipoVitta", productCount: 1, checkoutUrl: LINK_SHOT };
+const KIT_RUSH: SelectedKit = { id: "kit-rush", name: "Kit Shot Rush + Cápsulas", productCount: 2, checkoutUrl: LINK_KIT_RUSH };
+const KIT_PROTOCOLO: SelectedKit = { id: "protocolo", name: "Protocolo Completo LipoVitta", productCount: 3, checkoutUrl: LINK_PROTOCOLO };
 
 const OfferSection = () => {
   const sectionRef = useScrollAnimation();
