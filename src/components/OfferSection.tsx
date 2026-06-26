@@ -265,14 +265,13 @@ const OfferSection = () => {
                 </div>
                 <p className="text-sm text-[#666] mt-1">ou 3x de R$158,10 sem juros</p>
               </div>
-              <a
-                href={LINK_PROTOCOLO}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base py-4 min-h-[52px]"
+              <button
+                type="button"
+                onClick={() => selectKit(KIT_PROTOCOLO)}
+                className="block w-full text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base py-4 min-h-[52px]"
               >
                 ESCOLHER PROTOCOLO COMPLETO
-              </a>
+              </button>
               <p className="text-xs text-[#777] text-center mt-3">
                 A escolha de 7 em cada 10 clientes.
               </p>
