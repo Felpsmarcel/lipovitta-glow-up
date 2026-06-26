@@ -216,15 +216,14 @@ const OfferSection = () => {
             </div>
 
 
-            <a
-              href={LINK_PROTOCOLO}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Comprar Protocolo Completo LipoVitta"
-              className="block h-44 sm:h-52 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] overflow-hidden mb-5 mt-2 transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#9BAE52]"
+            <button
+              type="button"
+              onClick={() => selectKit(KIT_PROTOCOLO)}
+              aria-label="Escolher Protocolo Completo LipoVitta"
+              className="block w-full h-44 sm:h-52 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] overflow-hidden mb-5 mt-2 transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#9BAE52]"
             >
               <img src={comboImg.url} alt="Cápsulas LipoVitta com Shot Matinal" className="h-full w-full object-contain" loading="lazy" />
-            </a>
+            </button>
             <h3 className="font-sans font-semibold text-2xl sm:text-3xl text-[#4667B4] mb-1">
               Protocolo Completo LipoVitta
             </h3>
