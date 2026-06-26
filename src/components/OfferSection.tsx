@@ -322,14 +322,13 @@ const OfferSection = () => {
                 </div>
                 <p className="text-xs sm:text-sm text-[#666] mt-1">ou 3x de R$51,00 sem juros</p>
               </div>
-              <a
-                href={LINK_SHOT}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-center border-2 border-[#4667B4] text-[#4667B4] hover:bg-[#4667B4] hover:text-white font-bold rounded-full transition-colors text-sm py-3 min-h-[48px]"
+              <button
+                type="button"
+                onClick={() => selectKit(KIT_SHOT)}
+                className="block w-full text-center border-2 border-[#4667B4] text-[#4667B4] hover:bg-[#4667B4] hover:text-white font-bold rounded-full transition-colors text-sm py-3 min-h-[48px]"
               >
                 ADICIONAR À MINHA ROTINA
-              </a>
+              </button>
               <p className="text-xs text-[#777] text-center mt-3">
                 Combine com a Cápsula para liberar frete grátis escolhendo o Protocolo Completo.
               </p>
