@@ -173,14 +173,13 @@ const OfferSection = () => {
                 </div>
                 <p className="text-sm text-[#666] mt-1">ou 3x de R$107,10 sem juros</p>
               </div>
-              <a
-                href={LINK_CAPSULAS}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base sm:text-lg py-4 sm:py-5 min-h-[56px]"
+              <button
+                type="button"
+                onClick={() => selectKit(KIT_CAPSULAS)}
+                className="block w-full text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base sm:text-lg py-4 sm:py-5 min-h-[56px]"
               >
                 COMEÇAR MINHA ROTINA
-              </a>
+              </button>
               <p className="text-xs text-[#777] text-center mt-3">
                 Adicione Shot Matinal, Gummy ou Shot Rush logo abaixo.
               </p>
