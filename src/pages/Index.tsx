@@ -13,77 +13,84 @@ import OfferSection from "@/components/OfferSection";
 import FAQSection from "@/components/FAQSection";
 import SectionSwoosh from "@/components/SectionSwoosh";
 import TrustBar from "@/components/TrustBar";
+import GiftSelectionSection from "@/components/GiftSelectionSection";
+import { GiftFlowProvider } from "@/context/GiftFlowContext";
 
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 
 const Index = () => (
-  <div className="min-h-screen bg-background">
-    <SEOHead
-      title="Comprar LipoVitta - Oferta Exclusiva"
-      description="Adquira LipoVitta com desconto exclusivo. Frete grátis, garantia de 30 dias e resultados comprovados. Aproveite a promoção limitada!"
-      keywords="comprar LipoVitta, LipoVitta preço, LipoVitta onde comprar"
-      ogType="product"
-      canonicalUrl="https://lipovitta.site/"
-    />
-    <Navbar />
-    <main>
-      {/* Hero: branco */}
-      <HeroSection />
+  <GiftFlowProvider>
+    <div className="min-h-screen bg-background">
+      <SEOHead
+        title="Comprar LipoVitta - Oferta Exclusiva"
+        description="Adquira LipoVitta com desconto exclusivo. Frete grátis, garantia de 30 dias e resultados comprovados. Aproveite a promoção limitada!"
+        keywords="comprar LipoVitta, LipoVitta preço, LipoVitta onde comprar"
+        ogType="product"
+        canonicalUrl="https://lipovitta.site/"
+      />
+      <Navbar />
+      <main>
+        {/* Hero: branco */}
+        <HeroSection />
 
-      {/* Routine: light grey */}
-      <RoutineSection />
+        {/* Routine: light grey */}
+        <RoutineSection />
 
-      {/* Testimonials: branco (denso) */}
-      <TestimonialsSection />
+        {/* Testimonials: branco (denso) */}
+        <TestimonialsSection />
 
-      {/* → Benefits: AZUL */}
+        {/* → Benefits: AZUL */}
+        <SectionSwoosh direction="white-to-blue" />
+        <BenefitsSection />
+
+        {/* → CTA: branco/soft */}
+        <SectionSwoosh direction="blue-to-white" />
+        <CTABanner />
+
+        {/* → ForWho: AZUL */}
+        <SectionSwoosh direction="white-to-blue" />
+        <ForWhoSection />
+
+        {/* → HowToUse: branco */}
+        <SectionSwoosh direction="blue-to-white" />
+        <HowToUseSection />
+
+        {/* → Ingredients: AZUL */}
+        <SectionSwoosh direction="white-to-blue" />
+        <IngredientsSection />
+
+        {/* → CTA: branco/soft */}
+        <SectionSwoosh direction="blue-to-white" />
+        <CTABanner />
+
+        {/* Offer: light grey */}
+        <OfferSection />
+
+        {/* Escolha de brinde — aparece após clicar em comprar */}
+        <GiftSelectionSection />
+
+        {/* Products: branco */}
+        <ProductsSection />
+
+        {/* → FAQ: AZUL */}
+        <SectionSwoosh direction="white-to-blue" />
+        <FAQSection />
+
+        {/* → TrustBar: branco */}
+        <SectionSwoosh direction="blue-to-white" />
+        <TrustBar />
+      </main>
+
+      {/* → Footer: AZUL */}
       <SectionSwoosh direction="white-to-blue" />
-      <BenefitsSection />
 
-      {/* → CTA: branco/soft */}
-      <SectionSwoosh direction="blue-to-white" />
-      <CTABanner />
-
-      {/* → ForWho: AZUL */}
-      <SectionSwoosh direction="white-to-blue" />
-      <ForWhoSection />
-
-      {/* → HowToUse: branco */}
-      <SectionSwoosh direction="blue-to-white" />
-      <HowToUseSection />
-
-      {/* → Ingredients: AZUL */}
-      <SectionSwoosh direction="white-to-blue" />
-      <IngredientsSection />
-
-      {/* → CTA: branco/soft */}
-      <SectionSwoosh direction="blue-to-white" />
-      <CTABanner />
-
-      {/* Offer: light grey */}
-      <OfferSection />
-
-      {/* Products: branco */}
-      <ProductsSection />
-
-      {/* → FAQ: AZUL */}
-      <SectionSwoosh direction="white-to-blue" />
-      <FAQSection />
-
-      {/* → TrustBar: branco */}
-      <SectionSwoosh direction="blue-to-white" />
-      <TrustBar />
-    </main>
-
-    {/* → Footer: AZUL */}
-    <SectionSwoosh direction="white-to-blue" />
-
-    <Footer />
-    <WhatsAppButton />
-    <ExitIntentPopup />
-  </div>
+      <Footer />
+      <WhatsAppButton />
+      <ExitIntentPopup />
+    </div>
+  </GiftFlowProvider>
 );
 
 export default Index;

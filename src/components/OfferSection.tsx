@@ -6,14 +6,21 @@ import shotMatinalLimaoImg from "@/assets/shot-matinal-limao.jpg";
 import shotMatinalTangerinaImg from "@/assets/shot-matinal-tangerina.jpg";
 import comboImg from "@/assets/combo-lipovitta.png.asset.json";
 import kitShotRushImg from "@/assets/kit-shot-rush-capsulas.png.asset.json";
+import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
 
 const LINK_CAPSULAS = "https://seguro.lipovitta.site/r/RMTIX51GQN";
 const LINK_PROTOCOLO = "https://seguro.lipovitta.site/b/RPQ0CD6N6Q8C";
 const LINK_SHOT = "https://seguro.lipovitta.site/r/PW60UM0Y2J";
 const LINK_KIT_RUSH = "https://seguro.lipovitta.site/b/3QUPWLJZ74U8";
 
+const KIT_CAPSULAS: SelectedKit = { id: "capsulas", name: "LipoVitta Cápsulas", productCount: 1, checkoutUrl: LINK_CAPSULAS };
+const KIT_SHOT: SelectedKit = { id: "shot-matinal", name: "Shot Matinal LipoVitta", productCount: 1, checkoutUrl: LINK_SHOT };
+const KIT_RUSH: SelectedKit = { id: "kit-rush", name: "Kit Shot Rush + Cápsulas", productCount: 2, checkoutUrl: LINK_KIT_RUSH };
+const KIT_PROTOCOLO: SelectedKit = { id: "protocolo", name: "Protocolo Completo LipoVitta", productCount: 3, checkoutUrl: LINK_PROTOCOLO };
+
 const OfferSection = () => {
   const sectionRef = useScrollAnimation();
+  const { selectKit } = useGiftFlow();
 
   return (
     <section ref={sectionRef} id="precos" className="pt-24 md:pt-32 pb-16 md:pb-20" style={{ background: "#F5F7FA" }}>
@@ -108,14 +115,13 @@ const OfferSection = () => {
                   <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">R$546,30</p>
                   <p className="text-sm text-[#666] mt-1">ou 3x de R$182,10 sem juros</p>
                 </div>
-                <a
-                  href={LINK_KIT_RUSH}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  onClick={() => selectKit(KIT_RUSH)}
                   className="inline-block text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base sm:text-lg px-8 py-4 min-h-[56px] shadow-md"
                 >
                   COMPRAR KIT AGORA
-                </a>
+                </button>
               </div>
               <p className="text-xs text-[#777] mt-3">
                 Frete grátis · Garantia de 30 dias
@@ -167,14 +173,13 @@ const OfferSection = () => {
                 </div>
                 <p className="text-sm text-[#666] mt-1">ou 3x de R$107,10 sem juros</p>
               </div>
-              <a
-                href={LINK_CAPSULAS}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base sm:text-lg py-4 sm:py-5 min-h-[56px]"
+              <button
+                type="button"
+                onClick={() => selectKit(KIT_CAPSULAS)}
+                className="block w-full text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base sm:text-lg py-4 sm:py-5 min-h-[56px]"
               >
                 COMEÇAR MINHA ROTINA
-              </a>
+              </button>
               <p className="text-xs text-[#777] text-center mt-3">
                 Adicione Shot Matinal, Gummy ou Shot Rush logo abaixo.
               </p>
@@ -211,15 +216,14 @@ const OfferSection = () => {
             </div>
 
 
-            <a
-              href={LINK_PROTOCOLO}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Comprar Protocolo Completo LipoVitta"
-              className="block h-44 sm:h-52 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] overflow-hidden mb-5 mt-2 transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#9BAE52]"
+            <button
+              type="button"
+              onClick={() => selectKit(KIT_PROTOCOLO)}
+              aria-label="Escolher Protocolo Completo LipoVitta"
+              className="block w-full h-44 sm:h-52 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] overflow-hidden mb-5 mt-2 transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#9BAE52]"
             >
               <img src={comboImg.url} alt="Cápsulas LipoVitta com Shot Matinal" className="h-full w-full object-contain" loading="lazy" />
-            </a>
+            </button>
             <h3 className="font-sans font-semibold text-2xl sm:text-3xl text-[#4667B4] mb-1">
               Protocolo Completo LipoVitta
             </h3>
@@ -261,14 +265,13 @@ const OfferSection = () => {
                 </div>
                 <p className="text-sm text-[#666] mt-1">ou 3x de R$158,10 sem juros</p>
               </div>
-              <a
-                href={LINK_PROTOCOLO}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base py-4 min-h-[52px]"
+              <button
+                type="button"
+                onClick={() => selectKit(KIT_PROTOCOLO)}
+                className="block w-full text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base py-4 min-h-[52px]"
               >
                 ESCOLHER PROTOCOLO COMPLETO
-              </a>
+              </button>
               <p className="text-xs text-[#777] text-center mt-3">
                 A escolha de 7 em cada 10 clientes.
               </p>
@@ -319,14 +322,13 @@ const OfferSection = () => {
                 </div>
                 <p className="text-xs sm:text-sm text-[#666] mt-1">ou 3x de R$51,00 sem juros</p>
               </div>
-              <a
-                href={LINK_SHOT}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-center border-2 border-[#4667B4] text-[#4667B4] hover:bg-[#4667B4] hover:text-white font-bold rounded-full transition-colors text-sm py-3 min-h-[48px]"
+              <button
+                type="button"
+                onClick={() => selectKit(KIT_SHOT)}
+                className="block w-full text-center border-2 border-[#4667B4] text-[#4667B4] hover:bg-[#4667B4] hover:text-white font-bold rounded-full transition-colors text-sm py-3 min-h-[48px]"
               >
                 ADICIONAR À MINHA ROTINA
-              </a>
+              </button>
               <p className="text-xs text-[#777] text-center mt-3">
                 Combine com a Cápsula para liberar frete grátis escolhendo o Protocolo Completo.
               </p>
