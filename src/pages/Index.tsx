@@ -13,6 +13,8 @@ import OfferSection from "@/components/OfferSection";
 import FAQSection from "@/components/FAQSection";
 import SectionSwoosh from "@/components/SectionSwoosh";
 import TrustBar from "@/components/TrustBar";
+import GiftSelectionSection from "@/components/GiftSelectionSection";
+import { GiftFlowProvider } from "@/context/GiftFlowContext";
 
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
