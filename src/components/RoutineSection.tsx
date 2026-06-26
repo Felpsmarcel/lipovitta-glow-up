@@ -45,10 +45,12 @@ const RoutineSection = () => {
                 frameBorder="0"
                 scrolling="no"
                 allowTransparency={true}
+                loading="lazy"
                 onError={() => setIframeError(true)}
                 title="Post Instagram LipoVitta"
                 style={{ border: "none", minHeight: 480 }}
               />
+
             ) : (
               <a
                 href="https://www.instagram.com/p/DQcTXQrkStl/"
