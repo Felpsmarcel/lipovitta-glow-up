@@ -1,3 +1,8 @@
+import raspadorAsset from "@/assets/brinde-raspador.png.asset.json";
+import portacapsulasAsset from "@/assets/brinde-portacapsulas.png.asset.json";
+import mixerAsset from "@/assets/brinde-mixer.png.asset.json";
+import garrafaAsset from "@/assets/brinde-garrafa.png.asset.json";
+
 export type Gift = {
   id: string;
   nome: string;
@@ -7,17 +12,13 @@ export type Gift = {
   minProducts: 1 | 2 | 3;
 };
 
-// Imagens placeholder — substitua pelos arquivos definitivos via lovable-assets
-// (src/assets/brinde-raspador.png, brinde-portacapsulas.png, brinde-mixer.png, brinde-garrafa.png)
-const PLACEHOLDER = "/placeholder.svg";
-
 export const GIFTS: Gift[] = [
   {
     id: "raspador",
     nome: "Raspador de língua",
     linha: "Para começar o ritual de dentro pra fora.",
     utm: "brinde_raspador",
-    image: PLACEHOLDER,
+    image: raspadorAsset.url,
     minProducts: 1,
   },
   {
@@ -25,7 +26,7 @@ export const GIFTS: Gift[] = [
     nome: "Porta cápsulas",
     linha: "Sua rotina organizada, onde você for.",
     utm: "brinde_portacapsulas",
-    image: PLACEHOLDER,
+    image: portacapsulasAsset.url,
     minProducts: 1,
   },
   {
@@ -33,7 +34,7 @@ export const GIFTS: Gift[] = [
     nome: "Mixer Dosador",
     linha: "Praticidade pra sua dose perfeita todo dia.",
     utm: "brinde_mixer",
-    image: PLACEHOLDER,
+    image: mixerAsset.url,
     minProducts: 2,
   },
   {
@@ -41,7 +42,7 @@ export const GIFTS: Gift[] = [
     nome: "Garrafa Térmica",
     linha: "Hidratação que acompanha sua rotina completa.",
     utm: "brinde_garrafa",
-    image: PLACEHOLDER,
+    image: garrafaAsset.url,
     minProducts: 3,
   },
 ];
