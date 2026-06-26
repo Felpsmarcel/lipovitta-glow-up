@@ -20,6 +20,7 @@ const KIT_PROTOCOLO: SelectedKit = { id: "protocolo", name: "Protocolo Completo 
 
 const OfferSection = () => {
   const sectionRef = useScrollAnimation();
+  const { selectKit } = useGiftFlow();
 
   return (
     <section ref={sectionRef} id="precos" className="pt-24 md:pt-32 pb-16 md:pb-20" style={{ background: "#F5F7FA" }}>
