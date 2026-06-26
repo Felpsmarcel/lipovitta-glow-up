@@ -115,14 +115,13 @@ const OfferSection = () => {
                   <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">R$546,30</p>
                   <p className="text-sm text-[#666] mt-1">ou 3x de R$182,10 sem juros</p>
                 </div>
-                <a
-                  href={LINK_KIT_RUSH}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  onClick={() => selectKit(KIT_RUSH)}
                   className="inline-block text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base sm:text-lg px-8 py-4 min-h-[56px] shadow-md"
                 >
                   COMPRAR KIT AGORA
-                </a>
+                </button>
               </div>
               <p className="text-xs text-[#777] mt-3">
                 Frete grátis · Garantia de 30 dias
