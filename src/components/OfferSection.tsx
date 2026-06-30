@@ -52,7 +52,7 @@ const OfferSection = () => {
             <div className="lg:col-span-5 relative bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center p-4 sm:p-6 min-h-[280px]">
               <img
                 src={kitShotRushImg.url}
-                alt="Kit Shot Rush sabor Melancia + Cápsulas LipoVitta"
+                alt="Kit Shot Rush sabor Frutas Vermelhas + Cápsulas LipoVitta"
                 className="w-full h-full max-h-[420px] object-contain"
                 loading="lazy"
               />
@@ -60,7 +60,7 @@ const OfferSection = () => {
 
             <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col">
               <span className="inline-block self-start text-xs font-semibold uppercase tracking-wide text-white bg-[#E63946] px-3 py-1 rounded-full mb-3">
-                Sabor Melancia
+                Sabor Frutas Vermelhas
               </span>
               <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-medium text-[#4667B4] mb-2 leading-tight">
                 Kit Shot Rush + Cápsulas LipoVitta
@@ -69,7 +69,7 @@ const OfferSection = () => {
                 Energia, vitalidade e cuidado corporal em uma rotina só.
               </p>
               <p className="font-sans text-[#555] text-sm sm:text-base mb-4">
-                Une o Shot Rush sabor Melancia (disposição e performance) com a Cápsula LipoVitta, motor do Sistema LipoVitta por Clara Caldas.
+                Une o Shot Rush sabor Frutas Vermelhas (disposição e performance) com a Cápsula LipoVitta, motor do Sistema LipoVitta por Clara Caldas.
               </p>
 
               <div className="flex flex-wrap gap-2 mb-4">
@@ -88,7 +88,7 @@ const OfferSection = () => {
                   <li className="text-xs font-bold uppercase tracking-wide text-[#888] mb-1">O que vem</li>
                   <li className="flex items-start gap-2 text-[#333] text-sm">
                     <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
-                    <span>1 Shot Rush sabor Melancia (180g)</span>
+                    <span>1 Shot Rush sabor Frutas Vermelhas (180g)</span>
                   </li>
                   <li className="flex items-start gap-2 text-[#333] text-sm">
                     <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
@@ -181,7 +181,7 @@ const OfferSection = () => {
                 COMEÇAR MINHA ROTINA
               </button>
               <p className="text-xs text-[#777] text-center mt-3">
-                Adicione Shot Matinal, Gummy ou Shot Rush logo abaixo.
+                Adicione o Shot Rush logo abaixo.
               </p>
             </div>
           </article>
