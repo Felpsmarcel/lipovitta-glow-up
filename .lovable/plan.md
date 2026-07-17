@@ -1,14 +1,9 @@
-## Objetivo
-Substituir a imagem atual do depoimento "A inflamação do corpo começa a reduzir" pela segunda imagem enviada (versão ANTES/DEPOIS com lipovitta.site).
+Ajustar o preço do **Protocolo Completo LipoVitta** em `src/components/OfferSection.tsx`.
 
-## Alterações
-1. Fazer upload da nova imagem (`user-uploads://0151798B-2E7C-4E0A-83A4-03794E7EDF92.png`) para o CDN via `lovable-assets`, gerando `src/assets/testimonials/inflamacao.png.asset.json`.
-2. Atualizar `src/components/TestimonialsSection.tsx`:
-   - Trocar o import de `inflamacao.jpg` para o novo pointer `.asset.json` (usando `.url`).
-3. Remover o arquivo antigo `src/assets/testimonials/inflamacao.jpg` do repositório.
+Alterações propostas:
+1. Preço principal: de **R$474,30** para **R$447,95**.
+2. Preço original tachado: ajustar para **R$497,72** para manter a mensagem de 10% OFF.
+3. Parcelamento: recalcular para **3x de R$149,32 sem juros** (447,95 ÷ 3).
+4. Verificar se o valor antigo (R$474,30 ou R$158,10) aparece em outros arquivos do projeto e corrigir se necessário.
 
-## Fora do escopo
-Texto, layout, demais depoimentos, estilos.
-
-## Critério de aceite
-A seção de depoimentos exibe a nova imagem ANTES/DEPOIS no lugar da anterior; nenhuma referência quebrada; build ok.
+Escopo: apenas o card do Protocolo Completo na seção de ofertas. Não alterar outros produtos, links, checkout, layout, identidade visual ou funcionamento do fluxo de brindes.
