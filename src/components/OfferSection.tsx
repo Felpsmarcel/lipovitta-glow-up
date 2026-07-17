@@ -257,13 +257,13 @@ const OfferSection = () => {
                   10% OFF comprando hoje
                 </span>
                 <div className="flex items-center gap-3 flex-wrap">
-                  <span className="text-[#999] line-through text-sm">R$527,00</span>
-                  <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">R$474,30</p>
+                  <span className="text-[#999] line-through text-sm">R$497,72</span>
+                  <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">R$447,95</p>
                   <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
                     Economize 10%
                   </span>
                 </div>
-                <p className="text-sm text-[#666] mt-1">ou 3x de R$158,10 sem juros</p>
+                <p className="text-sm text-[#666] mt-1">ou 3x de R$149,32 sem juros</p>
               </div>
               <button
                 type="button"
