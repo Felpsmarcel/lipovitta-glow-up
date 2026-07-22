@@ -7,6 +7,7 @@ import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Afiliados from "./pages/Afiliados.tsx";
 import Unsubscribe from "./pages/Unsubscribe.tsx";
+import MetaPixelRouteTracker from "./components/MetaPixelRouteTracker";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <MetaPixelRouteTracker />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/afiliados" element={<Afiliados />} />

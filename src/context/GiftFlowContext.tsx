@@ -5,6 +5,8 @@ export type SelectedKit = {
   name: string;
   productCount: 1 | 2 | 3;
   checkoutUrl: string;
+  value?: number;
+  sku?: string;
 };
 
 type GiftFlowContextValue = {

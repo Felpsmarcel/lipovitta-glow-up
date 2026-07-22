@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
+import { trackEvent } from "@/lib/metaPixel";
 import { STATES, NOTIFY_EMAIL, Field, inputCls, SuccessCard } from "@/pages/Afiliados";
 
 const BUSINESS_TYPES = [
@@ -150,6 +151,12 @@ const PartnerForm = () => {
     } catch {
       /* silent */
     }
+
+    trackEvent(
+      "Lead",
+      { content_name: "parceiro_comercial", content_category: "afiliados" },
+      { eventID: `partner-${inserted.id}` }
+    );
 
     setSubmitting(false);
     setSuccess(true);

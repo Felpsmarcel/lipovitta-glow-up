@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
+import { trackEvent } from "@/lib/metaPixel";
 import { STATES, NOTIFY_EMAIL, Field, inputCls, SuccessCard } from "@/pages/Afiliados";
 
 const FOLLOWERS = [
@@ -107,6 +108,12 @@ const AffiliateForm = () => {
     } catch {
       /* silent */
     }
+
+    trackEvent(
+      "Lead",
+      { content_name: "afiliada", content_category: "afiliados" },
+      { eventID: `affiliate-${inserted.id}` }
+    );
 
     setSubmitting(false);
     setSuccess(true);

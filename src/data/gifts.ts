@@ -51,7 +51,9 @@ export function getEligibleGifts(productCount: 1 | 2 | 3): Gift[] {
   return GIFTS.filter((g) => productCount >= g.minProducts);
 }
 
-export function appendGiftUtm(checkoutUrl: string, giftUtm: string): string {
+export function appendGiftUtm(checkoutUrl: string, giftUtm: string, eventId?: string): string {
   const sep = checkoutUrl.includes("?") ? "&" : "?";
-  return `${checkoutUrl}${sep}utm_content=${encodeURIComponent(giftUtm)}`;
+  let url = `${checkoutUrl}${sep}utm_content=${encodeURIComponent(giftUtm)}`;
+  if (eventId) url += `&utm_term=eid_${encodeURIComponent(eventId)}`;
+  return url;
 }
