@@ -109,6 +109,12 @@ const AffiliateForm = () => {
       /* silent */
     }
 
+    trackEvent(
+      "Lead",
+      { content_name: "afiliada", content_category: "afiliados" },
+      { eventID: `affiliate-${inserted.id}` }
+    );
+
     setSubmitting(false);
     setSuccess(true);
   };
