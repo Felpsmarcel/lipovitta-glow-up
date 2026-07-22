@@ -95,14 +95,14 @@ Deno.serve(async (req: Request) => {
     );
   }
 
-  // Stape CAPI Gateway — forwards to Meta with same payload shape as Graph /events.
-  const url = `https://${STAPE_HOST}/${PIXEL_ID}/events`;
+  // Stape CAPI Gateway — transparent proxy for Meta Graph /events.
+  // Auth is via ?access_token=<token> in the query string, same as Graph API.
+  const qs = new URLSearchParams({ access_token: STAPE_TOKEN });
+  if (TEST_EVENT_CODE) qs.set("test_event_code", TEST_EVENT_CODE);
+  const url = `https://${STAPE_HOST}/${PIXEL_ID}/events?${qs.toString()}`;
   const resp = await fetch(url, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${STAPE_TOKEN}`,
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(capiPayload),
   });
   const text = await resp.text();
