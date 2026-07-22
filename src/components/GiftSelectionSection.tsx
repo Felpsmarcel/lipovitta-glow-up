@@ -1,6 +1,7 @@
 import { Check, Gift as GiftIcon } from "lucide-react";
 import { useGiftFlow } from "@/context/GiftFlowContext";
 import { appendGiftUtm, getEligibleGifts } from "@/data/gifts";
+import { generateEventId, trackEvent } from "@/lib/metaPixel";
 
 const GiftSelectionSection = () => {
   const { selectedKit, selectedGiftId, setSelectedGiftId } = useGiftFlow();
@@ -12,7 +13,21 @@ const GiftSelectionSection = () => {
 
   const handleCheckout = () => {
     if (!selectedGift) return;
-    const url = appendGiftUtm(selectedKit.checkoutUrl, selectedGift.utm);
+    const eventId = generateEventId();
+    trackEvent(
+      "InitiateCheckout",
+      {
+        content_ids: selectedKit.sku ? [selectedKit.sku] : undefined,
+        content_name: selectedKit.name,
+        content_type: "product",
+        currency: "BRL",
+        value: selectedKit.value,
+        num_items: selectedKit.productCount,
+        gift: selectedGift.utm,
+      },
+      { eventID: eventId }
+    );
+    const url = appendGiftUtm(selectedKit.checkoutUrl, selectedGift.utm, eventId);
     window.open(url, "_blank", "noopener");
   };
 
