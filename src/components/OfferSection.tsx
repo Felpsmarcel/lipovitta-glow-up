@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Shield, Check, Tag } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import capsulasImg from "@/assets/capsulas-lipovitta.png";
@@ -7,20 +8,46 @@ import shotMatinalTangerinaImg from "@/assets/shot-matinal-tangerina.jpg";
 import comboImg from "@/assets/combo-lipovitta.png.asset.json";
 import kitShotRushImg from "@/assets/kit-shot-rush-capsulas.png.asset.json";
 import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
+import { trackEvent } from "@/lib/metaPixel";
 
 const LINK_CAPSULAS = "https://seguro.lipovitta.site/r/RMTIX51GQN";
 const LINK_PROTOCOLO = "https://seguro.lipovitta.site/b/RPQ0CD6N6Q8C";
 const LINK_SHOT = "https://seguro.lipovitta.site/r/PW60UM0Y2J";
 const LINK_KIT_RUSH = "https://seguro.lipovitta.site/b/3QUPWLJZ74U8";
 
-const KIT_CAPSULAS: SelectedKit = { id: "capsulas", name: "LipoVitta Cápsulas", productCount: 1, checkoutUrl: LINK_CAPSULAS };
-const KIT_SHOT: SelectedKit = { id: "shot-matinal", name: "Shot Matinal LipoVitta", productCount: 1, checkoutUrl: LINK_SHOT };
-const KIT_RUSH: SelectedKit = { id: "kit-rush", name: "Kit Shot Rush + Cápsulas", productCount: 2, checkoutUrl: LINK_KIT_RUSH };
-const KIT_PROTOCOLO: SelectedKit = { id: "protocolo", name: "Protocolo Completo LipoVitta", productCount: 3, checkoutUrl: LINK_PROTOCOLO };
+const KIT_CAPSULAS: SelectedKit = { id: "capsulas", name: "LipoVitta Cápsulas", productCount: 1, checkoutUrl: LINK_CAPSULAS, value: 321.30, sku: "RMTIX51GQN" };
+const KIT_SHOT: SelectedKit = { id: "shot-matinal", name: "Shot Matinal LipoVitta", productCount: 1, checkoutUrl: LINK_SHOT, value: 153.00, sku: "PW60UM0Y2J" };
+const KIT_RUSH: SelectedKit = { id: "kit-rush", name: "Kit Shot Rush + Cápsulas", productCount: 2, checkoutUrl: LINK_KIT_RUSH, value: 546.30, sku: "3QUPWLJZ74U8" };
+const KIT_PROTOCOLO: SelectedKit = { id: "protocolo", name: "Protocolo Completo LipoVitta", productCount: 3, checkoutUrl: LINK_PROTOCOLO, value: 447.95, sku: "RPQ0CD6N6Q8C" };
 
 const OfferSection = () => {
   const sectionRef = useScrollAnimation();
   const { selectKit } = useGiftFlow();
+  const viewFired = useRef(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el || viewFired.current) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting && !viewFired.current) {
+            viewFired.current = true;
+            trackEvent("ViewContent", {
+              content_category: "ofertas",
+              content_name: "Home Ofertas",
+              currency: "BRL",
+            });
+            obs.disconnect();
+          }
+        });
+      },
+      { threshold: 0.25 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [sectionRef]);
+
 
   return (
     <section ref={sectionRef} id="precos" className="pt-24 md:pt-32 pb-16 md:pb-20" style={{ background: "#F5F7FA" }}>
