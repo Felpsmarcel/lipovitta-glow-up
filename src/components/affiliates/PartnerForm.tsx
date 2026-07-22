@@ -152,6 +152,12 @@ const PartnerForm = () => {
       /* silent */
     }
 
+    trackEvent(
+      "Lead",
+      { content_name: "parceiro_comercial", content_category: "afiliados" },
+      { eventID: `partner-${inserted.id}` }
+    );
+
     setSubmitting(false);
     setSuccess(true);
   };
