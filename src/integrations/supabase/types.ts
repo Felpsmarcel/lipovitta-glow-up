@@ -53,6 +53,54 @@ export type Database = {
         }
         Relationships: []
       }
+      commercial_partner_applications: {
+        Row: {
+          business_type: string
+          city: string
+          cnpj: string
+          company_name: string
+          created_at: string
+          email: string
+          id: string
+          phone: string
+          responsible_name: string
+          state: string
+          status: string
+          updated_at: string
+          volume_notes: string | null
+        }
+        Insert: {
+          business_type: string
+          city: string
+          cnpj: string
+          company_name: string
+          created_at?: string
+          email: string
+          id?: string
+          phone: string
+          responsible_name: string
+          state: string
+          status?: string
+          updated_at?: string
+          volume_notes?: string | null
+        }
+        Update: {
+          business_type?: string
+          city?: string
+          cnpj?: string
+          company_name?: string
+          created_at?: string
+          email?: string
+          id?: string
+          phone?: string
+          responsible_name?: string
+          state?: string
+          status?: string
+          updated_at?: string
+          volume_notes?: string | null
+        }
+        Relationships: []
+      }
       email_send_log: {
         Row: {
           created_at: string
