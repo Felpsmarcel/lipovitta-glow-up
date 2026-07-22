@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      affiliate_applications: {
+        Row: {
+          created_at: string
+          email: string
+          followers_range: string
+          full_name: string
+          id: string
+          knows_product: boolean
+          phone: string
+          state: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          followers_range: string
+          full_name: string
+          id?: string
+          knows_product?: boolean
+          phone: string
+          state: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          followers_range?: string
+          full_name?: string
+          id?: string
+          knows_product?: boolean
+          phone?: string
+          state?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       email_send_log: {
         Row: {
           created_at: string
