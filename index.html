@@ -27,6 +27,8 @@
 
   <body>
     <div id="root"></div>
+    <!-- Meta Pixel <noscript> fallback. VITE_META_PIXEL_ID is inlined at build time. -->
+    <noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=%VITE_META_PIXEL_ID%&ev=PageView&noscript=1"/></noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
