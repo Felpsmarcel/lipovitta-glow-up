@@ -1,42 +1,32 @@
-## Ligar Meta Pixel + CAPI (via Stape CAPI Gateway)
+## Ajustar chamada real da CAPI via Stape
 
-O token que você mandou não é da Graph API do Meta — é um token do **Stape CAPI Gateway** (host `capig.stape.pm`). Isso muda o endpoint de envio: em vez de `graph.facebook.com/v20.0/{pixel_id}/events`, mando os eventos para o Stape, e ele reencaminha para o Meta. Vantagem: contorna bloqueadores/iOS melhor e mantém o mesmo formato de payload.
+`ENABLE_SEND=true` já está no código e os secrets `META_PIXEL_ID` + `STAPE_CAPI_TOKEN` já estão salvos — o envio real está tecnicamente ligado. Mas o formato de autenticação que deixei (`Authorization: Bearer <token>`) não é o que o Stape CAPI Gateway espera. O token codificado em base64 já contém host + identificador + chave; o gateway é um proxy transparente do endpoint `/events` do Meta e recebe o token como **query string `access_token`**, igual à Graph API. Sem esse ajuste os eventos server-side voltam 401/403 do Stape.
 
-### 1. Pixel no browser (liga na hora)
-- Adicionar `VITE_META_PIXEL_ID="2146878272549292"` no `.env`.
-- `initMetaPixel()` já existe e passa a disparar `PageView` no bootstrap.
-- `MetaPixelRouteTracker` continua cuidando das rotas SPA.
-- `<noscript>` no `index.html` já usa `%VITE_META_PIXEL_ID%` — Vite injeta em build.
+### Alterações
 
-Eventos já plugados no código atual:
-- `PageView` (todas as rotas)
-- `ViewContent` (OfferSection entrando em viewport)
-- `Lead` (AffiliateForm + PartnerForm, com `eventID = <tipo>-<insert.id>`)
-- `InitiateCheckout` (GiftSelectionSection, com `eventID` propagado no link Yampi via `utm_term=eid_<uuid>`)
+1. `supabase/functions/meta-capi/index.ts`
+   - Trocar
+     ```
+     POST https://capig.stape.pm/{PIXEL_ID}/events
+     Authorization: Bearer <STAPE_CAPI_TOKEN>
+     ```
+     por
+     ```
+     POST https://capig.stape.pm/{PIXEL_ID}/events?access_token=<STAPE_CAPI_TOKEN>[&test_event_code=...]
+     Content-Type: application/json
+     ```
+   - Manter `ENABLE_SEND = true`, Zod, IP/UA a partir dos headers, `event_id` para dedupe.
+   - Log de resposta continua (status + primeiros 500 chars) para debug.
 
-### 2. CAPI via Stape (server-side, com dedupe por `eventID`)
-- Salvar 2 secrets (backend):
-  - `META_PIXEL_ID = 2146878272549292`
-  - `STAPE_CAPI_TOKEN = <token que você mandou>`
-- Ligar o mirror do browser: `VITE_META_CAPI_MIRROR="true"` no `.env`.
-- Editar `supabase/functions/meta-capi/index.ts`:
-  - Trocar `ENABLE_SEND` para `true`.
-  - Trocar endpoint de `graph.facebook.com/v20.0/{PIXEL_ID}/events?access_token=...` para o **Stape CAPI Gateway**: `POST https://capig.stape.pm/{PIXEL_ID}/events` com header `Authorization: Bearer <STAPE_CAPI_TOKEN>` (formato exato do header confirmado antes de subir — Stape aceita `access_token` no body OU header dependendo da versão; uso o padrão do painel do usuário).
-  - Manter validação Zod, `client_ip_address` (do `x-forwarded-for`) e `client_user_agent`, e o `event_id` vindo do browser (dedupe automático com o Pixel).
-  - Continuar logando payload no `console.log` para inspeção via Edge Function logs.
+2. Espelhamento opcional a partir do browser
+   - Continua controlado por `VITE_META_CAPI_MIRROR` no `.env` (hoje `"true"`). Sem mudança de código — quem quiser desligar o mirror server-side vindo do browser troca para `"false"` e faz redeploy. Documento isso na resposta.
 
-### 3. Purchase (Yampi → CAPI) — fora deste passo, mas preparado
-Já deixei o `eventID` do `InitiateCheckout` viajando no link Yampi (`utm_term=eid_<uuid>`). Quando ligarmos o webhook Yampi de compra aprovada, ele lê esse `eid_` e envia `Purchase` para `meta-capi` com o mesmo `event_id` — dedupe garantido. Não faço agora.
+3. Sem mudanças em UI, banco, checkout, Pixel do browser ou eventos existentes (`PageView`, `ViewContent`, `Lead`, `InitiateCheckout`).
 
-### 4. Verificação
-Depois de publicar:
-- Meta Events Manager → **Test Events**: cola a URL do site, valida `PageView`, `ViewContent`, `Lead`, `InitiateCheckout` chegando via **Browser** e também via **Server** (Stape) com o mesmo `event_id`.
-- Se você tiver um **Test Event Code** do Meta, adiciono como secret `META_CAPI_TEST_EVENT_CODE` (a função já suporta) para separar testes de produção.
+### Fora de escopo
+- Purchase server-side via webhook Yampi (o `event_id` do `InitiateCheckout` já viaja no link Yampi para dedupe futuro; fica para a próxima etapa).
+- Advanced Matching com hash de email/telefone (só faz sentido depois que Test Events estiver validado).
 
-### Detalhes técnicos
-- `.env` no repo aceita `VITE_*` públicas — Pixel ID e a flag `VITE_META_CAPI_MIRROR` não são segredo.
-- Secrets do backend (`META_PIXEL_ID`, `STAPE_CAPI_TOKEN`) via ferramenta `add_secret` — nunca no código.
-- Sem mudanças em componentes de UI, checkout, ou banco.
-
-### Pergunta rápida antes de eu executar
-Você quer que eu **já ligue o envio CAPI para produção** (ENABLE_SEND=true) junto com o Pixel, ou prefere **manter CAPI em modo preview** (só logando) por 1 dia para você validar o Pixel primeiro no Test Events?
+### Verificação após o deploy
+- Events Manager → **Test Events**: `PageView`, `ViewContent`, `Lead`, `InitiateCheckout` aparecendo com origem **Browser** e **Server** com o mesmo `event_id` (o Meta mostra "Deduplicated").
+- Edge Function logs de `meta-capi`: status 200 e corpo `{"events_received":1,...}` do Meta.
