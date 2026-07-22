@@ -4,6 +4,7 @@ import { paymentIcons } from "@/components/PaymentIcons";
 const institutionalLinks = [
   { label: "Política de Privacidade", href: "#" },
   { label: "Termos de Uso", href: "#" },
+  { label: "Seja Afiliada", href: "/afiliados" },
 ];
 
 const helpLinks = [
