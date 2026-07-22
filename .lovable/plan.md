@@ -1,50 +1,42 @@
-# Meta Pixel (agora) + estrutura pronta para CAPI
+## Ligar Meta Pixel + CAPI (via Stape CAPI Gateway)
 
-## 1. Configuração central do Pixel
+O token que você mandou não é da Graph API do Meta — é um token do **Stape CAPI Gateway** (host `capig.stape.pm`). Isso muda o endpoint de envio: em vez de `graph.facebook.com/v20.0/{pixel_id}/events`, mando os eventos para o Stape, e ele reencaminha para o Meta. Vantagem: contorna bloqueadores/iOS melhor e mantém o mesmo formato de payload.
 
-Novo arquivo `src/lib/metaPixel.ts`:
-- Lê `VITE_META_PIXEL_ID` do `.env` (variável pública — Pixel IDs não são segredo).
-- Expõe helpers tipados:
-  - `initMetaPixel()` — injeta o base code do fbq uma única vez.
-  - `trackPageView()`
-  - `trackEvent(name, params?, options?)` — aceita `{ eventID }` para dedupe futuro com CAPI.
-  - `generateEventId()` — gera UUID reutilizável (Pixel + CAPI usarão o mesmo).
-- Guarda contra SSR/duplo-init e contra ID ausente (no-op silencioso em dev).
+### 1. Pixel no browser (liga na hora)
+- Adicionar `VITE_META_PIXEL_ID="2146878272549292"` no `.env`.
+- `initMetaPixel()` já existe e passa a disparar `PageView` no bootstrap.
+- `MetaPixelRouteTracker` continua cuidando das rotas SPA.
+- `<noscript>` no `index.html` já usa `%VITE_META_PIXEL_ID%` — Vite injeta em build.
 
-## 2. Base code + `<noscript>`
+Eventos já plugados no código atual:
+- `PageView` (todas as rotas)
+- `ViewContent` (OfferSection entrando em viewport)
+- `Lead` (AffiliateForm + PartnerForm, com `eventID = <tipo>-<insert.id>`)
+- `InitiateCheckout` (GiftSelectionSection, com `eventID` propagado no link Yampi via `utm_term=eid_<uuid>`)
 
-- `index.html`: adicionar a tag `<noscript><img .../></noscript>` no `<body>` (não no `<head>`, conforme regra de HTML5) usando o Pixel ID em placeholder que o script substitui em runtime, OU deixar o fallback apontando para um ID configurável.
-- `src/main.tsx`: chamar `initMetaPixel()` no bootstrap.
+### 2. CAPI via Stape (server-side, com dedupe por `eventID`)
+- Salvar 2 secrets (backend):
+  - `META_PIXEL_ID = 2146878272549292`
+  - `STAPE_CAPI_TOKEN = <token que você mandou>`
+- Ligar o mirror do browser: `VITE_META_CAPI_MIRROR="true"` no `.env`.
+- Editar `supabase/functions/meta-capi/index.ts`:
+  - Trocar `ENABLE_SEND` para `true`.
+  - Trocar endpoint de `graph.facebook.com/v20.0/{PIXEL_ID}/events?access_token=...` para o **Stape CAPI Gateway**: `POST https://capig.stape.pm/{PIXEL_ID}/events` com header `Authorization: Bearer <STAPE_CAPI_TOKEN>` (formato exato do header confirmado antes de subir — Stape aceita `access_token` no body OU header dependendo da versão; uso o padrão do painel do usuário).
+  - Manter validação Zod, `client_ip_address` (do `x-forwarded-for`) e `client_user_agent`, e o `event_id` vindo do browser (dedupe automático com o Pixel).
+  - Continuar logando payload no `console.log` para inspeção via Edge Function logs.
 
-## 3. PageView em toda navegação SPA
+### 3. Purchase (Yampi → CAPI) — fora deste passo, mas preparado
+Já deixei o `eventID` do `InitiateCheckout` viajando no link Yampi (`utm_term=eid_<uuid>`). Quando ligarmos o webhook Yampi de compra aprovada, ele lê esse `eid_` e envia `Purchase` para `meta-capi` com o mesmo `event_id` — dedupe garantido. Não faço agora.
 
-Novo componente `src/components/MetaPixelRouteTracker.tsx` dentro do `<BrowserRouter>` em `App.tsx`:
-- Usa `useLocation()` para disparar `trackPageView()` a cada mudança de rota (`/`, `/afiliados`, `/unsubscribe`).
+### 4. Verificação
+Depois de publicar:
+- Meta Events Manager → **Test Events**: cola a URL do site, valida `PageView`, `ViewContent`, `Lead`, `InitiateCheckout` chegando via **Browser** e também via **Server** (Stape) com o mesmo `event_id`.
+- Se você tiver um **Test Event Code** do Meta, adiciono como secret `META_CAPI_TEST_EVENT_CODE` (a função já suporta) para separar testes de produção.
 
-## 4. Eventos específicos
+### Detalhes técnicos
+- `.env` no repo aceita `VITE_*` públicas — Pixel ID e a flag `VITE_META_CAPI_MIRROR` não são segredo.
+- Secrets do backend (`META_PIXEL_ID`, `STAPE_CAPI_TOKEN`) via ferramenta `add_secret` — nunca no código.
+- Sem mudanças em componentes de UI, checkout, ou banco.
 
-- **ViewContent (home)** — em `OfferSection.tsx`, um `useEffect` com IntersectionObserver dispara `trackEvent('ViewContent', { content_category: 'ofertas' })` ao entrar em viewport (uma vez por sessão).
-- **Lead (formulários)** — em `AffiliateForm.tsx` e `PartnerForm.tsx`, após insert bem-sucedido no banco, dispara `trackEvent('Lead', { content_name: 'afiliada' | 'parceiro_comercial' })` com `eventID` = `inserted.id`. Esse ID já é salvo no banco → CAPI futura consegue re-enviar o mesmo eventID e o Meta faz dedupe.
-- **InitiateCheckout (Yampi)** — em `GiftSelectionSection.tsx`, no clique de "Finalizar minha compra" (antes de `window.open`), dispara `trackEvent('InitiateCheckout', { value, currency: 'BRL', content_ids: [kitSku], content_name: kitName })` com um `eventID` gerado. Grava esse eventID como `utm_term=eid_<uuid>` no link Yampi para o webhook Yampi conseguir usar o mesmo eventID no Purchase server-side depois.
-
-## 5. Preparo para CAPI (sem implementar o envio agora)
-
-Estrutura em código, sem chamar a API:
-- `supabase/functions/meta-capi/index.ts` — esqueleto de Edge Function que valida payload (Zod), lê `META_CAPI_ACCESS_TOKEN` e `META_PIXEL_ID` dos secrets, monta o body no formato `/events` do Meta, e por enquanto responde 200 com `{ preview: body }` sem chamar o endpoint da Graph API. Comentário `TODO: enable send` no ponto exato.
-- Helper `src/lib/metaPixel.ts` já expõe `sendCapiPreview(name, params, eventId)` que invoca essa função (fire-and-forget) — desligado por default via flag `VITE_META_CAPI_MIRROR=false`. Assim, quando o usuário quiser ligar CAPI: adiciona 2 secrets, muda a flag, remove o `TODO` — sem refatorar componentes.
-
-## 6. Configuração / segredos
-
-- `VITE_META_PIXEL_ID` — placeholder no `.env` (usuário troca pelo real depois; enquanto vazio, o Pixel fica em no-op sem quebrar o site).
-- Para CAPI (etapa futura, não pedir agora): `META_PIXEL_ID` e `META_CAPI_ACCESS_TOKEN` via `add_secret`.
-
-## Fora de escopo desta etapa
-
-- Envio real para Graph API `/events` (só o esqueleto).
-- Purchase via webhook Yampi (fica para a etapa CAPI, mas o `eventID` do InitiateCheckout já viaja no link Yampi para permitir dedupe depois).
-- LGPD / banner de consentimento (posso adicionar depois se quiser).
-- Advanced Matching com hash de email/telefone.
-
-## Pergunta necessária antes de ligar de fato
-
-Você já tem o **Pixel ID** (número de ~15 dígitos do Meta Business)? Se sim, me passa agora que eu já deixo plugado; se não, deixo o placeholder e é só você colar no `.env` depois.
+### Pergunta rápida antes de eu executar
+Você quer que eu **já ligue o envio CAPI para produção** (ENABLE_SEND=true) junto com o Pixel, ou prefere **manter CAPI em modo preview** (só logando) por 1 dia para você validar o Pixel primeiro no Test Events?

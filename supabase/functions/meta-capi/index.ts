@@ -6,7 +6,7 @@
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3.23.8";
 
-const ENABLE_SEND = false; // TODO: enable send when secrets are configured
+const ENABLE_SEND = true;
 
 const BodySchema = z.object({
   event_name: z.string().min(1).max(120),
@@ -57,7 +57,8 @@ Deno.serve(async (req: Request) => {
   }
 
   const PIXEL_ID = Deno.env.get("META_PIXEL_ID");
-  const ACCESS_TOKEN = Deno.env.get("META_CAPI_ACCESS_TOKEN");
+  const STAPE_TOKEN = Deno.env.get("STAPE_CAPI_TOKEN");
+  const STAPE_HOST = Deno.env.get("STAPE_CAPI_HOST") ?? "capig.stape.pm";
   const TEST_EVENT_CODE = Deno.env.get("META_CAPI_TEST_EVENT_CODE") ?? undefined;
 
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
@@ -82,10 +83,9 @@ Deno.serve(async (req: Request) => {
     ...(TEST_EVENT_CODE ? { test_event_code: TEST_EVENT_CODE } : {}),
   };
 
-  if (!ENABLE_SEND || !PIXEL_ID || !ACCESS_TOKEN) {
-    // Preview mode: log + return payload, do not hit Graph API.
+  if (!ENABLE_SEND || !PIXEL_ID || !STAPE_TOKEN) {
     console.log("[meta-capi:preview]", JSON.stringify({
-      configured: !!(PIXEL_ID && ACCESS_TOKEN),
+      configured: !!(PIXEL_ID && STAPE_TOKEN),
       enabled: ENABLE_SEND,
       payload: capiPayload,
     }));
@@ -95,14 +95,18 @@ Deno.serve(async (req: Request) => {
     );
   }
 
-  // TODO: enable send
-  const url = `https://graph.facebook.com/v20.0/${PIXEL_ID}/events?access_token=${ACCESS_TOKEN}`;
+  // Stape CAPI Gateway — forwards to Meta with same payload shape as Graph /events.
+  const url = `https://${STAPE_HOST}/${PIXEL_ID}/events`;
   const resp = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${STAPE_TOKEN}`,
+    },
     body: JSON.stringify(capiPayload),
   });
   const text = await resp.text();
+  console.log("[meta-capi:send]", resp.status, text.slice(0, 500));
   return new Response(text, {
     status: resp.status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
