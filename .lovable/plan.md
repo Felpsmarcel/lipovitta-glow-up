@@ -1,49 +1,56 @@
-## Cadastro público de afiliados
+# Parceiros Comerciais + Botão flutuante
 
-Criar uma página pública `/afiliados` com formulário de cadastro. Os leads ficam salvos no backend (Lovable Cloud) e você recebe um email a cada novo cadastro.
+## 1. Página /afiliados com abas
 
-### O que será criado
+Adicionar um toggle de abas no topo do formulário: **Afiliada (Creator)** | **Parceiro Comercial**. Mesma URL, mesmo layout premium, alterna o formulário renderizado.
 
-**1. Página `/afiliados`**
-- Layout dentro da identidade LipoVitta (Royal Blue + Olive, Poppins + Cormorant).
-- Bloco topo: título "Programa de Afiliados LipoVitta", subtítulo curto explicando o programa.
-- Formulário com os campos:
-  - Nome completo
-  - Telefone / WhatsApp (com máscara)
-  - Email
-  - Quantidade de seguidores (faixas: até 1k, 1k–10k, 10k–50k, 50k–100k, 100k+)
-  - Estado (dropdown com os 27 UFs)
-  - Já conhece o LipoVitta? (Sim / Não)
-- Botão "Quero ser afiliada".
-- Tela de sucesso após envio: "Recebemos seu cadastro, entraremos em contato pelo WhatsApp."
-- Validação com Zod + mensagens de erro amigáveis.
-- Rate limit simples no client (evita duplo clique).
+### Aba "Afiliada" (atual)
+Sem mudanças no que já existe.
 
-**2. Rota**
-- Adicionar `<Route path="/afiliados" element={<Afiliados />} />` em `src/App.tsx`.
-- Adicionar link discreto no rodapé em "Institucional" → "Seja Afiliada".
+### Aba "Parceiro Comercial" (novo formulário)
+Campos:
+- Nome do responsável
+- WhatsApp
+- Email corporativo
+- **CNPJ** (com máscara XX.XXX.XXX/XXXX-XX, validação de dígitos)
+- **Razão Social**
+- **Tipo de negócio** (select): Farmácia, Clínica estética, Nutricionista, Personal trainer, Loja de suplementos, Outro
+- **Cidade** + Estado (UF)
+- **Volume estimado / interesse** (textarea curta, ex.: "revenda 50un/mês", "indicação para pacientes", "parceria clínica")
 
-**3. Banco (Lovable Cloud)**
-- Tabela `public.affiliate_applications` com: nome, telefone, email, faixa de seguidores, estado, conhece_produto (bool), status (default `pending`), created_at, updated_at.
-- RLS ativa. Política: `anon` e `authenticated` podem **INSERT** (formulário público). Ninguém do app pode ler/editar/deletar — só você via backend do Cloud (service_role).
-- Grants adequados (INSERT para anon/authenticated, ALL para service_role).
+Validação com Zod, mesmo padrão visual do form atual.
 
-**4. Notificação por email**
-- Criar template de app email `new-affiliate-application` (React Email) que envia os dados do cadastro para o seu email.
-- Trigger: após o INSERT bem-sucedido, o front chama `send-transactional-email` para disparar a notificação para você.
-- Idempotency key baseada no ID do cadastro para evitar duplicidade.
+## 2. Banco de dados
 
-### Detalhes técnicos
+Nova tabela `commercial_partner_applications` (separada da tabela de afiliadas — schemas diferentes, fluxos de contato diferentes):
 
-- Sem login, sem painel admin no site — consulta dos cadastros pelo backend do Cloud.
-- Sem alterações no fluxo de checkout, brindes ou preços.
-- Requer email de destino (o seu) para receber as notificações — vou perguntar antes de implementar.
-- Depende da infra de email já configurada (`notify.lipovitta.site`), que já está ativa no projeto.
+Campos: responsible_name, phone, email, cnpj, company_name, business_type, city, state, volume_notes, status, created_at, updated_at.
 
-### Fora do escopo
+- RLS: `INSERT` público (anon+authenticated) com validações de tamanho, sem `SELECT`/`UPDATE`/`DELETE` público (igual afiliadas).
+- GRANT `INSERT` para anon/authenticated, `ALL` para service_role.
 
-- Login de afiliado, painel com link de rastreio, cálculo de comissão, integração com Yampi para atribuir vendas. Podem virar Fase 2 depois.
+## 3. Email de notificação
 
-### Pergunta pendente antes de implementar
+Novo template React Email `new-commercial-partner-application.tsx` no registry, disparado após insert bem-sucedido, enviado para `lipovitta@clarinhacbr.com.br` com todos os campos do parceiro. Mesmo visual do template de afiliada.
 
-Para qual email você quer receber a notificação de novos cadastros? (sugestão padrão: `lipovitta@clarinhacbr.com.br`, o mesmo do rodapé).
+## 4. Botão flutuante "Seja Afiliada" (home apenas)
+
+Novo componente `AffiliateFloatingButton.tsx`:
+- Posição: `fixed bottom-24 right-6` (empilhado acima do WhatsApp, que fica em `bottom-6`).
+- Estilo: pill horizontal com ícone + texto "Seja Afiliada", cor Royal Blue (#4667B4), sombra sutil, mesmo ritmo de animação suave do WhatsApp.
+- Link para `/afiliados`.
+- Renderizado **apenas na home** (`src/pages/Index.tsx`), não em `/afiliados` nem `/unsubscribe`.
+
+O `WhatsAppButton` continua global como está hoje (nas 3 rotas). Se preferir escondê-lo também em `/afiliados`, é 1 linha extra — mas o pedido foi só sobre o de afiliada.
+
+## Detalhes técnicos
+
+- `src/pages/Afiliados.tsx`: extrair form atual para `<AffiliateForm />`, criar `<PartnerForm />`, adicionar `<Tabs>` (shadcn) no topo. Header e Footer inalterados.
+- Migração cria tabela + policies + trigger `update_updated_at_column`.
+- Registry `_shared/transactional-email-templates/registry.ts` recebe `'new-commercial-partner-application'`.
+- Deploy de `send-transactional-email` após adicionar template.
+- `AffiliateFloatingButton` importado só em `Index.tsx`, abaixo do `<WhatsAppButton />`, para stacking correto no z-index.
+
+## Fora de escopo
+
+Painel admin para listar candidaturas, aprovação/status workflow, geração de links UTM por parceiro, contratos — ficam para depois.
