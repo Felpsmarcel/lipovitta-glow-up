@@ -18,6 +18,7 @@ import { GiftFlowProvider } from "@/context/GiftFlowContext";
 
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import AffiliateFloatingButton from "@/components/AffiliateFloatingButton";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 
 const Index = () => (
@@ -88,6 +89,8 @@ const Index = () => (
 
       <Footer />
       <WhatsAppButton />
+      <AffiliateFloatingButton />
+
       <ExitIntentPopup />
     </div>
   </GiftFlowProvider>
