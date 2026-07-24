@@ -1,67 +1,45 @@
-## Objetivo
+## Diagnóstico
 
-Reduzir o peso das imagens principais servindo **AVIF → WebP → fallback**, com **`srcset` responsivo** por largura de viewport. Sem mudar layout, textos ou lógica; só a forma como os arquivos de imagem são gerados e entregues.
+Os 4 brindes estão pesados porque foram enviados ao CDN como **PNGs originais gigantes** e servidos sem variantes modernas:
 
-## Abordagem
+| Arquivo | Peso atual | Formato |
+|---|---:|---|
+| `brinde-garrafa.png` | 2,97 MB | PNG original |
+| `brinde-portacapsulas.png` | 2,84 MB | PNG original |
+| `brinde-raspador.png` | 2,71 MB | PNG original |
+| `brinde-mixer.png` | 2,64 MB | PNG original |
+| **Total** | **~11,2 MB** | — |
 
-Usar **`vite-imagetools`** — plugin oficial do ecossistema Vite. Gera variantes em build time direto do arquivo original em `src/assets/`, então:
+Motivos combinados:
+1. **CDN entrega o PNG cru** — os `.asset.json` apontam para arquivos imutáveis no R2, sem AVIF/WebP, sem redimensionamento.
+2. **Renderizam os 4 juntos** assim que a seção "Escolha do brinde" aparece (após clicar em comprar), sem srcset — o navegador puxa a resolução cheia mesmo em mobile 430 px.
+3. **Sem `width`/`height`** — causa reflow durante o carregamento.
 
-- Nada de rodar scripts manuais depois.
-- Os PNGs/JPGs originais ficam no repo como fonte da verdade.
-- O build produz automaticamente `.avif`, `.webp` e o fallback em várias larguras.
-- Nomes com hash, cache imutável no CDN.
+## Correção
 
-Ganho esperado: **50–70% menos bytes** nas imagens principais (hoje ~3,3 MB → ~1–1,5 MB), sem perda visual perceptível.
+Trocar o modelo: em vez de apontar para o CDN de assets (imutável), colocar os PNGs em `src/assets/gifts/` e importá-los pelo `vite-imagetools` (mesmo pipeline já usado nos depoimentos, cápsulas etc.). O build gera AVIF/WebP/PNG em múltiplas larguras automaticamente, com hash e cache-imutável.
 
-## Escopo — imagens a otimizar
+### Passos
 
-Focar nas maiores e nas que aparecem acima da dobra ou no carrossel de oferta:
-
-| Arquivo | Tamanho hoje |
-|---|---:|
-| `capsulas-lipovitta.png` | 1,01 MB |
-| `gummy-vittaglow.png` | 1,09 MB |
-| `shot-rush.jpg` | 469 KB |
-| `combo-lipovitta.jpg` (usado via asset CDN) | 423 KB |
-| `shot-matinal.jpg` | 363 KB |
-| `shot-matinal-limao.jpg` | 213 KB |
-| `shot-matinal-abacaxi.jpg` | 197 KB |
-| `shot-matinal-tangerina.jpg` | 196 KB |
-| `testimonials/*.jpg` (5 arquivos, 130–160 KB cada) | ~730 KB |
-
-## Passos
-
-1. **Instalar** `vite-imagetools` como devDependency.
-2. **Configurar** o plugin em `vite.config.ts`.
-3. **Criar helper `ResponsiveImage`** que aceita o objeto `picture` gerado pelo imagetools e renderiza:
-   ```html
-   <picture>
-     <source type="image/avif" srcset="…" sizes="…" />
-     <source type="image/webp" srcset="…" sizes="…" />
-     <img src="…" srcset="…" sizes="…" loading="…" decoding="async" />
-   </picture>
-   ```
-4. **Migrar imports** nos componentes:
-   - `IngredientsSection.tsx` → cápsulas
-   - `OfferSection.tsx` → cápsulas + shots matinais
-   - `ProductsSection.tsx` → shot rush + gummy
-   - `TestimonialsSection.tsx` → 5 imagens de depoimento
-   
-   Padrão de import:
+1. **Baixar os 4 PNGs originais do CDN** para `src/assets/gifts/` (nome mantido).
+2. **Trocar imports em `src/data/gifts.ts`** de `.asset.json` para import responsivo:
    ```ts
-   import capsulas from "@/assets/capsulas-lipovitta.png?w=400;800;1200&format=avif;webp;png&as=picture"
+   import raspadorImg from "@/assets/gifts/brinde-raspador.png?w=320;640&format=avif;webp;png&as=picture";
    ```
-   Larguras adaptadas ao uso (produtos: 400/800/1200; testimonials: 480/960; combo: 600/1200).
-5. **Manter atributos de performance** já usados (`loading="lazy"` em below-the-fold; a imagem LCP fica com `loading="eager"` + `fetchpriority="high"`).
-6. **Validar** com `bun run build` + Playwright: novo peso transferido, LCP e ausência de 404 nas variantes.
+   e expor o objeto `picture` no tipo `Gift` (em vez de `image: string`).
+3. **Atualizar `GiftSelectionSection.tsx`** para renderizar via `<ResponsiveImage>` (helper já existente), com:
+   - `sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 90vw"`
+   - `loading="lazy"` + `decoding="async"` + `width`/`height` explícitos vindos do `picture.img`.
+4. **Remover os 4 `.asset.json` antigos** com `lovable-assets delete --file <pointer>` (libera storage no CDN; sem referências restantes).
+5. **Build + preview** para confirmar peso final e ausência de 404.
+
+## Detalhes técnicos
+
+- Larguras `320` e `640` cobrem o card (mobile ~180 px CSS × dpr 3 = 540 px reais; desktop ~260 px × dpr 2 = 520 px). Não precisa gerar `1200w`.
+- AVIF típico nesses PNGs de produto sobre fundo claro fica em **20–40 KB** por variante; WebP ~50–70 KB; PNG fallback ~150 KB.
+- Estimativa pós-otimização: **~100 KB por brinde** entregue (AVIF) → **~400 KB total** vs. 11 MB atuais (**~97% de redução**).
 
 ## Fora de escopo
 
-- Vídeo do hero (será outro passo se quiser).
-- Imagens já servidas via `lovable-assets` (elas ficam como estão — o CDN já entrega, e trocar exigiria re-upload; posso fazer numa próxima rodada se quiser).
-- Layout, textos, links, pixels, edge functions.
-
-## Riscos
-
-- `vite-imagetools` adiciona tempo ao build (aceitável, roda uma vez por deploy).
-- Se algum componente usar a URL da imagem de forma não-padrão (background CSS, prop dinâmica), trato caso a caso mantendo o import atual.
+- Layout, textos, lógica de elegibilidade, UTM, tracking Meta Pixel.
+- Outras imagens do site (já otimizadas em turnos anteriores).

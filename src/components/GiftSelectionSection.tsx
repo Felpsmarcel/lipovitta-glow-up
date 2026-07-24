@@ -1,6 +1,7 @@
 import { Check, Gift as GiftIcon } from "lucide-react";
 import { useGiftFlow } from "@/context/GiftFlowContext";
 import { appendGiftUtm, getEligibleGifts } from "@/data/gifts";
+import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { generateEventId, trackEvent } from "@/lib/metaPixel";
 
 const GiftSelectionSection = () => {
@@ -75,9 +76,10 @@ const GiftSelectionSection = () => {
                   </span>
                 )}
                 <div className="aspect-square bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center p-6">
-                  <img
-                    src={gift.image}
+                  <ResponsiveImage
+                    picture={gift.image}
                     alt={gift.nome}
+                    sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 90vw"
                     className="w-full h-full object-contain"
                     loading="lazy"
                   />
