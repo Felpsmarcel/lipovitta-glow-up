@@ -2,7 +2,9 @@ import { useState } from "react";
 import * as Collapsible from "@radix-ui/react-collapsible";
 import { ChevronDown } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import capsulasImg from "@/assets/capsulas-lipovitta.png";
+import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
+import capsulasImg from "@/assets/capsulas-lipovitta.png?w=200;400;600&format=avif;webp;png&as=picture";
+
 
 
 const ingredients = [
@@ -101,12 +103,14 @@ const IngredientsSection = () => {
 
 
         {/* Imagem decorativa do produto */}
-        <img
-          src={capsulasImg}
+        <ResponsiveImage
+          picture={capsulasImg}
           alt=""
           aria-hidden="true"
           className="hidden md:block absolute right-2 -top-4 w-36 lg:w-44 rotate-[-3deg] opacity-95 drop-shadow-2xl pointer-events-none"
+          sizes="176px"
         />
+
       </div>
 
 

@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import desinchar from "@/assets/testimonials/desinchar.jpg";
-import pesoPernas from "@/assets/testimonials/peso-pernas.jpg";
+import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
+import desinchar from "@/assets/testimonials/desinchar.jpg?w=480;960&format=avif;webp;jpg&as=picture";
+import pesoPernas from "@/assets/testimonials/peso-pernas.jpg?w=480;960&format=avif;webp;jpg&as=picture";
 import inflamacaoAsset from "@/assets/testimonials/inflamacao.png.asset.json";
 const inflamacao = inflamacaoAsset.url;
-import corpoPedindoAjuda from "@/assets/testimonials/corpo-pedindo-ajuda.jpg";
-import peleMelhora from "@/assets/testimonials/pele-melhora.jpg";
-import naoEraEsforco from "@/assets/testimonials/nao-era-esforco.jpg";
+import corpoPedindoAjuda from "@/assets/testimonials/corpo-pedindo-ajuda.jpg?w=480;960&format=avif;webp;jpg&as=picture";
+import peleMelhora from "@/assets/testimonials/pele-melhora.jpg?w=480;960&format=avif;webp;jpg&as=picture";
+import naoEraEsforco from "@/assets/testimonials/nao-era-esforco.jpg?w=480;960&format=avif;webp;jpg&as=picture";
+
 
 function useAnimatedCounter(target: number, duration = 2000) {
   const [count, setCount] = useState(0);
@@ -40,13 +42,17 @@ function useAnimatedCounter(target: number, duration = 2000) {
   return { count, ref };
 }
 
-const testimonials = [
-  { src: desinchar, alt: "Você começa a desinchar de verdade — depoimento visual LipoVitta" },
-  { src: pesoPernas, alt: "A sensação de peso nas pernas diminui — depoimento visual LipoVitta" },
-  { src: inflamacao, alt: "A inflamação do corpo começa a reduzir — depoimento visual LipoVitta" },
-  { src: corpoPedindoAjuda, alt: "Não era só inchaço, era seu corpo pedindo ajuda — depoimento LipoVitta" },
-  { src: peleMelhora, alt: "A aparência da pele melhora — depoimento visual LipoVitta" },
-  { src: naoEraEsforco, alt: "Não era falta de esforço — depoimento visual LipoVitta" },
+type TestimonialItem =
+  | { kind: "picture"; picture: typeof desinchar; alt: string }
+  | { kind: "url"; url: string; alt: string };
+
+const testimonials: TestimonialItem[] = [
+  { kind: "picture", picture: desinchar, alt: "Você começa a desinchar de verdade — depoimento visual LipoVitta" },
+  { kind: "picture", picture: pesoPernas, alt: "A sensação de peso nas pernas diminui — depoimento visual LipoVitta" },
+  { kind: "url", url: inflamacao, alt: "A inflamação do corpo começa a reduzir — depoimento visual LipoVitta" },
+  { kind: "picture", picture: corpoPedindoAjuda, alt: "Não era só inchaço, era seu corpo pedindo ajuda — depoimento LipoVitta" },
+  { kind: "picture", picture: peleMelhora, alt: "A aparência da pele melhora — depoimento visual LipoVitta" },
+  { kind: "picture", picture: naoEraEsforco, alt: "Não era falta de esforço — depoimento visual LipoVitta" },
 ];
 
 export default function TestimonialsSection() {
@@ -76,17 +82,29 @@ export default function TestimonialsSection() {
               "lg:col-span-2 aspect-[4/5] rotate-[0.4deg]",
               "lg:col-span-3 aspect-[4/3] lg:translate-y-4 rotate-[-0.3deg]",
             ];
+            const className = `w-full h-full object-cover rounded-2xl shadow-sm`;
+            const wrapperClass = layouts[i];
+            if (t.kind === "url") {
+              return (
+                <div key={i} className={wrapperClass}>
+                  <img src={t.url} alt={t.alt} loading="lazy" decoding="async" className={className} />
+                </div>
+              );
+            }
             return (
-              <img
-                key={i}
-                src={t.src}
-                alt={t.alt}
-                loading="lazy"
-                className={`w-full object-cover rounded-2xl shadow-sm ${layouts[i]}`}
-              />
+              <div key={i} className={wrapperClass}>
+                <ResponsiveImage
+                  picture={t.picture}
+                  alt={t.alt}
+                  loading="lazy"
+                  sizes="(min-width: 1024px) 480px, (min-width: 640px) 50vw, 100vw"
+                  className={className}
+                />
+              </div>
             );
           })}
         </div>
+
 
 
         {/* Animated counter */}
