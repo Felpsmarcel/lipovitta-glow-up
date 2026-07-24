@@ -2,7 +2,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/metaPixel";
-import { STATES, NOTIFY_EMAIL, Field, inputCls, SuccessCard } from "@/pages/Afiliados";
+import { STATES, NOTIFY_EMAIL, Field, inputCls, SuccessCard } from "@/components/affiliates/shared";
 
 const BUSINESS_TYPES = [
   "Farmácia",
