@@ -1,31 +1,45 @@
-## Diagnóstico
+## Problema
 
-O site publicado (`lipovitta.site` e `lipovitta-glow.lovable.app`) está devolvendo um HTML incompleto:
+O preview e a produção renderizam em branco por causa de um erro em runtime:
 
-```html
-<!DOCTYPE html><html lang="pt-BR">
-  <body>
-    <div id="root"></div>
-  </body>
-</html>
+```
+Cannot access 'STATES' before initialization
 ```
 
-Sem `<head>`, sem `<title>`, sem `<script>` do bundle → por isso a tela fica em branco.
+Causa: dependência circular.
 
-Já verifiquei:
+- `src/pages/Afiliados.tsx` importa no topo `AffiliateForm` e `PartnerForm`.
+- Ambos importam de volta `STATES`, `NOTIFY_EMAIL`, `Field`, `inputCls`, `SuccessCard` de `@/pages/Afiliados`.
+- Essas constantes são declaradas **depois** do `export default Afiliados`, então quando os forms são avaliados durante o import, caem no TDZ (temporal dead zone) e a app inteira quebra.
 
-- **Código-fonte (`index.html`) está correto** — tem head, metas, título.
-- **Build local (`npx vite build`) roda com exit 0** e gera um `dist/index.html` completo, com `<script type="module" src="/assets/index-iKlKltgI.js">` e todos os assets.
-- **Preview do editor carrega normalmente** — só o deploy publicado está servindo o HTML quebrado.
+## Correção
 
-Ou seja, **o problema não é no código**. É um deploy antigo/corrompido servido pelo hosting da Lovable. Provavelmente uma publicação anterior falhou e a versão servida ficou sem os assets.
+Criar um módulo neutro com os helpers compartilhados e apontar todos os imports para ele. Nenhuma mudança visual, de texto, de rota ou de lógica.
 
-## Ação
+### Passos
 
-Republicar o site pelo botão **Publish → Update** no canto superior direito do editor. Isso vai reenviar o `dist/` novo (que está saudável) e o site volta ao ar.
+1. Criar `src/components/affiliates/shared.tsx` com:
+   - `STATES`
+   - `NOTIFY_EMAIL`
+   - `Field`
+   - `inputCls`
+   - `SuccessCard`
 
-<presentation-actions>
-<presentation-open-publish>Republicar o site</presentation-open-publish>
-</presentation-actions>
+2. Atualizar imports em:
+   - `src/components/affiliates/AffiliateForm.tsx` → importar de `./shared`
+   - `src/components/affiliates/PartnerForm.tsx` → importar de `./shared`
 
-Se depois de republicar o site continuar em branco, me avisa que eu investigo o hosting (caches / domínio custom `lipovitta.site` apontando para um deploy antigo).
+3. Em `src/pages/Afiliados.tsx`:
+   - Remover as declarações/`export`s de `STATES`, `NOTIFY_EMAIL`, `Field`, `inputCls`, `SuccessCard`.
+   - Se ainda usar algum desses internamente, importar de `@/components/affiliates/shared`.
+
+4. Verificar via Playwright no `localhost:8080`:
+   - `document.body.innerHTML` deve conter o conteúdo real (não só `<div id="root"></div>`).
+   - Nenhum `pageerror` no console.
+   - Página `/afiliados` também abre sem erro nas duas abas.
+
+5. Depois de validado, publicar novamente para o `.lovable.app` e `lipovitta.site` voltarem.
+
+## Fora de escopo
+
+Sem alterar textos, estilos, produtos, preços, pixels, CAPI, edge functions ou schema do banco.
