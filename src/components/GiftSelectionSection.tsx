@@ -1,6 +1,7 @@
 import { Check, Gift as GiftIcon } from "lucide-react";
 import { useGiftFlow } from "@/context/GiftFlowContext";
 import { appendGiftUtm, getEligibleGifts } from "@/data/gifts";
+import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { generateEventId, trackEvent } from "@/lib/metaPixel";
 
 const GiftSelectionSection = () => {
