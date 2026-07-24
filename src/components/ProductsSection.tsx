@@ -1,7 +1,9 @@
 import { Check, Tag } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import shotRushImg from "@/assets/shot-rush.jpg";
-import gummyImg from "@/assets/gummy-vittaglow.png";
+import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
+import shotRushImg from "@/assets/shot-rush.jpg?w=300;600;900&format=avif;webp;jpg&as=picture";
+import gummyImg from "@/assets/gummy-vittaglow.png?w=300;600;900&format=avif;webp;png&as=picture";
+
 
 type Complemento = {
   id: string;
