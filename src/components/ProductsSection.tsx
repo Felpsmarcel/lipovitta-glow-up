@@ -27,12 +27,14 @@ const complementos: Complemento[] = [
           <span className="absolute top-2 left-2 z-10 bg-[#9BAE52] text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full shadow-md">
             Temos estoque
           </span>
-          <img
-            src={shotRushImg}
+          <ResponsiveImage
+            picture={shotRushImg}
             alt="Frasco do Shot Rush Pré-Treino sabor Frutas Vermelhas"
             className="h-full w-auto object-contain"
             loading="lazy"
+            sizes="(min-width: 768px) 400px, 90vw"
           />
+
         </div>
         <h3 className="font-sans font-semibold text-lg text-[#4667B4] mb-2">
           Shot Rush Pré-Treino
@@ -92,7 +94,8 @@ const complementos: Complemento[] = [
     inStock: false,
     render: () => (
       <article key="gummy" className="hidden">
-        <img src={gummyImg} alt="" />
+        <ResponsiveImage picture={gummyImg} alt="" />
+
       </article>
     ),
   },
