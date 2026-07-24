@@ -1,45 +1,34 @@
-## Problema
+## Objetivo
 
-O preview e a produção renderizam em branco por causa de um erro em runtime:
+Medir a performance real do site publicado em `https://lipovitta.site` (mobile e desktop) e entregar um relatório claro com os principais gargalos e próximas ações — sem alterar código nesta etapa.
 
-```
-Cannot access 'STATES' before initialization
-```
+## O que vou fazer
 
-Causa: dependência circular.
+1. **PageSpeed Insights (Google / Lighthouse)** via API pública, para `https://lipovitta.site`:
+   - Estratégia **mobile** e **desktop**.
+   - Coletar Performance Score + Core Web Vitals (LCP, CLS, INP, TBT, FCP, TTFB, Speed Index).
+   - Listar as principais oportunidades (imagens, JS não usado, cache, render-blocking, etc.).
 
-- `src/pages/Afiliados.tsx` importa no topo `AffiliateForm` e `PartnerForm`.
-- Ambos importam de volta `STATES`, `NOTIFY_EMAIL`, `Field`, `inputCls`, `SuccessCard` de `@/pages/Afiliados`.
-- Essas constantes são declaradas **depois** do `export default Afiliados`, então quando os forms são avaliados durante o import, caem no TDZ (temporal dead zone) e a app inteira quebra.
+2. **Checagem de rede direta** com `curl` na home:
+   - Tempo até first byte (TTFB), tamanho do HTML, headers de cache/compression, status HTTP.
+   - Conferir se os assets do hero (vídeo/imagem/logo) estão sendo servidos com `cache-control` e compressão adequados.
 
-## Correção
+3. **Auditoria local no Playwright** (viewport mobile 430×932 e desktop 1280×900) contra o site publicado:
+   - Contar requests, tamanho total, JS/CSS/imagens, tempo de `load` e `DOMContentLoaded`.
+   - Verificar erros de console e recursos 4xx/5xx.
+   - Screenshot da home para comparar visualmente.
 
-Criar um módulo neutro com os helpers compartilhados e apontar todos os imports para ele. Nenhuma mudança visual, de texto, de rota ou de lógica.
+4. **Diagnóstico dirigido** com base nos números:
+   - LCP alto → checar o hero (vídeo autoplay pesado, imagem sem `fetchpriority`, preload ausente).
+   - TBT/INP alto → checar scripts de terceiros (Meta Pixel, iframes de Instagram, YouTube, WhatsApp float).
+   - Payload alto → conferir vídeos e imagens em `src/assets` que estão sendo bundlados.
 
-### Passos
+5. **Relatório final no chat**, com:
+   - Tabela mobile x desktop (Score + Web Vitals).
+   - Top 3–5 oportunidades ordenadas por impacto.
+   - Recomendação de próximos passos (o que dá para corrigir em código, o que depende de infra).
 
-1. Criar `src/components/affiliates/shared.tsx` com:
-   - `STATES`
-   - `NOTIFY_EMAIL`
-   - `Field`
-   - `inputCls`
-   - `SuccessCard`
+## Fora de escopo (nesta etapa)
 
-2. Atualizar imports em:
-   - `src/components/affiliates/AffiliateForm.tsx` → importar de `./shared`
-   - `src/components/affiliates/PartnerForm.tsx` → importar de `./shared`
-
-3. Em `src/pages/Afiliados.tsx`:
-   - Remover as declarações/`export`s de `STATES`, `NOTIFY_EMAIL`, `Field`, `inputCls`, `SuccessCard`.
-   - Se ainda usar algum desses internamente, importar de `@/components/affiliates/shared`.
-
-4. Verificar via Playwright no `localhost:8080`:
-   - `document.body.innerHTML` deve conter o conteúdo real (não só `<div id="root"></div>`).
-   - Nenhum `pageerror` no console.
-   - Página `/afiliados` também abre sem erro nas duas abas.
-
-5. Depois de validado, publicar novamente para o `.lovable.app` e `lipovitta.site` voltarem.
-
-## Fora de escopo
-
-Sem alterar textos, estilos, produtos, preços, pixels, CAPI, edge functions ou schema do banco.
+- Não vou alterar código, imagens, scripts ou infra agora — só medir e reportar.
+- Se você aprovar as recomendações, faço as correções em um segundo passo.
