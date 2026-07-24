@@ -1,14 +1,15 @@
-import raspadorAsset from "@/assets/brinde-raspador.png.asset.json";
-import portacapsulasAsset from "@/assets/brinde-portacapsulas.png.asset.json";
-import mixerAsset from "@/assets/brinde-mixer.png.asset.json";
-import garrafaAsset from "@/assets/brinde-garrafa.png.asset.json";
+import raspadorImg from "@/assets/gifts/brinde-raspador.png?w=320;640&format=avif;webp;png&as=picture";
+import portacapsulasImg from "@/assets/gifts/brinde-portacapsulas.png?w=320;640&format=avif;webp;png&as=picture";
+import mixerImg from "@/assets/gifts/brinde-mixer.png?w=320;640&format=avif;webp;png&as=picture";
+import garrafaImg from "@/assets/gifts/brinde-garrafa.png?w=320;640&format=avif;webp;png&as=picture";
+import type { PictureSource } from "@/components/ui/ResponsiveImage";
 
 export type Gift = {
   id: string;
   nome: string;
   linha: string;
   utm: string;
-  image: string;
+  image: PictureSource;
   minProducts: 1 | 2 | 3;
 };
 
@@ -18,7 +19,7 @@ export const GIFTS: Gift[] = [
     nome: "Raspador de língua",
     linha: "Para começar o ritual de dentro pra fora.",
     utm: "brinde_raspador",
-    image: raspadorAsset.url,
+    image: raspadorImg,
     minProducts: 1,
   },
   {
@@ -26,7 +27,7 @@ export const GIFTS: Gift[] = [
     nome: "Porta cápsulas",
     linha: "Sua rotina organizada, onde você for.",
     utm: "brinde_portacapsulas",
-    image: portacapsulasAsset.url,
+    image: portacapsulasImg,
     minProducts: 1,
   },
   {
@@ -34,7 +35,7 @@ export const GIFTS: Gift[] = [
     nome: "Mixer Dosador",
     linha: "Praticidade pra sua dose perfeita todo dia.",
     utm: "brinde_mixer",
-    image: mixerAsset.url,
+    image: mixerImg,
     minProducts: 2,
   },
   {
@@ -42,7 +43,7 @@ export const GIFTS: Gift[] = [
     nome: "Garrafa Térmica",
     linha: "Hidratação que acompanha sua rotina completa.",
     utm: "brinde_garrafa",
-    image: garrafaAsset.url,
+    image: garrafaImg,
     minProducts: 3,
   },
 ];
