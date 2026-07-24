@@ -1,14 +1,16 @@
 import { useEffect, useRef } from "react";
 import { Shield, Check, Tag } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import capsulasImg from "@/assets/capsulas-lipovitta.png";
-import shotMatinalAbacaxiImg from "@/assets/shot-matinal-abacaxi.jpg";
-import shotMatinalLimaoImg from "@/assets/shot-matinal-limao.jpg";
-import shotMatinalTangerinaImg from "@/assets/shot-matinal-tangerina.jpg";
+import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
+import capsulasImg from "@/assets/capsulas-lipovitta.png?w=400;800;1200&format=avif;webp;png&as=picture";
+import shotMatinalAbacaxiImg from "@/assets/shot-matinal-abacaxi.jpg?w=200;400&format=avif;webp;jpg&as=picture";
+import shotMatinalLimaoImg from "@/assets/shot-matinal-limao.jpg?w=200;400&format=avif;webp;jpg&as=picture";
+import shotMatinalTangerinaImg from "@/assets/shot-matinal-tangerina.jpg?w=200;400&format=avif;webp;jpg&as=picture";
 import comboImg from "@/assets/combo-lipovitta.png.asset.json";
 import kitShotRushImg from "@/assets/kit-shot-rush-capsulas.png.asset.json";
 import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
 import { trackEvent } from "@/lib/metaPixel";
+
 
 const LINK_CAPSULAS = "https://seguro.lipovitta.site/r/RMTIX51GQN";
 const LINK_PROTOCOLO = "https://seguro.lipovitta.site/b/RPQ0CD6N6Q8C";
@@ -168,7 +170,7 @@ const OfferSection = () => {
               Fórmula principal
             </span>
             <div className="h-56 sm:h-64 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden mb-5">
-              <img src={capsulasImg} alt="LipoVitta Cápsulas" className="h-full w-full object-contain" loading="lazy" />
+              <ResponsiveImage picture={capsulasImg} alt="LipoVitta Cápsulas" className="h-full w-full object-contain" loading="lazy" sizes="(min-width: 1024px) 500px, 90vw" />
             </div>
 
             <h3 className="font-sans font-semibold text-2xl sm:text-3xl text-[#4667B4] mb-2">
@@ -314,9 +316,10 @@ const OfferSection = () => {
               Complemento matinal
             </span>
             <div className="h-32 sm:h-36 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center gap-2 px-2 overflow-hidden mb-2">
-              <img src={shotMatinalAbacaxiImg} alt="Shot Matinal LipoVitta sabor Abacaxi" className="h-full w-auto object-contain" loading="lazy" />
-              <img src={shotMatinalLimaoImg} alt="Shot Matinal LipoVitta sabor Limão" className="h-full w-auto object-contain" loading="lazy" />
-              <img src={shotMatinalTangerinaImg} alt="Shot Matinal LipoVitta sabor Tangerina" className="h-full w-auto object-contain" loading="lazy" />
+              <ResponsiveImage picture={shotMatinalAbacaxiImg} alt="Shot Matinal LipoVitta sabor Abacaxi" className="h-full w-auto object-contain" loading="lazy" sizes="120px" />
+              <ResponsiveImage picture={shotMatinalLimaoImg} alt="Shot Matinal LipoVitta sabor Limão" className="h-full w-auto object-contain" loading="lazy" sizes="120px" />
+              <ResponsiveImage picture={shotMatinalTangerinaImg} alt="Shot Matinal LipoVitta sabor Tangerina" className="h-full w-auto object-contain" loading="lazy" sizes="120px" />
+
             </div>
             <p className="text-xs text-center text-[#666] mb-4">Sabores: Abacaxi, Limão e Tangerina</p>
 
