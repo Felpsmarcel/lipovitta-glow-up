@@ -52,9 +52,9 @@ const GiftSelectionSection = () => {
         </div>
 
         <div
-          className={`grid grid-cols-1 sm:grid-cols-2 ${
+          className={`grid grid-cols-2 sm:grid-cols-2 ${
             eligible.length >= 4 ? "lg:grid-cols-4" : eligible.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-2"
-          } gap-4 sm:gap-5 max-w-5xl mx-auto`}
+          } gap-3 sm:gap-5 max-w-5xl mx-auto`}
         >
           {eligible.map((gift) => {
             const isSelected = gift.id === selectedGiftId;
