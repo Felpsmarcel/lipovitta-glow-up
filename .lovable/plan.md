@@ -1,15 +1,29 @@
-## Alteração no card Shot Matinal (OfferSection)
+## Ajustar experiência mobile na seção de brindes
 
-Remover a promoção de 10% apenas do card "Shot Matinal LipoVitta", mantendo os outros produtos/kits inalterados.
+A seção `GiftSelectionSection` está usando `grid-cols-1` em mobile, fazendo cada card de brinde ocupar quase toda a largura da tela. Isso deixa as imagens dos brindes muito grandes e desproporcionais no celular.
 
-### Mudanças em `src/components/OfferSection.tsx`
+### Alterações em `src/components/GiftSelectionSection.tsx`
 
-1. **Preço**: exibir apenas R$170,00 (remover o riscado e o valor com desconto R$153,00).
-2. **Parcelamento**: ajustar para "3x de R$56,67 sem juros" (baseado em R$170,00).
-3. **Selo verde "10% OFF COMPRANDO HOJE"**: remover do card do Shot Matinal.
-4. **Badge "Economize 10%"**: remover do card do Shot Matinal.
+1. **Grid mobile de 2 colunas**
+   - Trocar `grid-cols-1 sm:grid-cols-2` por `grid-cols-2 sm:grid-cols-2` na grade de brindes.
+   - Reduzir o gap em mobile: `gap-3 sm:gap-5`.
+
+2. **Reduzir padding interno da imagem em mobile**
+   - Ajustar o container da imagem de `p-6` para `p-3 sm:p-6`.
+
+3. **Tipografia mais compacta em mobile**
+   - Reduzir o título do brinde de `text-lg` para `text-sm sm:text-lg`.
+   - Reduzir a linha de descrição de `text-sm` para `text-xs sm:text-sm`.
+
+4. **Ajustar tamanho do check de seleção**
+   - Manter o check proporcional ao card menor, reduzindo levemente em mobile se necessário.
+
+5. **Manter largura máxima e centralização**
+   - Preservar `max-w-5xl mx-auto` para que em telas grandes continue com a aparência atual.
 
 ### Fora de escopo
+- Não alterar os brindes disponíveis, regras de elegibilidade, UTM, lógica de checkout, pixel ou imagens dos brindes.
+- Não alterar a experiência desktop/tablet além dos ajustes responsivos de proporção.
 
-- Cápsulas LipoVitta, Shot Rush, Protocolo Completo e Kit Shot Rush + Cápsulas continuam com o desconto de 10% atual.
-- Nenhuma alteração em links de checkout, UTMs, pixel, imagens ou textos descritivos.
+### Resultado esperado
+Em mobile, os brindes aparecerão em 2 colunas, com cards mais compactos e imagens menores, melhorando a navegação e a proporção visual sem perder a legibilidade.
