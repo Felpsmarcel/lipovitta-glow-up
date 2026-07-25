@@ -18,7 +18,7 @@ const LINK_SHOT = "https://seguro.lipovitta.site/r/PW60UM0Y2J";
 const LINK_KIT_RUSH = "https://seguro.lipovitta.site/b/3QUPWLJZ74U8";
 
 const KIT_CAPSULAS: SelectedKit = { id: "capsulas", name: "LipoVitta Cápsulas", productCount: 1, checkoutUrl: LINK_CAPSULAS, value: 321.30, sku: "RMTIX51GQN" };
-const KIT_SHOT: SelectedKit = { id: "shot-matinal", name: "Shot Matinal LipoVitta", productCount: 1, checkoutUrl: LINK_SHOT, value: 153.00, sku: "PW60UM0Y2J" };
+const KIT_SHOT: SelectedKit = { id: "shot-matinal", name: "Shot Matinal LipoVitta", productCount: 1, checkoutUrl: LINK_SHOT, value: 170.00, sku: "PW60UM0Y2J" };
 const KIT_RUSH: SelectedKit = { id: "kit-rush", name: "Kit Shot Rush + Cápsulas", productCount: 2, checkoutUrl: LINK_KIT_RUSH, value: 546.30, sku: "3QUPWLJZ74U8" };
 const KIT_PROTOCOLO: SelectedKit = { id: "protocolo", name: "Protocolo Completo LipoVitta", productCount: 3, checkoutUrl: LINK_PROTOCOLO, value: 447.95, sku: "RPQ0CD6N6Q8C" };
 
@@ -339,18 +339,10 @@ const OfferSection = () => {
             </ul>
             <div className="mt-auto">
               <div className="mb-4">
-                <span className="inline-flex items-center gap-1.5 bg-[#9BAE52] text-white text-[11px] sm:text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2 shadow-sm">
-                  <Tag className="w-3.5 h-3.5" />
-                  10% OFF comprando hoje
-                </span>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[#999] line-through text-xs">R$170,00</span>
-                  <p className="text-[#4667B4] font-bold text-2xl sm:text-3xl leading-none">R$153,00</p>
-                  <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-[11px] font-bold px-2 py-0.5 rounded-full">
-                    Economize 10%
-                  </span>
+                  <p className="text-[#4667B4] font-bold text-2xl sm:text-3xl leading-none">R$170,00</p>
                 </div>
-                <p className="text-xs sm:text-sm text-[#666] mt-1">ou 3x de R$51,00 sem juros</p>
+                <p className="text-xs sm:text-sm text-[#666] mt-1">ou 3x de R$56,67 sem juros</p>
               </div>
               <button
                 type="button"
