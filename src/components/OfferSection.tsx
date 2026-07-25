@@ -339,18 +339,10 @@ const OfferSection = () => {
             </ul>
             <div className="mt-auto">
               <div className="mb-4">
-                <span className="inline-flex items-center gap-1.5 bg-[#9BAE52] text-white text-[11px] sm:text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2 shadow-sm">
-                  <Tag className="w-3.5 h-3.5" />
-                  10% OFF comprando hoje
-                </span>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[#999] line-through text-xs">R$170,00</span>
-                  <p className="text-[#4667B4] font-bold text-2xl sm:text-3xl leading-none">R$153,00</p>
-                  <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-[11px] font-bold px-2 py-0.5 rounded-full">
-                    Economize 10%
-                  </span>
+                  <p className="text-[#4667B4] font-bold text-2xl sm:text-3xl leading-none">R$170,00</p>
                 </div>
-                <p className="text-xs sm:text-sm text-[#666] mt-1">ou 3x de R$51,00 sem juros</p>
+                <p className="text-xs sm:text-sm text-[#666] mt-1">ou 3x de R$56,67 sem juros</p>
               </div>
               <button
                 type="button"
