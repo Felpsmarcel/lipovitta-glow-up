@@ -24,7 +24,7 @@ const complementos: Complemento[] = [
   {
     id: "shot-rush",
     inStock: true,
-    render: () => (
+    render: (onBuy) => (
       <article
         key="shot-rush"
         className="bg-white rounded-2xl border border-[#E8ECF1] p-5 flex flex-col"
@@ -83,14 +83,13 @@ const complementos: Complemento[] = [
           </div>
           <p className="text-xs text-[#555] mt-1">ou 3x R$67,50 sem juros</p>
         </div>
-        <a
-          href="https://seguro.lipovitta.site/r/5NYVZ7D8UT"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-auto block text-center border-2 border-[#4667B4] text-[#4667B4] hover:bg-[#4667B4] hover:text-white font-semibold py-2.5 rounded-full transition-colors text-sm"
+        <button
+          type="button"
+          onClick={onBuy}
+          className="mt-auto block w-full text-center border-2 border-[#4667B4] text-[#4667B4] hover:bg-[#4667B4] hover:text-white font-semibold py-2.5 rounded-full transition-colors text-sm"
         >
           Adicionar à minha rotina
-        </a>
+        </button>
         <p className="text-[11px] text-[#777] text-center mt-2">
           Receba junto com sua Cápsula.
         </p>
@@ -145,7 +144,7 @@ const ProductsSection = () => {
               : "grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto"
           }
         >
-          {visiveis.map((p) => p.render())}
+          {visiveis.map((p) => p.render(() => selectKit(KIT_SHOT_RUSH)))}
         </div>
       </div>
     </section>
