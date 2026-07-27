@@ -1,7 +1,41 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 export const STATES = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];
 export const NOTIFY_EMAIL = "lipovitta@clarinhacbr.com.br";
+
+export const WhatsAppPreview = ({ message }: { message: string }) => {
+  const [open, setOpen] = useState(true);
+
+  return (
+    <div className="rounded-xl border border-[#25D366]/30 bg-[#25D366]/5 p-3 md:p-4">
+      <div className="flex items-center justify-between gap-3 mb-2">
+        <span className="text-[11px] md:text-xs uppercase tracking-[1.5px] font-semibold text-[#4667B4]">
+          Pré-visualização da mensagem
+        </span>
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className="text-[11px] md:text-xs font-semibold text-[#4667B4] underline underline-offset-2"
+        >
+          {open ? "Ocultar" : "Mostrar"}
+        </button>
+      </div>
+      {open && (
+        <>
+          <div className="rounded-lg rounded-tl-sm bg-white border border-[#25D366]/25 px-3 py-2.5 shadow-sm">
+            <p className="text-xs md:text-sm text-foreground whitespace-pre-wrap break-words leading-relaxed">
+              {message}
+            </p>
+          </div>
+          <p className="text-[11px] text-muted-foreground mt-2">
+            É isso que será enviado no WhatsApp depois de você concluir o cadastro.
+          </p>
+        </>
+      )}
+    </div>
+  );
+};
 
 export const Field = ({
   label,
