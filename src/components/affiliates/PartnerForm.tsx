@@ -89,6 +89,27 @@ const PartnerForm = () => {
       setForm((f) => ({ ...f, [k]: v }));
     };
 
+  const hasAnyData = Object.values(form).some((v) => v.trim() !== "");
+
+  const previewMessage = useMemo(
+    () =>
+      buildWhatsAppAffiliateMessage({
+        type: "parceiro",
+        fullName: form.responsible_name.trim(),
+        phone: form.phone.trim(),
+        email: form.email.trim(),
+        companyName: form.company_name.trim(),
+        cnpj: form.cnpj.trim(),
+        businessType: form.business_type,
+        city: form.city.trim(),
+        state: form.state,
+        volumeNotes: form.volume_notes.trim(),
+      }),
+    [form]
+  );
+
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (submitting) return;
