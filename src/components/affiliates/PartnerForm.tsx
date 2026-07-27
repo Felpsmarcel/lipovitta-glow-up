@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/metaPixel";
-import { buildWhatsAppAffiliateDataLink } from "@/lib/whatsapp";
-import { STATES, NOTIFY_EMAIL, Field, inputCls, SuccessCard } from "@/components/affiliates/shared";
+import { buildWhatsAppAffiliateDataLink, buildWhatsAppAffiliateMessage } from "@/lib/whatsapp";
+import { STATES, NOTIFY_EMAIL, Field, inputCls, SuccessCard, WhatsAppPreview } from "@/components/affiliates/shared";
 
 const BUSINESS_TYPES = [
   "Farmácia",
@@ -248,6 +248,8 @@ const PartnerForm = () => {
           maxLength={600}
         />
       </Field>
+
+      {hasAnyData && <WhatsAppPreview message={previewMessage} />}
 
       {serverError && (
         <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{serverError}</p>
