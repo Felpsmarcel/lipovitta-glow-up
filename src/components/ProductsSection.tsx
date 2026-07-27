@@ -1,14 +1,23 @@
 import { Check, Tag } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
+import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
 import shotRushImg from "@/assets/shot-rush.jpg?w=300;600;900&format=avif;webp;jpg&as=picture";
 import gummyImg from "@/assets/gummy-vittaglow.png?w=300;600;900&format=avif;webp;png&as=picture";
 
+const KIT_SHOT_RUSH: SelectedKit = {
+  id: "shot-rush",
+  name: "Shot Rush Pré-Treino",
+  productCount: 1,
+  checkoutUrl: "https://seguro.lipovitta.site/r/5NYVZ7D8UT",
+  value: 202.5,
+  sku: "5NYVZ7D8UT",
+};
 
 type Complemento = {
   id: string;
   inStock: boolean;
-  render: () => JSX.Element;
+  render: (onBuy: () => void) => JSX.Element;
 };
 
 const complementos: Complemento[] = [
