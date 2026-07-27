@@ -153,6 +153,8 @@ const AffiliateForm = () => {
       <SuccessCard
         title="Recebemos seu cadastro"
         message="Nossa equipe entrará em contato pelo WhatsApp em breve."
+        whatsappHref={whatsappHref || undefined}
+        whatsappLabel="Enviar meus dados pelo WhatsApp"
       />
     );
   }
