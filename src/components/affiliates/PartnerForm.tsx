@@ -2,6 +2,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/metaPixel";
+import { buildWhatsAppAffiliateDataLink } from "@/lib/whatsapp";
 import { STATES, NOTIFY_EMAIL, Field, inputCls, SuccessCard } from "@/components/affiliates/shared";
 
 const BUSINESS_TYPES = [
@@ -79,6 +80,7 @@ const PartnerForm = () => {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [whatsappHref, setWhatsappHref] = useState<string | null>(null);
 
   const update =
     (k: keyof FormState, transform?: (v: string) => string) =>
@@ -152,6 +154,39 @@ const PartnerForm = () => {
       /* silent */
     }
 
+    const waLink = buildWhatsAppAffiliateDataLink({
+      type: "parceiro",
+      fullName: payload.responsible_name,
+      phone: payload.phone,
+      email: payload.email,
+      companyName: payload.company_name,
+      cnpj: payload.cnpj,
+      businessType: payload.business_type,
+      city: payload.city,
+      state: payload.state,
+      volumeNotes: payload.volume_notes,
+    });
+    setWhatsappHref(waLink);
+
+    try {
+      await supabase.functions.invoke("notify-whatsapp", {
+        body: {
+          type: "parceiro",
+          fullName: payload.responsible_name,
+          phone: payload.phone,
+          email: payload.email,
+          companyName: payload.company_name,
+          cnpj: payload.cnpj,
+          businessType: payload.business_type,
+          city: payload.city,
+          state: payload.state,
+          volumeNotes: payload.volume_notes,
+        },
+      });
+    } catch {
+      /* silent: WhatsApp notification is best-effort */
+    }
+
     trackEvent(
       "Lead",
       { content_name: "parceiro_comercial", content_category: "afiliados" },
@@ -167,6 +202,8 @@ const PartnerForm = () => {
       <SuccessCard
         title="Recebemos seu cadastro"
         message="Nossa equipe comercial entrará em contato em breve."
+        whatsappHref={whatsappHref || undefined}
+        whatsappLabel="Enviar meus dados pelo WhatsApp"
       />
     );
   }

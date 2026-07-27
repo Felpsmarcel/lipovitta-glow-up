@@ -1,8 +1,10 @@
-import { Link } from "react-router-dom";
+import { buildWhatsAppAffiliateLink } from "@/lib/whatsapp";
 
 const AffiliateFloatingButton = () => (
-  <Link
-    to="/afiliados"
+  <a
+    href={buildWhatsAppAffiliateLink()}
+    target="_blank"
+    rel="noopener noreferrer"
     aria-label="Seja Afiliada LipoVitta"
     className="fixed bottom-24 right-6 z-50 inline-flex items-center gap-2 rounded-full px-4 h-12 text-white text-sm font-semibold shadow-lg hover:brightness-110 transition"
     style={{ backgroundColor: "#4667B4" }}
@@ -14,7 +16,7 @@ const AffiliateFloatingButton = () => (
       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </svg>
     Seja Afiliada
-  </Link>
+  </a>
 );
 
 export default AffiliateFloatingButton;

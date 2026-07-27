@@ -1,10 +1,11 @@
 import logoImg from "@/assets/logo-lipovitta.png";
 import { paymentIcons } from "@/components/PaymentIcons";
+import { buildWhatsAppAffiliateLink } from "@/lib/whatsapp";
 
 const institutionalLinks = [
   { label: "Política de Privacidade", href: "#" },
   { label: "Termos de Uso", href: "#" },
-  { label: "Seja Afiliada", href: "/afiliados" },
+  { label: "Seja Afiliada", href: buildWhatsAppAffiliateLink(), external: true },
 ];
 
 const helpLinks = [
@@ -61,6 +62,9 @@ const Footer = () => (
               <li key={link.label}>
                 <a
                   href={link.href}
+                  {...(link.external
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
                   className="text-white/80 text-sm hover:text-white transition-colors"
                 >
                   {link.label}
