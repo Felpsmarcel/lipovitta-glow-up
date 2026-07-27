@@ -1,10 +1,11 @@
 import logoImg from "@/assets/logo-lipovitta.png";
 import { paymentIcons } from "@/components/PaymentIcons";
+import { buildWhatsAppAffiliateLink } from "@/lib/whatsapp";
 
 const institutionalLinks = [
   { label: "Política de Privacidade", href: "#" },
   { label: "Termos de Uso", href: "#" },
-  { label: "Seja Afiliada", href: "/afiliados" },
+  { label: "Seja Afiliada", href: buildWhatsAppAffiliateLink(), external: true },
 ];
 
 const helpLinks = [
