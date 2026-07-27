@@ -169,8 +169,6 @@ const PartnerForm = () => {
     setWhatsappHref(waLink);
 
 
-
-
     trackEvent(
       "Lead",
       { content_name: "parceiro_comercial", content_category: "afiliados" },
