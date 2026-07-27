@@ -15,7 +15,7 @@ export const buildWhatsAppAffiliateLink = () => {
   return `https://wa.me/${AFFILIATE_PHONE}?text=${encodeText(text)}`;
 };
 
-export const buildWhatsAppAffiliateDataLink = (data: {
+export type WhatsAppAffiliateData = {
   fullName?: string;
   phone?: string;
   email?: string;
@@ -28,7 +28,9 @@ export const buildWhatsAppAffiliateDataLink = (data: {
   city?: string;
   volumeNotes?: string | null;
   type: "afiliada" | "parceiro";
-}) => {
+};
+
+export const buildWhatsAppAffiliateMessage = (data: WhatsAppAffiliateData) => {
   const typeLabel = data.type === "afiliada" ? "Afiliada" : "Parceiro comercial";
   let text = `Novo cadastro de ${typeLabel} LipoVitta\n\n`;
 
@@ -40,10 +42,13 @@ export const buildWhatsAppAffiliateDataLink = (data: {
   if (data.email) text += `Email: ${data.email}\n`;
   if (data.followersRange) text += `Seguidores: ${data.followersRange}\n`;
   if (data.city || data.state) text += `Local: ${data.city || ""}${data.city && data.state ? " - " : ""}${data.state || ""}\n`;
-  if (data.knowsProduct !== undefined)
+  if (data.knowsProduct !== undefined && data.knowsProduct !== "")
     text += `Já conhece: ${typeof data.knowsProduct === "boolean" ? (data.knowsProduct ? "Sim" : "Não") : data.knowsProduct}\n`;
   if (data.volumeNotes) text += `Observações: ${data.volumeNotes}\n`;
 
   text += `\nRecebido via site lipovitta.site`;
-  return `https://wa.me/${AFFILIATE_PHONE}?text=${encodeText(text)}`;
+  return text;
 };
+
+export const buildWhatsAppAffiliateDataLink = (data: WhatsAppAffiliateData) =>
+  `https://wa.me/${AFFILIATE_PHONE}?text=${encodeText(buildWhatsAppAffiliateMessage(data))}`;

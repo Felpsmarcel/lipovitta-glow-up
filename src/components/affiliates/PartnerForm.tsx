@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/metaPixel";
-import { buildWhatsAppAffiliateDataLink } from "@/lib/whatsapp";
-import { STATES, NOTIFY_EMAIL, Field, inputCls, SuccessCard } from "@/components/affiliates/shared";
+import { buildWhatsAppAffiliateDataLink, buildWhatsAppAffiliateMessage } from "@/lib/whatsapp";
+import { STATES, NOTIFY_EMAIL, Field, inputCls, SuccessCard, WhatsAppPreview } from "@/components/affiliates/shared";
 
 const BUSINESS_TYPES = [
   "Farmácia",
@@ -88,6 +88,27 @@ const PartnerForm = () => {
       const v = transform ? transform(e.target.value) : e.target.value;
       setForm((f) => ({ ...f, [k]: v }));
     };
+
+  const hasAnyData = Object.values(form).some((v) => v.trim() !== "");
+
+  const previewMessage = useMemo(
+    () =>
+      buildWhatsAppAffiliateMessage({
+        type: "parceiro",
+        fullName: form.responsible_name.trim(),
+        phone: form.phone.trim(),
+        email: form.email.trim(),
+        companyName: form.company_name.trim(),
+        cnpj: form.cnpj.trim(),
+        businessType: form.business_type,
+        city: form.city.trim(),
+        state: form.state,
+        volumeNotes: form.volume_notes.trim(),
+      }),
+    [form]
+  );
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -248,6 +269,8 @@ const PartnerForm = () => {
           maxLength={600}
         />
       </Field>
+
+      {hasAnyData && <WhatsAppPreview message={previewMessage} />}
 
       {serverError && (
         <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{serverError}</p>

@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/metaPixel";
-import { buildWhatsAppAffiliateDataLink } from "@/lib/whatsapp";
-import { STATES, NOTIFY_EMAIL, Field, inputCls, SuccessCard } from "@/components/affiliates/shared";
+import { buildWhatsAppAffiliateDataLink, buildWhatsAppAffiliateMessage } from "@/lib/whatsapp";
+import { STATES, NOTIFY_EMAIL, Field, inputCls, SuccessCard, WhatsAppPreview } from "@/components/affiliates/shared";
 
 const FOLLOWERS = [
   { value: "ate_1k", label: "Até 1.000" },
@@ -51,6 +51,22 @@ const AffiliateForm = () => {
   const update = (k: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm((f) => ({ ...f, [k]: e.target.value }));
   };
+
+  const hasAnyData = Object.values(form).some((v) => v.trim() !== "");
+
+  const previewMessage = useMemo(
+    () =>
+      buildWhatsAppAffiliateMessage({
+        type: "afiliada",
+        fullName: form.full_name.trim(),
+        phone: form.phone.trim(),
+        email: form.email.trim(),
+        followersRange: FOLLOWERS.find((f) => f.value === form.followers_range)?.label,
+        state: form.state,
+        knowsProduct: form.knows_product === "sim" ? "Sim" : form.knows_product === "nao" ? "Não" : "",
+      }),
+    [form]
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -197,6 +213,8 @@ const AffiliateForm = () => {
           ))}
         </div>
       </Field>
+
+      {hasAnyData && <WhatsAppPreview message={previewMessage} />}
 
       {serverError && (
         <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{serverError}</p>
