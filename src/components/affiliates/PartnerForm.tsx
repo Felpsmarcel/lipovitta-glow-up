@@ -202,6 +202,8 @@ const PartnerForm = () => {
       <SuccessCard
         title="Recebemos seu cadastro"
         message="Nossa equipe comercial entrará em contato em breve."
+        whatsappHref={whatsappHref || undefined}
+        whatsappLabel="Enviar meus dados pelo WhatsApp"
       />
     );
   }
