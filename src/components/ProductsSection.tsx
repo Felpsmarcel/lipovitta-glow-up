@@ -75,7 +75,7 @@ const complementos: Complemento[] = [
           <p className="text-xs text-[#555] mt-1">ou 3x R$67,50 sem juros</p>
         </div>
         <a
-          href="https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-rush-pre-treino/"
+          href="https://seguro.lipovitta.site/r/5NYVZ7D8UT"
           target="_blank"
           rel="noopener noreferrer"
           className="mt-auto block text-center border-2 border-[#4667B4] text-[#4667B4] hover:bg-[#4667B4] hover:text-white font-semibold py-2.5 rounded-full transition-colors text-sm"
