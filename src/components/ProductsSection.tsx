@@ -111,6 +111,7 @@ const complementos: Complemento[] = [
 
 const ProductsSection = () => {
   const sectionRef = useScrollAnimation();
+  const { selectKit } = useGiftFlow();
   const visiveis = complementos.filter((p) => p.inStock);
 
   if (visiveis.length === 0) return null;
