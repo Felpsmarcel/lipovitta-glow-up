@@ -2,6 +2,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/metaPixel";
+import { buildWhatsAppAffiliateDataLink } from "@/lib/whatsapp";
 import { STATES, NOTIFY_EMAIL, Field, inputCls, SuccessCard } from "@/components/affiliates/shared";
 
 const BUSINESS_TYPES = [
