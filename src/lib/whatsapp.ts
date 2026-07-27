@@ -15,7 +15,7 @@ export const buildWhatsAppAffiliateLink = () => {
   return `https://wa.me/${AFFILIATE_PHONE}?text=${encodeText(text)}`;
 };
 
-export const buildWhatsAppAffiliateDataLink = (data: {
+export type WhatsAppAffiliateData = {
   fullName?: string;
   phone?: string;
   email?: string;
