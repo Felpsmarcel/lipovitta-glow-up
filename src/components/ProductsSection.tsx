@@ -10,7 +10,7 @@ const KIT_SHOT_RUSH: SelectedKit = {
   name: "Shot Rush Pré-Treino",
   productCount: 1,
   checkoutUrl: "https://seguro.lipovitta.site/r/5NYVZ7D8UT",
-  value: 202.5,
+  value: 225,
   sku: "5NYVZ7D8UT",
 };
 
