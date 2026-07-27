@@ -62,6 +62,9 @@ const Footer = () => (
               <li key={link.label}>
                 <a
                   href={link.href}
+                  {...(link.external
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
                   className="text-white/80 text-sm hover:text-white transition-colors"
                 >
                   {link.label}
