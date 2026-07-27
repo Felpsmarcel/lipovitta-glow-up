@@ -95,20 +95,56 @@ Deno.serve(async (req: Request) => {
     );
   }
 
-  // Stape CAPI Gateway — transparent proxy for Meta Graph /events.
-  // Auth is via ?access_token=<token> in the query string, same as Graph API.
-  const qs = new URLSearchParams({ access_token: STAPE_TOKEN });
+  // Stape CAPI Gateway — the token is a base64 blob: { i: gatewayId, h: host, k: key }
+  let host = STAPE_HOST;
+  let gatewayId = "";
+  let token = STAPE_TOKEN;
+  try {
+    const decoded = JSON.parse(atob(STAPE_TOKEN)) as { i?: string; h?: string; k?: string };
+    if (decoded?.h) host = decoded.h;
+    if (decoded?.i) gatewayId = decoded.i;
+    if (decoded?.k) token = decoded.k;
+  } catch {
+    // plain token — keep defaults
+  }
+
+  const qs = new URLSearchParams({ access_token: token });
   if (TEST_EVENT_CODE) qs.set("test_event_code", TEST_EVENT_CODE);
-  const url = `https://${STAPE_HOST}/${PIXEL_ID}/events?${qs.toString()}`;
-  const resp = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(capiPayload),
-  });
-  const text = await resp.text();
-  console.log("[meta-capi:send]", resp.status, text.slice(0, 500));
-  return new Response(text, {
-    status: resp.status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+
+  const candidates = gatewayId
+    ? [
+        `https://${host}/${gatewayId}/v21.0/${PIXEL_ID}/events?${qs}`,
+        `https://${host}/${gatewayId}/${PIXEL_ID}/events?${qs}`,
+        `https://${host}/v21.0/${PIXEL_ID}/events?${qs}`,
+      ]
+    : [
+        `https://${host}/v21.0/${PIXEL_ID}/events?${qs}`,
+        `https://${host}/${PIXEL_ID}/events?${qs}`,
+      ];
+
+  let lastStatus = 0;
+  let lastText = "";
+  for (const url of candidates) {
+    try {
+      const resp = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(capiPayload),
+      });
+      lastStatus = resp.status;
+      lastText = await resp.text();
+      console.log("[meta-capi:send]", resp.status, url.split("?")[0], lastText.slice(0, 300));
+      if (resp.status !== 404) break;
+    } catch (e) {
+      lastText = String(e);
+      console.log("[meta-capi:error]", lastText.slice(0, 300));
+    }
+  }
+
+  // Tracking must never break the client flow — always answer 200.
+  return new Response(
+    JSON.stringify({ ok: lastStatus >= 200 && lastStatus < 300, upstream_status: lastStatus, upstream: lastText.slice(0, 500) }),
+    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+  );
 });
+
