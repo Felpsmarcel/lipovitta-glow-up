@@ -80,6 +80,7 @@ const PartnerForm = () => {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [whatsappHref, setWhatsappHref] = useState<string | null>(null);
 
   const update =
     (k: keyof FormState, transform?: (v: string) => string) =>
