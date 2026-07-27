@@ -168,24 +168,6 @@ const PartnerForm = () => {
     });
     setWhatsappHref(waLink);
 
-    try {
-      await supabase.functions.invoke("notify-whatsapp", {
-        body: {
-          type: "parceiro",
-          fullName: payload.responsible_name,
-          phone: payload.phone,
-          email: payload.email,
-          companyName: payload.company_name,
-          cnpj: payload.cnpj,
-          businessType: payload.business_type,
-          city: payload.city,
-          state: payload.state,
-          volumeNotes: payload.volume_notes,
-        },
-      });
-    } catch {
-      /* silent: WhatsApp notification is best-effort */
-    }
 
     trackEvent(
       "Lead",
