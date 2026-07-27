@@ -1,4 +1,4 @@
-import { Check, Tag } from "lucide-react";
+import { Check } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
