@@ -1,9 +1,21 @@
-Plano de ação
+## Objetivo
 
-1. Atualizar o link de compra do Shot Rush Pré-Treino na seção "Complementos opcionais" (`src/components/ProductsSection.tsx`).
-   - Link atual: `https://clarinhacbr.lojavirtualnuvem.com.br/produtos/shot-rush-pre-treino/`
-   - Novo link: `https://seguro.lipovitta.site/r/5NYVZ7D8UT`
+Ao clicar em "Adicionar à minha rotina" no card **Shot Rush Pré-Treino** (Complementos opcionais), o usuário deve ir para a etapa de escolha de brinde — igual ao Shot Matinal — em vez de abrir o checkout direto.
 
-2. Manter `target="_blank"` e `rel="noopener noreferrer"` no botão "Adicionar à minha rotina".
+## O que muda
 
-3. Verificar se o link abre corretamente após a alteração.
+Apenas `src/components/ProductsSection.tsx`:
+
+1. Usar o hook `useGiftFlow()` (a seção já está dentro do `GiftFlowProvider` na Index).
+2. Definir o kit do complemento:
+   - id: `shot-rush`
+   - nome: `Shot Rush Pré-Treino`
+   - productCount: `1` (libera Raspador e Porta cápsulas)
+   - checkoutUrl: `https://seguro.lipovitta.site/r/5NYVZ7D8UT`
+   - value: `202.50`, sku: `5NYVZ7D8UT`
+3. Trocar o `<a href=...>` por um `<button>` com o mesmo estilo, chamando `selectKit(KIT_SHOT_RUSH)` — isso rola automaticamente até a seção "Escolha do brinde".
+4. O checkout final (com `utm_content=brinde_xxx` e `utm_term=eid_...`) continua sendo disparado pelo botão "Finalizar minha compra" já existente.
+
+## Detalhe técnico
+
+O array `complementos` hoje é definido no escopo do módulo com `render()` sem parâmetros. Ele passa a receber o handler (`render: (onBuy) => ...`) ou é movido para dentro do componente, para ter acesso ao `selectKit`. Sem mudanças de layout, texto ou preço.
