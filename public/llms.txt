@@ -1,0 +1,10 @@
+# LipoVitta
+
+> Suplemento natural criado por Clara Caldas para mulheres que convivem com lipedema, celulite e inchaço. Fórmula com Curcumina, Dimpless® e Resveratrol.
+
+O site apresenta a linha LipoVitta (Cápsulas, Shot Matinal, Shot Rush Pré-Treino e o Protocolo Completo), depoimentos de clientes, ingredientes, modo de uso e perguntas frequentes.
+
+## Pages
+
+- [Início](/): Produto principal LipoVitta Cápsulas, benefícios, ingredientes, depoimentos, ofertas e FAQ.
+- [Afiliados e Parceiros](/afiliados): Cadastro para afiliadas creators e parceiros comerciais (farmácias, clínicas, profissionais de saúde).
