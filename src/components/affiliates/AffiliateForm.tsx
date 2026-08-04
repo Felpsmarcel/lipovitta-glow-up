@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
-import { trackEvent } from "@/lib/metaPixel";
+import { trackLead, trackLeadStart } from "@/lib/tracking";
 import { buildWhatsAppAffiliateDataLink, buildWhatsAppAffiliateMessage } from "@/lib/whatsapp";
 import { STATES, NOTIFY_EMAIL, Field, inputCls, SuccessCard, WhatsAppPreview } from "@/components/affiliates/shared";
 
@@ -141,11 +141,7 @@ const AffiliateForm = () => {
 
 
 
-    trackEvent(
-      "Lead",
-      { content_name: "afiliada", content_category: "afiliados" },
-      { eventID: `affiliate-${inserted.id}` }
-    );
+    trackLead({ formName: "afiliada", eventId: `affiliate-${inserted.id}` });
 
     setSubmitting(false);
     setSuccess(true);

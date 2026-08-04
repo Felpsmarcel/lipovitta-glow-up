@@ -21,6 +21,7 @@ const GiftSelectionSection = () => {
       sku: selectedKit.sku,
       value: selectedKit.value,
       eventName: "InitiateCheckout",
+      gift: selectedGift.utm,
     });
     const url = appendTrackingParams(selectedKit.checkoutUrl, {
       eventId,

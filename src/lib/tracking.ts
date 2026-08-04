@@ -67,6 +67,8 @@ export type CtaClickInput = {
   checkoutUrl?: string;
   /** Evento Meta a disparar. Padrão: CTAClick (custom). */
   eventName?: string;
+  /** Brinde escolhido (utm), quando houver. */
+  gift?: string;
 };
 
 /**
@@ -87,6 +89,7 @@ export function trackCtaClick(input: CtaClickInput): { eventId: string; url?: st
       value: input.value,
       cta_location: input.location,
       cta_label: input.label,
+      gift: input.gift,
     },
     { eventID: eventId }
   );
@@ -98,11 +101,14 @@ export function trackCtaClick(input: CtaClickInput): { eventId: string; url?: st
     product_name: input.productName ?? input.label,
     sku: input.sku,
     value: input.value,
+    gift: input.gift,
   });
 
   return {
     eventId,
-    url: input.checkoutUrl ? appendTrackingParams(input.checkoutUrl, { eventId }) : undefined,
+    url: input.checkoutUrl
+      ? appendTrackingParams(input.checkoutUrl, { eventId, gift: input.gift })
+      : undefined,
   };
 }
 
