@@ -1,8 +1,10 @@
-// Yampi Webhook — Fase 1: MODO CAPTURA PURO
-// - Loga headers, body cru e itens parseados
-// - NÃO valida assinatura
-// - NÃO grava em banco
-// - Sempre responde 200
+// Yampi Webhook — Fase 2: registra a compra e envia o evento Purchase para a Meta (CAPI).
+// - Valida a assinatura HMAC quando YAMPI_WEBHOOK_SECRET estiver configurado
+// - Grava o pedido em public.conversion_events (dedup por order_id)
+// - Envia Purchase para a função meta-capi com dados do cliente hasheados
+// - Sempre responde 200 (a Yampi não deve reenviar por erro nosso)
+
+import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -10,58 +12,197 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-Deno.serve(async (req: Request) => {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
-
-  console.log("=== [yampi-webhook] CAPTURE MODE ===");
-  console.log("method:", req.method);
-  console.log("url:", req.url);
-
-  // Headers
-  const headersObj: Record<string, string> = {};
-  for (const [k, v] of req.headers.entries()) headersObj[k] = v;
-  console.log("headers:", JSON.stringify(headersObj, null, 2));
-
-  // Body cru
-  let rawBody = "";
-  try {
-    rawBody = await req.text();
-    console.log("raw body:", rawBody);
-  } catch (e) {
-    console.log("error reading body:", (e as Error).message);
-  }
-
-  // Tenta parsear JSON
-  if (rawBody) {
-    try {
-      const json = JSON.parse(rawBody);
-      console.log("parsed json:", JSON.stringify(json, null, 2));
-
-      const items = json?.resource?.items?.data;
-      if (Array.isArray(items)) {
-        console.log(`items count: ${items.length}`);
-        items.forEach((item: any, idx: number) => {
-          console.log(`item[${idx}]:`, JSON.stringify({
-            product_id: item?.product_id,
-            item_sku: item?.item_sku,
-            quantity: item?.quantity,
-            gift: item?.gift,
-          }));
-        });
-      } else {
-        console.log("resource.items.data não é um array (ou ausente)");
-      }
-    } catch (e) {
-      console.log("JSON parse error:", (e as Error).message);
-    }
-  }
-
-  console.log("=== [yampi-webhook] END ===");
-
-  return new Response(JSON.stringify({ ok: true }), {
-    status: 200,
+const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), {
+    status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
+
+async function sha256Hex(value: string): Promise<string> {
+  const data = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+async function verifySignature(secret: string, raw: string, signature: string): Promise<boolean> {
+  try {
+    const key = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(secret),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"]
+    );
+    const mac = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(raw));
+    const bytes = new Uint8Array(mac);
+    const base64 = btoa(String.fromCharCode(...bytes));
+    const hex = Array.from(bytes)
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+    return signature === base64 || signature.toLowerCase() === hex;
+  } catch {
+    return false;
+  }
+}
+
+const digits = (v: unknown) => String(v ?? "").replace(/\D/g, "");
+const norm = (v: unknown) => String(v ?? "").trim().toLowerCase();
+
+// deno-lint-ignore no-explicit-any
+function pickUtms(resource: any): Record<string, string | undefined> {
+  const src = resource?.utm ?? resource?.tracking ?? resource ?? {};
+  const get = (k: string) => {
+    const v = src?.[k] ?? src?.data?.[k] ?? resource?.[k];
+    return typeof v === "string" && v.trim() ? v.trim().slice(0, 200) : undefined;
+  };
+  return {
+    utm_source: get("utm_source"),
+    utm_medium: get("utm_medium"),
+    utm_campaign: get("utm_campaign"),
+    utm_content: get("utm_content"),
+    utm_term: get("utm_term"),
+  };
+}
+
+Deno.serve(async (req: Request) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  if (req.method !== "POST") return json({ error: "method_not_allowed" }, 405);
+
+  const raw = await req.text();
+
+  // --- Assinatura ---
+  const secret = Deno.env.get("YAMPI_WEBHOOK_SECRET");
+  const signature =
+    req.headers.get("x-yampi-hmac-sha256") ??
+    req.headers.get("X-Yampi-Hmac-SHA256") ??
+    "";
+  if (secret) {
+    const valid = signature ? await verifySignature(secret, raw, signature) : false;
+    if (!valid) {
+      console.warn("[yampi-webhook] assinatura inválida — evento ignorado");
+      return json({ ok: false, reason: "invalid_signature" });
+    }
+  } else {
+    console.warn("[yampi-webhook] YAMPI_WEBHOOK_SECRET não configurado — validação desativada");
+  }
+
+  // deno-lint-ignore no-explicit-any
+  let payload: any;
+  try {
+    payload = JSON.parse(raw);
+  } catch {
+    console.error("[yampi-webhook] JSON inválido");
+    return json({ ok: false, reason: "invalid_json" });
+  }
+
+  const event = String(payload?.event ?? "");
+  const resource = payload?.resource ?? {};
+  const orderId = String(resource?.id ?? resource?.number ?? "").trim();
+
+  if (!orderId) {
+    console.warn("[yampi-webhook] pedido sem id — ignorado", event);
+    return json({ ok: false, reason: "missing_order_id" });
+  }
+
+  // Só contabilizamos pedidos pagos/aprovados quando o status vier no payload.
+  const statusAlias = norm(resource?.status?.data?.alias ?? resource?.status?.alias ?? "");
+  const paidEvents = ["order.paid", "order.status.updated", "order.created", "transaction.paid"];
+  const isPaid =
+    statusAlias === "paid" ||
+    statusAlias === "approved" ||
+    event === "order.paid" ||
+    event === "transaction.paid";
+
+  if (!isPaid) {
+    console.log("[yampi-webhook] evento ignorado (não pago):", event, statusAlias, paidEvents.includes(event));
+    return json({ ok: true, skipped: true, event, status: statusAlias });
+  }
+
+  const value = Number(
+    resource?.value_total ?? resource?.total ?? resource?.value ?? 0
+  );
+  const items = Array.isArray(resource?.items?.data) ? resource.items.data : [];
+  const skus = items.map((i: Record<string, unknown>) => String(i?.sku ?? i?.item_sku ?? "")).filter(Boolean);
+  const numItems = items.reduce((acc: number, i: Record<string, unknown>) => acc + Number(i?.quantity ?? 1), 0);
+
+  const utms = pickUtms(resource);
+  const eidMatch = /^eid_(.+)$/.exec(utms.utm_term ?? "");
+  const eventId = eidMatch ? eidMatch[1] : `yampi-${orderId}`;
+
+  const customer = resource?.customer?.data ?? resource?.customer ?? {};
+  const email = norm(customer?.email);
+  const phoneRaw = digits(customer?.phone?.full_number ?? customer?.phone?.number ?? customer?.phone);
+  const phone = phoneRaw ? (phoneRaw.startsWith("55") ? phoneRaw : `55${phoneRaw}`) : "";
+  const firstName = norm(customer?.first_name ?? String(customer?.name ?? "").split(" ")[0]);
+  const lastName = norm(customer?.last_name ?? String(customer?.name ?? "").split(" ").slice(-1)[0]);
+
+  const user_data: Record<string, string[] | string> = {};
+  if (email) user_data.em = [await sha256Hex(email)];
+  if (phone) user_data.ph = [await sha256Hex(phone)];
+  if (firstName) user_data.fn = [await sha256Hex(firstName)];
+  if (lastName) user_data.ln = [await sha256Hex(lastName)];
+
+  // --- Envia Purchase para a Meta via meta-capi ---
+  let metaStatus = "skipped";
+  try {
+    const resp = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/meta-capi`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+      },
+      body: JSON.stringify({
+        event_name: "Purchase",
+        event_id: eventId,
+        action_source: "website",
+        user_data,
+        custom_data: {
+          currency: "BRL",
+          value,
+          order_id: orderId,
+          content_ids: skus,
+          content_type: "product",
+          num_items: numItems || items.length || 1,
+        },
+      }),
+    });
+    const text = await resp.text();
+    metaStatus = resp.ok ? `sent_${resp.status}` : `error_${resp.status}`;
+    console.log("[yampi-webhook] meta-capi:", resp.status, text.slice(0, 300));
+  } catch (e) {
+    metaStatus = "error";
+    console.error("[yampi-webhook] meta-capi falhou:", (e as Error).message);
+  }
+
+  // --- Registro interno ---
+  try {
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+      { auth: { persistSession: false } }
+    );
+    const { error } = await supabase.from("conversion_events").insert({
+      event_name: "Purchase",
+      event_id: eventId,
+      source: "yampi",
+      order_id: orderId,
+      value: Number.isFinite(value) ? value : null,
+      currency: "BRL",
+      sku: skus[0] ?? null,
+      product_name: items[0]?.product_name ?? items[0]?.name ?? null,
+      gift: utms.utm_content ?? null,
+      ...utms,
+      meta_status: metaStatus,
+      metadata: { event, status: statusAlias, items_count: items.length, skus },
+    });
+    if (error && !error.message.includes("duplicate key")) {
+      console.error("[yampi-webhook] insert falhou:", error.message);
+    }
+  } catch (e) {
+    console.error("[yampi-webhook] banco falhou:", (e as Error).message);
+  }
+
+  return json({ ok: true, order_id: orderId, meta: metaStatus });
 });
