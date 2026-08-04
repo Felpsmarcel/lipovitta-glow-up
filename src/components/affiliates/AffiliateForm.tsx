@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { trackLead, trackLeadStart } from "@/lib/tracking";
@@ -48,7 +48,13 @@ const AffiliateForm = () => {
   const [serverError, setServerError] = useState<string | null>(null);
   const [whatsappHref, setWhatsappHref] = useState<string | null>(null);
 
+  const startedRef = useRef(false);
+
   const update = (k: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    if (!startedRef.current) {
+      startedRef.current = true;
+      trackLeadStart("afiliada");
+    }
     setForm((f) => ({ ...f, [k]: e.target.value }));
   };
 
