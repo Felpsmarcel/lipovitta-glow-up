@@ -10,6 +10,7 @@ import comboImg from "@/assets/combo-lipovitta.png.asset.json";
 import kitShotRushImg from "@/assets/kit-shot-rush-capsulas.png.asset.json";
 import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
 import { trackEvent } from "@/lib/metaPixel";
+import { trackCtaClick } from "@/lib/tracking";
 
 
 const LINK_CAPSULAS = "https://seguro.lipovitta.site/r/RMTIX51GQN";
@@ -25,6 +26,19 @@ const KIT_PROTOCOLO: SelectedKit = { id: "protocolo", name: "Protocolo Completo 
 const OfferSection = () => {
   const sectionRef = useScrollAnimation();
   const { selectKit } = useGiftFlow();
+
+  /** Registra o clique no CTA e segue para a etapa de brinde. */
+  const chooseKit = (kit: SelectedKit, location: string, label: string) => {
+    trackCtaClick({
+      location,
+      label,
+      productName: kit.name,
+      sku: kit.sku,
+      value: kit.value,
+      eventName: "AddToCart",
+    });
+    selectKit(kit);
+  };
   const viewFired = useRef(false);
 
   useEffect(() => {
@@ -146,7 +160,7 @@ const OfferSection = () => {
                 </div>
                 <button
                   type="button"
-                  onClick={() => selectKit(KIT_RUSH)}
+                  onClick={() => chooseKit(KIT_RUSH, "card_kit_rush", "COMPRAR KIT AGORA")}
                   className="inline-block text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base sm:text-lg px-8 py-4 min-h-[56px] shadow-md"
                 >
                   COMPRAR KIT AGORA
@@ -204,7 +218,7 @@ const OfferSection = () => {
               </div>
               <button
                 type="button"
-                onClick={() => selectKit(KIT_CAPSULAS)}
+                onClick={() => chooseKit(KIT_CAPSULAS, "card_capsulas", "COMEÇAR MINHA ROTINA")}
                 className="block w-full text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base sm:text-lg py-4 sm:py-5 min-h-[56px]"
               >
                 COMEÇAR MINHA ROTINA
@@ -247,7 +261,7 @@ const OfferSection = () => {
 
             <button
               type="button"
-              onClick={() => selectKit(KIT_PROTOCOLO)}
+              onClick={() => chooseKit(KIT_PROTOCOLO, "card_protocolo_imagem", "Imagem Protocolo")}
               aria-label="Escolher Protocolo Completo LipoVitta"
               className="block w-full h-44 sm:h-52 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] overflow-hidden mb-5 mt-2 transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#9BAE52]"
             >
@@ -296,7 +310,7 @@ const OfferSection = () => {
               </div>
               <button
                 type="button"
-                onClick={() => selectKit(KIT_PROTOCOLO)}
+                onClick={() => chooseKit(KIT_PROTOCOLO, "card_protocolo", "ESCOLHER PROTOCOLO COMPLETO")}
                 className="block w-full text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base py-4 min-h-[52px]"
               >
                 ESCOLHER PROTOCOLO COMPLETO
@@ -346,7 +360,7 @@ const OfferSection = () => {
               </div>
               <button
                 type="button"
-                onClick={() => selectKit(KIT_SHOT)}
+                onClick={() => chooseKit(KIT_SHOT, "card_shot_matinal", "ADICIONAR À MINHA ROTINA")}
                 className="block w-full text-center border-2 border-[#4667B4] text-[#4667B4] hover:bg-[#4667B4] hover:text-white font-bold rounded-full transition-colors text-sm py-3 min-h-[48px]"
               >
                 ADICIONAR À MINHA ROTINA

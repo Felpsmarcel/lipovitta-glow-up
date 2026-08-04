@@ -2,6 +2,7 @@ import { Check } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
+import { trackCtaClick } from "@/lib/tracking";
 import shotRushImg from "@/assets/shot-rush.jpg?w=300;600;900&format=avif;webp;jpg&as=picture";
 import gummyImg from "@/assets/gummy-vittaglow.png?w=300;600;900&format=avif;webp;png&as=picture";
 
@@ -138,7 +139,19 @@ const ProductsSection = () => {
               : "grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto"
           }
         >
-          {visiveis.map((p) => p.render(() => selectKit(KIT_SHOT_RUSH)))}
+          {visiveis.map((p) =>
+            p.render(() => {
+              trackCtaClick({
+                location: "complemento_shot_rush",
+                label: "Adicionar à minha rotina",
+                productName: KIT_SHOT_RUSH.name,
+                sku: KIT_SHOT_RUSH.sku,
+                value: KIT_SHOT_RUSH.value,
+                eventName: "AddToCart",
+              });
+              selectKit(KIT_SHOT_RUSH);
+            })
+          )}
         </div>
       </div>
     </section>

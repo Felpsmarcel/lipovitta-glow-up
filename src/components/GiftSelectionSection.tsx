@@ -1,8 +1,8 @@
 import { Check, Gift as GiftIcon } from "lucide-react";
 import { useGiftFlow } from "@/context/GiftFlowContext";
-import { appendGiftUtm, getEligibleGifts } from "@/data/gifts";
+import { getEligibleGifts } from "@/data/gifts";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
-import { generateEventId, trackEvent } from "@/lib/metaPixel";
+import { appendTrackingParams, trackCtaClick } from "@/lib/tracking";
 
 const GiftSelectionSection = () => {
   const { selectedKit, selectedGiftId, setSelectedGiftId } = useGiftFlow();
@@ -14,21 +14,18 @@ const GiftSelectionSection = () => {
 
   const handleCheckout = () => {
     if (!selectedGift) return;
-    const eventId = generateEventId();
-    trackEvent(
-      "InitiateCheckout",
-      {
-        content_ids: selectedKit.sku ? [selectedKit.sku] : undefined,
-        content_name: selectedKit.name,
-        content_type: "product",
-        currency: "BRL",
-        value: selectedKit.value,
-        num_items: selectedKit.productCount,
-        gift: selectedGift.utm,
-      },
-      { eventID: eventId }
-    );
-    const url = appendGiftUtm(selectedKit.checkoutUrl, selectedGift.utm, eventId);
+    const { eventId } = trackCtaClick({
+      location: "checkout_brinde",
+      label: "Finalizar minha compra",
+      productName: selectedKit.name,
+      sku: selectedKit.sku,
+      value: selectedKit.value,
+      eventName: "InitiateCheckout",
+    });
+    const url = appendTrackingParams(selectedKit.checkoutUrl, {
+      eventId,
+      gift: selectedGift.utm,
+    });
     window.open(url, "_blank", "noopener");
   };
 
