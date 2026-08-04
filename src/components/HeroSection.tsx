@@ -1,5 +1,6 @@
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import claraVideo from "@/assets/clara-hero.mp4.asset.json";
+import { trackCtaClick } from "@/lib/tracking";
 
 
 const HeroSection = () => {
@@ -67,6 +68,7 @@ const HeroSection = () => {
             <div id="cta" className="mb-4">
               <a
                 href="#comprar"
+                onClick={() => trackCtaClick({ location: "hero", label: "CONHECER A ROTINA LIPOVITTA" })}
                 className="inline-block bg-gradient-brand text-white font-bold text-base sm:text-lg px-10 py-4 rounded-full shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
               >
                 CONHECER A ROTINA LIPOVITTA
@@ -78,6 +80,7 @@ const HeroSection = () => {
                 href="#card-kit-rush-top"
                 onClick={(e) => {
                   e.preventDefault();
+                  trackCtaClick({ location: "hero", label: "Kit Shot Rush + Cápsulas" });
                   document.getElementById("card-kit-rush-top")?.scrollIntoView({ behavior: "smooth" });
                 }}
                 className="inline-flex items-center gap-2 text-sm font-semibold text-[#4667B4] bg-white/80 backdrop-blur border border-[#D9E2F1] hover:border-[#9BAE52] hover:text-[#8A9D45] px-4 py-2 rounded-full transition-colors shadow-sm"

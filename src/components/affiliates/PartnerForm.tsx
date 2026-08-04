@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
-import { trackEvent } from "@/lib/metaPixel";
+import { trackLead, trackLeadStart } from "@/lib/tracking";
 import { buildWhatsAppAffiliateDataLink, buildWhatsAppAffiliateMessage } from "@/lib/whatsapp";
 import { STATES, NOTIFY_EMAIL, Field, inputCls, SuccessCard, WhatsAppPreview } from "@/components/affiliates/shared";
 
@@ -82,9 +82,15 @@ const PartnerForm = () => {
   const [serverError, setServerError] = useState<string | null>(null);
   const [whatsappHref, setWhatsappHref] = useState<string | null>(null);
 
+  const startedRef = useRef(false);
+
   const update =
     (k: keyof FormState, transform?: (v: string) => string) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+      if (!startedRef.current) {
+        startedRef.current = true;
+        trackLeadStart("parceiro_comercial");
+      }
       const v = transform ? transform(e.target.value) : e.target.value;
       setForm((f) => ({ ...f, [k]: v }));
     };
@@ -190,11 +196,7 @@ const PartnerForm = () => {
     setWhatsappHref(waLink);
 
 
-    trackEvent(
-      "Lead",
-      { content_name: "parceiro_comercial", content_category: "afiliados" },
-      { eventID: `partner-${inserted.id}` }
-    );
+    trackLead({ formName: "parceiro_comercial", eventId: `partner-${inserted.id}` });
 
     setSubmitting(false);
     setSuccess(true);

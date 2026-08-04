@@ -1,9 +1,12 @@
+import { trackContact } from "@/lib/tracking";
+
 const WhatsAppButton = () => (
   <a
     href="https://wa.me/5571996150401"
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Fale conosco pelo WhatsApp"
+    onClick={() => trackContact("whatsapp_flutuante", "WhatsApp")}
     className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg animate-pulse-cta"
     style={{ backgroundColor: "#25D366" }}
   >

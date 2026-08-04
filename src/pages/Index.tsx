@@ -48,7 +48,7 @@ const Index = () => (
 
         {/* → CTA: branco/soft */}
         <SectionSwoosh direction="blue-to-white" />
-        <CTABanner eyebrow="Quer sentir isso na sua rotina?" label="VER A CÁPSULA LIPOVITTA" />
+        <CTABanner location="banner_beneficios" eyebrow="Quer sentir isso na sua rotina?" label="VER A CÁPSULA LIPOVITTA" />
 
 
         {/* → ForWho: AZUL */}
@@ -65,7 +65,7 @@ const Index = () => (
 
         {/* → CTA: branco/soft */}
         <SectionSwoosh direction="blue-to-white" />
-        <CTABanner eyebrow="Ingredientes escolhidos com critério. Rotina simples." label="ESCOLHER MEU KIT" />
+        <CTABanner location="banner_ingredientes" eyebrow="Ingredientes escolhidos com critério. Rotina simples." label="ESCOLHER MEU KIT" />
 
         {/* Offer: light grey */}
         <OfferSection />

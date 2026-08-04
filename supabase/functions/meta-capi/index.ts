@@ -18,6 +18,8 @@ const BodySchema = z.object({
     .object({
       em: z.array(z.string()).optional(), // hashed emails
       ph: z.array(z.string()).optional(), // hashed phones
+      fn: z.array(z.string()).optional(), // hashed first names
+      ln: z.array(z.string()).optional(), // hashed last names
       fbp: z.string().optional(),
       fbc: z.string().optional(),
       client_user_agent: z.string().optional(),
@@ -111,7 +113,12 @@ Deno.serve(async (req: Request) => {
   const qs = new URLSearchParams({ access_token: token });
   if (TEST_EVENT_CODE) qs.set("test_event_code", TEST_EVENT_CODE);
 
-  const candidates = gatewayId
+  const OVERRIDE_URL = Deno.env.get("STAPE_CAPI_URL");
+  const GRAPH_TOKEN = Deno.env.get("META_CAPI_ACCESS_TOKEN");
+
+  const candidates = OVERRIDE_URL
+    ? [`${OVERRIDE_URL.replace(/\/$/, "")}/v21.0/${PIXEL_ID}/events?${qs}`]
+    : gatewayId
     ? [
         `https://${host}/${gatewayId}/v21.0/${PIXEL_ID}/events?${qs}`,
         `https://${host}/${gatewayId}/${PIXEL_ID}/events?${qs}`,
@@ -121,6 +128,13 @@ Deno.serve(async (req: Request) => {
         `https://${host}/v21.0/${PIXEL_ID}/events?${qs}`,
         `https://${host}/${PIXEL_ID}/events?${qs}`,
       ];
+
+  // Fallback direto na Graph API da Meta quando houver token próprio.
+  if (GRAPH_TOKEN) {
+    const graphQs = new URLSearchParams({ access_token: GRAPH_TOKEN });
+    if (TEST_EVENT_CODE) graphQs.set("test_event_code", TEST_EVENT_CODE);
+    candidates.push(`https://graph.facebook.com/v21.0/${PIXEL_ID}/events?${graphQs}`);
+  }
 
   let lastStatus = 0;
   let lastText = "";

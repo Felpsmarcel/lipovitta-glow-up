@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { trackContact, trackCtaClick } from "@/lib/tracking";
 
 const ExitIntentPopup = () => {
   const [show, setShow] = useState(false);
@@ -12,6 +13,7 @@ const ExitIntentPopup = () => {
       if (e.clientY <= 0) {
         setShow(true);
         localStorage.setItem("exitPopupShown", "1");
+        trackContact("exit_intent_popup", "Popup exibido");
         document.documentElement.removeEventListener("mouseleave", handler);
       }
     };
@@ -43,6 +45,7 @@ const ExitIntentPopup = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
+            trackCtaClick({ location: "exit_intent_popup", label: "BAIXAR O GUIA", eventName: "Lead" });
             setShow(false);
           }}
           className="flex flex-col gap-3"

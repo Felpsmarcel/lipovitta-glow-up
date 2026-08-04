@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
-import { trackEvent } from "@/lib/metaPixel";
+import { trackLead, trackLeadStart } from "@/lib/tracking";
 import { buildWhatsAppAffiliateDataLink, buildWhatsAppAffiliateMessage } from "@/lib/whatsapp";
 import { STATES, NOTIFY_EMAIL, Field, inputCls, SuccessCard, WhatsAppPreview } from "@/components/affiliates/shared";
 
@@ -48,7 +48,13 @@ const AffiliateForm = () => {
   const [serverError, setServerError] = useState<string | null>(null);
   const [whatsappHref, setWhatsappHref] = useState<string | null>(null);
 
+  const startedRef = useRef(false);
+
   const update = (k: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    if (!startedRef.current) {
+      startedRef.current = true;
+      trackLeadStart("afiliada");
+    }
     setForm((f) => ({ ...f, [k]: e.target.value }));
   };
 
@@ -141,11 +147,7 @@ const AffiliateForm = () => {
 
 
 
-    trackEvent(
-      "Lead",
-      { content_name: "afiliada", content_category: "afiliados" },
-      { eventID: `affiliate-${inserted.id}` }
-    );
+    trackLead({ formName: "afiliada", eventId: `affiliate-${inserted.id}` });
 
     setSubmitting(false);
     setSuccess(true);
