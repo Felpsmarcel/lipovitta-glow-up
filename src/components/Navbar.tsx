@@ -48,7 +48,7 @@ const Navbar = () => {
               e.preventDefault();
               document.getElementById("precos")?.scrollIntoView({ behavior: "smooth" });
             }}
-            className="inline-flex font-bold text-sm px-5 py-2 rounded-full transition-colors text-white"
+            className="inline-flex whitespace-nowrap font-bold text-xs sm:text-sm px-4 sm:px-5 py-2 rounded-full transition-colors text-white"
             style={{ backgroundColor: "#9BAE52" }}
           >
             COMPRAR AGORA
