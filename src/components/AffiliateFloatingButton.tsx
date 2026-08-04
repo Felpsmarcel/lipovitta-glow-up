@@ -1,4 +1,5 @@
 import { buildWhatsAppAffiliateLink } from "@/lib/whatsapp";
+import { trackContact } from "@/lib/tracking";
 
 const AffiliateFloatingButton = () => (
   <a
@@ -6,6 +7,7 @@ const AffiliateFloatingButton = () => (
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Seja Afiliada LipoVitta"
+    onClick={() => trackContact("botao_flutuante_afiliada", "Seja Afiliada")}
     className="fixed bottom-24 right-6 z-50 inline-flex items-center gap-2 rounded-full px-4 h-12 text-white text-sm font-semibold shadow-lg hover:brightness-110 transition"
     style={{ backgroundColor: "#4667B4" }}
   >

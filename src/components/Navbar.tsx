@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import lipovittaLogo from "@/assets/lipovitta-logo.png.asset.json";
+import { trackCtaClick } from "@/lib/tracking";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -33,6 +34,7 @@ const Navbar = () => {
             href="#card-kit-rush-top"
             onClick={(e) => {
               e.preventDefault();
+              trackCtaClick({ location: "navbar", label: "Kit Rush" });
               document.getElementById("card-kit-rush-top")?.scrollIntoView({ behavior: "smooth" });
             }}
             className={`hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full transition-colors ${
@@ -46,6 +48,7 @@ const Navbar = () => {
             href="#precos"
             onClick={(e) => {
               e.preventDefault();
+              trackCtaClick({ location: "navbar", label: "COMPRAR AGORA" });
               document.getElementById("precos")?.scrollIntoView({ behavior: "smooth" });
             }}
             className="inline-flex whitespace-nowrap font-bold text-xs sm:text-sm px-4 sm:px-5 py-2 rounded-full transition-colors text-white"
