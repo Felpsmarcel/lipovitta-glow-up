@@ -83,7 +83,7 @@ const complementos: Complemento[] = [
         >
           Adicionar à minha rotina
         </button>
-        <p className="text-[11px] text-[#777] text-center mt-2">
+        <p className="text-[11px] text-[#5F5F5F] text-center mt-2">
           Receba junto com sua Cápsula.
         </p>
       </article>

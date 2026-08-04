@@ -69,7 +69,7 @@ const RoutineSection = () => {
               </a>
             )}
           </div>
-          <p className="mt-3 text-sm" style={{ color: "#999" }}>
+          <p className="mt-3 text-sm" style={{ color: "#5F5F5F" }}>
             @lipo.vitta no Instagram
           </p>
         </div>
