@@ -93,7 +93,7 @@ const GiftSelectionSection = () => {
           })}
         </div>
 
-        <p className="text-center text-sm text-[#777] mt-6 max-w-xl mx-auto">
+        <p className="text-center text-sm text-[#5F5F5F] mt-6 max-w-xl mx-auto">
           Você escolhe 1 presente por pedido. O presente é enviado junto com seu kit.
         </p>
 

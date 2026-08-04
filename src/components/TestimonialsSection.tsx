@@ -56,7 +56,7 @@ const testimonials: TestimonialItem[] = [
 ];
 
 export default function TestimonialsSection() {
-  const { count, ref: counterRef } = useAnimatedCounter(2000);
+  const { count, ref: counterRef } = useAnimatedCounter(1000);
   const sectionRef = useScrollAnimation();
 
   return (
@@ -71,19 +71,19 @@ export default function TestimonialsSection() {
           Prints reais. Resultados reais.
         </p>
 
-        {/* Mosaico assimétrico de depoimentos */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 md:gap-4 auto-rows-auto">
+        {/* Mosaico de depoimentos — imagens inteiras, sem corte */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 items-start">
           {testimonials.map((t, i) => {
-            const layouts = [
-              "lg:col-span-3 lg:row-span-2 aspect-[3/4]",
-              "lg:col-span-3 aspect-[4/3] rotate-[-0.4deg]",
-              "lg:col-span-2 aspect-[4/5] rotate-[0.5deg]",
-              "lg:col-span-2 aspect-square rotate-[-0.5deg]",
-              "lg:col-span-2 aspect-[4/5] rotate-[0.4deg]",
-              "lg:col-span-3 aspect-[4/3] lg:translate-y-4 rotate-[-0.3deg]",
+            const rotations = [
+              "rotate-[-0.4deg]",
+              "rotate-[0.5deg]",
+              "rotate-[-0.3deg]",
+              "rotate-[0.4deg]",
+              "rotate-[-0.5deg]",
+              "rotate-[0.3deg]",
             ];
-            const className = `w-full h-full object-cover rounded-2xl shadow-sm`;
-            const wrapperClass = layouts[i];
+            const className = "w-full h-auto rounded-2xl shadow-sm";
+            const wrapperClass = `${rotations[i]} ${i % 3 === 1 ? "lg:translate-y-4" : ""}`;
             if (t.kind === "url") {
               return (
                 <div key={i} className={wrapperClass}>
@@ -97,7 +97,7 @@ export default function TestimonialsSection() {
                   picture={t.picture}
                   alt={t.alt}
                   loading="lazy"
-                  sizes="(min-width: 1024px) 480px, (min-width: 640px) 50vw, 100vw"
+                  sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
                   className={className}
                 />
               </div>
@@ -116,6 +116,7 @@ export default function TestimonialsSection() {
             mulheres já usam LipoVitta na rotina.
           </p>
         </div>
+
       </div>
     </section>
   );

@@ -21,9 +21,13 @@ const Navbar = () => {
         <img
           src={lipovittaLogo.url}
           alt="LipoVitta por Clara Caldas"
-          className="h-10 w-auto rounded"
-          loading="lazy"
+          width={160}
+          height={40}
+          className="h-10 w-auto max-w-[150px] sm:max-w-none object-contain rounded"
+          loading="eager"
+          decoding="async"
         />
+
         <div className="flex items-center gap-2 sm:gap-3">
           <a
             href="#card-kit-rush-top"
@@ -44,7 +48,7 @@ const Navbar = () => {
               e.preventDefault();
               document.getElementById("precos")?.scrollIntoView({ behavior: "smooth" });
             }}
-            className="inline-flex font-bold text-sm px-5 py-2 rounded-full transition-colors text-white"
+            className="inline-flex whitespace-nowrap font-bold text-xs sm:text-sm px-4 sm:px-5 py-2 rounded-full transition-colors text-white"
             style={{ backgroundColor: "#9BAE52" }}
           >
             COMPRAR AGORA

@@ -12,24 +12,31 @@ Análise feita rodando a página real (desktop 1280 e mobile 390) e lendo o cód
 ## Problemas encontrados
 
 ### 1. Depoimentos cortados (crítico de conversão)
+
 Os cards usam `object-cover` dentro de proporções fixas (`aspect-[3/4]`, `aspect-[4/3]`...). Como as artes são verticais com texto, a frase final é literalmente cortada no meio: "O combo cápsulas + shot matinal atua todos os..." fica ilegível. É a seção de prova social — perder a frase final mata o argumento.
 
 ### 2. Mosaico com buraco visual no desktop
+
 O grid assimétrico deixa uma coluna inteira vazia à direita em várias linhas. A intenção de quebrar a simetria virou espaço morto.
 
 ### 3. Contador de clientes inventado e inconsistente
-"Mais de 933 mulheres" no desktop e "936" no mobile, na mesma sessão. É um número animado/gerado, não um dado real. Além de risco de credibilidade, expõe a marca em publicidade de saúde.
+
+"Mais de 933 mulheres" no desktop e "936" no mobile, na mesma sessão. É um número animado/gerado, não um dado real. Além de risco de credibilidade, expõe a marca em publicidade de saúde. sao mais de 1000 mulheres 
 
 ### 4. Logo não renderiza na navbar
+
 Aparece o texto alternativo "LipoVitta por Clara Caldas" quebrado em duas linhas, empurrando o layout. No mobile isso ainda faz o botão "COMPRAR AGORA" quebrar em duas linhas.
 
 ### 5. Contraste baixo na seção de benefícios
+
 Texto claro sobre azul médio (`#4667B4` com opacidade) nos cards de benefício — é exatamente o achado de acessibilidade que o scanner de SEO aponta.
 
 ### 6. Repetição de CTA sem variação
+
 O mesmo `CTABanner` ("ESCOLHER MEU KIT") aparece duas vezes, idêntico. Repetir é bom; repetir igual é ruído.
 
 ### 7. Ruído de console
+
 Vários warnings de `Function components cannot be given refs` na inicialização do App. Não quebra nada hoje, mas polui o diagnóstico de erros reais.
 
 ## Correções propostas

@@ -62,7 +62,7 @@ const OfferSection = () => {
           <p className="font-sans font-normal text-[#555] text-base sm:text-lg">
             Escolha como quer começar. Você pode adicionar complementos depois.
           </p>
-          <p className="font-sans font-normal text-sm text-[#888] mt-2">
+          <p className="font-sans font-normal text-sm text-[#5F5F5F] mt-2">
             Frete grátis em compras a partir de R$323,00.
           </p>
           <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-gradient-to-r from-[#4667B4] to-[#9BAE52]" />
@@ -114,7 +114,7 @@ const OfferSection = () => {
 
               <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2 mb-5">
                 <ul className="space-y-2">
-                  <li className="text-xs font-bold uppercase tracking-wide text-[#888] mb-1">O que vem</li>
+                  <li className="text-xs font-bold uppercase tracking-wide text-[#5F5F5F] mb-1">O que vem</li>
                   <li className="flex items-start gap-2 text-[#333] text-sm">
                     <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
                     <span>1 Shot Rush sabor Frutas Vermelhas (180g)</span>
@@ -125,7 +125,7 @@ const OfferSection = () => {
                   </li>
                 </ul>
                 <ul className="space-y-2">
-                  <li className="text-xs font-bold uppercase tracking-wide text-[#888] mb-1">Pensado para</li>
+                  <li className="text-xs font-bold uppercase tracking-wide text-[#5F5F5F] mb-1">Pensado para</li>
                   {[
                     "Energia e disposição diária",
                     "Vitalidade e vigor na rotina",
@@ -152,7 +152,7 @@ const OfferSection = () => {
                   COMPRAR KIT AGORA
                 </button>
               </div>
-              <p className="text-xs text-[#777] mt-3">
+              <p className="text-xs text-[#5F5F5F] mt-3">
                 Frete grátis · Garantia de 30 dias
               </p>
             </div>
@@ -194,7 +194,7 @@ const OfferSection = () => {
                   10% OFF comprando hoje
                 </span>
                 <div className="flex items-center gap-3 flex-wrap">
-                  <span className="text-[#999] line-through text-sm">R$357,00</span>
+                  <span className="text-[#5F5F5F] line-through text-sm">R$357,00</span>
                   <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">R$321,30</p>
                   <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
                     Economize 10%
@@ -209,7 +209,7 @@ const OfferSection = () => {
               >
                 COMEÇAR MINHA ROTINA
               </button>
-              <p className="text-xs text-[#777] text-center mt-3">
+              <p className="text-xs text-[#5F5F5F] text-center mt-3">
                 Adicione o Shot Rush logo abaixo.
               </p>
             </div>
@@ -286,7 +286,7 @@ const OfferSection = () => {
                   10% OFF comprando hoje
                 </span>
                 <div className="flex items-center gap-3 flex-wrap">
-                  <span className="text-[#999] line-through text-sm">R$497,72</span>
+                  <span className="text-[#5F5F5F] line-through text-sm">R$497,72</span>
                   <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">R$447,95</p>
                   <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
                     Economize 10%
@@ -301,7 +301,7 @@ const OfferSection = () => {
               >
                 ESCOLHER PROTOCOLO COMPLETO
               </button>
-              <p className="text-xs text-[#777] text-center mt-3">
+              <p className="text-xs text-[#5F5F5F] text-center mt-3">
                 A escolha de 7 em cada 10 clientes.
               </p>
             </div>
@@ -351,7 +351,7 @@ const OfferSection = () => {
               >
                 ADICIONAR À MINHA ROTINA
               </button>
-              <p className="text-xs text-[#777] text-center mt-3">
+              <p className="text-xs text-[#5F5F5F] text-center mt-3">
                 Combine com a Cápsula para liberar frete grátis escolhendo o Protocolo Completo.
               </p>
               <a
@@ -378,7 +378,7 @@ const OfferSection = () => {
           </p>
         </div>
 
-        <p className="max-w-3xl mx-auto text-[11px] text-[#888] text-center leading-relaxed px-4">
+        <p className="max-w-3xl mx-auto text-[11px] text-[#5F5F5F] text-center leading-relaxed px-4">
           Este produto não é medicamento. Não substitui uma alimentação equilibrada. Não tem finalidade de diagnosticar, tratar, curar ou prevenir doenças. Gestantes, lactantes, crianças, pessoas com doenças ou em uso de medicamentos devem consultar um profissional de saúde antes do uso.
         </p>
       </div>

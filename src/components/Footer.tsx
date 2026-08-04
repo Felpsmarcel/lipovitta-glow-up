@@ -117,10 +117,10 @@ const Footer = () => (
       </div>
 
       <div className="border-t border-white/15 mt-12 pt-6 flex flex-col md:flex-row items-center justify-between gap-2">
-        <p className="text-white/60 text-xs text-center md:text-left">
+        <p className="text-white/80 text-xs text-center md:text-left">
           © 2026 LipoVitta por Clara Caldas. Todos os direitos reservados.
         </p>
-        <p className="text-white/60 text-xs">
+        <p className="text-white/80 text-xs">
           Feito com cuidado para mulheres reais.
         </p>
       </div>
