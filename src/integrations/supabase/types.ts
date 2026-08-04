@@ -101,6 +101,75 @@ export type Database = {
         }
         Relationships: []
       }
+      conversion_events: {
+        Row: {
+          created_at: string
+          cta_location: string | null
+          currency: string
+          event_id: string | null
+          event_name: string
+          gift: string | null
+          id: string
+          meta_status: string | null
+          metadata: Json | null
+          order_id: string | null
+          page_url: string | null
+          product_name: string | null
+          sku: string | null
+          source: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+          value: number | null
+        }
+        Insert: {
+          created_at?: string
+          cta_location?: string | null
+          currency?: string
+          event_id?: string | null
+          event_name: string
+          gift?: string | null
+          id?: string
+          meta_status?: string | null
+          metadata?: Json | null
+          order_id?: string | null
+          page_url?: string | null
+          product_name?: string | null
+          sku?: string | null
+          source?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          value?: number | null
+        }
+        Update: {
+          created_at?: string
+          cta_location?: string | null
+          currency?: string
+          event_id?: string | null
+          event_name?: string
+          gift?: string | null
+          id?: string
+          meta_status?: string | null
+          metadata?: Json | null
+          order_id?: string | null
+          page_url?: string | null
+          product_name?: string | null
+          sku?: string | null
+          source?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          value?: number | null
+        }
+        Relationships: []
+      }
       email_send_log: {
         Row: {
           created_at: string
