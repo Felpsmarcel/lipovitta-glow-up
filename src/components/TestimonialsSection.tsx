@@ -56,7 +56,7 @@ const testimonials: TestimonialItem[] = [
 ];
 
 export default function TestimonialsSection() {
-  const { count, ref: counterRef } = useAnimatedCounter(2000);
+  const { count, ref: counterRef } = useAnimatedCounter(1000);
   const sectionRef = useScrollAnimation();
 
   return (
