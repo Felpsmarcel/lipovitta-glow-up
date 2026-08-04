@@ -65,7 +65,7 @@ const Index = () => (
 
         {/* → CTA: branco/soft */}
         <SectionSwoosh direction="blue-to-white" />
-        <CTABanner />
+        <CTABanner eyebrow="Ingredientes escolhidos com critério. Rotina simples." label="ESCOLHER MEU KIT" />
 
         {/* Offer: light grey */}
         <OfferSection />
