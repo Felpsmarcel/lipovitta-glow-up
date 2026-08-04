@@ -169,7 +169,15 @@ Deno.serve(async (req: Request) => {
       }),
     });
     const text = await resp.text();
-    metaStatus = resp.ok ? `sent_${resp.status}` : `error_${resp.status}`;
+    let upstream = resp.status;
+    try {
+      const body = JSON.parse(text) as { upstream_status?: number; mode?: string };
+      if (body?.mode === "preview") upstream = 0;
+      else if (typeof body.upstream_status === "number") upstream = body.upstream_status;
+    } catch {
+      /* mantém o status HTTP */
+    }
+    metaStatus = upstream >= 200 && upstream < 300 ? `sent_${upstream}` : `error_${upstream}`;
     console.log("[yampi-webhook] meta-capi:", resp.status, text.slice(0, 300));
   } catch (e) {
     metaStatus = "error";
