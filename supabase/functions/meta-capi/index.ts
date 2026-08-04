@@ -18,6 +18,8 @@ const BodySchema = z.object({
     .object({
       em: z.array(z.string()).optional(), // hashed emails
       ph: z.array(z.string()).optional(), // hashed phones
+      fn: z.array(z.string()).optional(), // hashed first names
+      ln: z.array(z.string()).optional(), // hashed last names
       fbp: z.string().optional(),
       fbc: z.string().optional(),
       client_user_agent: z.string().optional(),
