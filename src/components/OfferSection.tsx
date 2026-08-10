@@ -15,7 +15,7 @@ import { trackCtaClick } from "@/lib/tracking";
 
 const LINK_CAPSULAS = "https://seguro.lipovitta.site/r/RMTIX51GQN";
 const LINK_PROTOCOLO = "https://seguro.lipovitta.site/b/RPQ0CD6N6Q8C";
-const LINK_SHOT = "https://seguro.lipovitta.site/r/PW60UM0Y2J";
+const LINK_SHOT = "https://lipovitta2.catalog.yampi.io/shot-matinal-lipovitta/p";
 const LINK_KIT_RUSH = "https://seguro.lipovitta.site/b/3QUPWLJZ74U8";
 
 const KIT_CAPSULAS: SelectedKit = { id: "capsulas", name: "LipoVitta Cápsulas", productCount: 1, checkoutUrl: LINK_CAPSULAS, value: 321.30, sku: "RMTIX51GQN" };
