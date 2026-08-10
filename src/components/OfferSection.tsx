@@ -18,7 +18,7 @@ const LINK_PROTOCOLO = "https://seguro.lipovitta.site/b/RPQ0CD6N6Q8C";
 const LINK_SHOT = "https://lipovitta2.catalog.yampi.io/shot-matinal-lipovitta/p";
 const LINK_KIT_RUSH = "https://seguro.lipovitta.site/b/3QUPWLJZ74U8";
 
-const KIT_CAPSULAS: SelectedKit = { id: "capsulas", name: "LipoVitta Cápsulas", productCount: 1, checkoutUrl: LINK_CAPSULAS, value: 321.30, sku: "RMTIX51GQN" };
+const KIT_CAPSULAS: SelectedKit = { id: "capsulas", name: "LipoVitta Cápsulas", productCount: 1, checkoutUrl: LINK_CAPSULAS, value: 357.00, sku: "RMTIX51GQN" };
 const KIT_SHOT: SelectedKit = { id: "shot-matinal", name: "Shot Matinal LipoVitta", productCount: 1, checkoutUrl: LINK_SHOT, value: 170.00, sku: "PW60UM0Y2J" };
 const KIT_RUSH: SelectedKit = { id: "kit-rush", name: "Kit Shot Rush + Cápsulas", productCount: 2, checkoutUrl: LINK_KIT_RUSH, value: 546.30, sku: "3QUPWLJZ74U8" };
 const KIT_PROTOCOLO: SelectedKit = { id: "protocolo", name: "Protocolo Completo LipoVitta", productCount: 3, checkoutUrl: LINK_PROTOCOLO, value: 447.95, sku: "RPQ0CD6N6Q8C" };
@@ -203,18 +203,10 @@ const OfferSection = () => {
             </ul>
             <div className="mt-auto">
               <div className="mb-4">
-                <span className="inline-flex items-center gap-1.5 bg-[#9BAE52] text-white text-[11px] sm:text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2 shadow-sm">
-                  <Tag className="w-3.5 h-3.5" />
-                  10% OFF comprando hoje
-                </span>
                 <div className="flex items-center gap-3 flex-wrap">
-                  <span className="text-[#5F5F5F] line-through text-sm">R$357,00</span>
-                  <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">R$321,30</p>
-                  <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
-                    Economize 10%
-                  </span>
+                  <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">R$357,00</p>
                 </div>
-                <p className="text-sm text-[#666] mt-1">ou 3x de R$107,10 sem juros</p>
+                <p className="text-sm text-[#666] mt-1">ou 3x de R$119,00 sem juros</p>
               </div>
               <button
                 type="button"
