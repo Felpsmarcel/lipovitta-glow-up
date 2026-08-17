@@ -102,7 +102,7 @@ const OfferSection = () => {
           <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-gradient-to-r from-[#4667B4] to-[#9BAE52]" />
         </div>
 
-        <PromoDiscountRuler activeCount={2} />
+        <PromoDiscountRuler />
 
         {/* CARD 4 — Kit Shot Rush + Cápsulas (destacado no topo) */}
         <div className="max-w-6xl mx-auto mb-10 scroll-mt-32" id="kit-rush-anchor">
