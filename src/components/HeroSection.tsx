@@ -182,6 +182,15 @@ const HeroSection = () => {
               <div className="absolute -top-3 -right-3 w-20 h-20 rounded-full bg-gradient-brand shadow-lg flex items-center justify-center text-white text-center text-[11px] font-bold leading-tight px-2">
                 LIPO<br />VITTA
               </div>
+
+              {isPromoActive && (
+                <div className="absolute -bottom-3 -left-3 sm:-left-4 bg-white rounded-xl border border-[#E8ECF1] shadow-md px-3 py-2 flex items-center gap-2 max-w-[180px]">
+                  <Gift className="w-4 h-4 text-[#E63946] shrink-0" />
+                  <span className="text-[10px] font-bold text-[#4667B4] leading-tight">
+                    Aniversário · Até 40% OFF
+                  </span>
+                </div>
+              )}
             </div>
 
             <p className="text-sm mt-4 text-foreground/60">
