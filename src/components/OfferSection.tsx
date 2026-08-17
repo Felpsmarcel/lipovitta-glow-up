@@ -8,6 +8,7 @@ import shotMatinalLimaoImg from "@/assets/shot-matinal-limao.jpg?w=200;400&forma
 import shotMatinalTangerinaImg from "@/assets/shot-matinal-tangerina.jpg?w=200;400&format=avif;webp;jpg&as=picture";
 import comboImg from "@/assets/combo-lipovitta.png.asset.json";
 import kitShotRushImg from "@/assets/kit-shot-rush-capsulas.png.asset.json";
+import kitCompletoImg from "@/assets/kit-completo-lipovitta.png.asset.json";
 import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
 import { usePromo } from "@/context/PromoContext";
 import PromoDiscountRuler from "@/components/PromoDiscountRuler";
