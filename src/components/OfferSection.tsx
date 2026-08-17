@@ -60,6 +60,7 @@ const OfferSection = () => {
   const promoShot = usePromoKit(KIT_SHOT);
   const promoRush = usePromoKit(KIT_RUSH);
   const promoProtocolo = usePromoKit(KIT_PROTOCOLO);
+  const promoCompleto = usePromoKit(KIT_COMPLETO);
 
 
   /** Registra o clique no CTA e segue para a etapa de brinde. */
