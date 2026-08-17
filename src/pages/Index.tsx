@@ -101,6 +101,7 @@ const Index = () => (
 
       <ExitIntentPopup />
     </div>
+  </PromoProvider>
   </GiftFlowProvider>
 );
 
