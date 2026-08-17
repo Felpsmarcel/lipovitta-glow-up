@@ -7,6 +7,37 @@ import { trackCtaClick } from "@/lib/tracking";
 import shotRushImg from "@/assets/shot-rush.jpg?w=300;600;900&format=avif;webp;jpg&as=picture";
 import gummyImg from "@/assets/gummy-vittaglow.png?w=300;600;900&format=avif;webp;png&as=picture";
 
+const ProductPrice = ({ kit }: { kit: { value: number; productCount: number } }) => {
+  const { isPromoActive, formatMoney, applyDiscount } = usePromo();
+  const discounted = isPromoActive ? applyDiscount(kit.value, kit.productCount) : kit.value;
+  return (
+    <div className="mb-3">
+      {isPromoActive && (
+        <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full mb-1.5">
+          <Sparkles className="w-3 h-3" />
+          20% OFF automático
+        </span>
+      )}
+      <div className="flex items-center gap-2 flex-wrap">
+        {isPromoActive && (
+          <span className="text-[#5F5F5F] line-through text-sm">
+            R${formatMoney(kit.value)}
+          </span>
+        )}
+        <span className="text-[#4667B4] font-extrabold text-xl">
+          R${formatMoney(discounted)}
+        </span>
+        {isPromoActive && (
+          <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-[10px] font-bold px-2 py-0.5 rounded-full">
+            Economize {formatMoney(kit.value - discounted)}
+          </span>
+        )}
+      </div>
+      <p className="text-xs text-[#555] mt-1">ou 3x R${formatMoney(discounted / 3)} sem juros</p>
+    </div>
+  );
+};
+
 const KIT_SHOT_RUSH: SelectedKit = {
   id: "shot-rush",
   name: "Shot Rush Pré-Treino",
