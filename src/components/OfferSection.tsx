@@ -322,8 +322,9 @@ const OfferSection = () => {
               </span>
               {isPromoActive ? (
                 <span className="bg-[#E63946] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
-                  40% OFF automático
+                  {promoProtocolo.discountPct}% OFF automático
                 </span>
+
               ) : (
                 <span className="bg-[#4667B4] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
                   Economize 10%
