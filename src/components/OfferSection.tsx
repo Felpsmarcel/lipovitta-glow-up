@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Shield, Check, Tag } from "lucide-react";
+import { Shield, Check, Tag, Sparkles } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import capsulasImg from "@/assets/capsulas-lipovitta.png?w=400;800;1200&format=avif;webp;png&as=picture";
@@ -9,6 +9,8 @@ import shotMatinalTangerinaImg from "@/assets/shot-matinal-tangerina.jpg?w=200;4
 import comboImg from "@/assets/combo-lipovitta.png.asset.json";
 import kitShotRushImg from "@/assets/kit-shot-rush-capsulas.png.asset.json";
 import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
+import { usePromo } from "@/context/PromoContext";
+import PromoDiscountRuler from "@/components/PromoDiscountRuler";
 import { trackEvent } from "@/lib/metaPixel";
 import { trackCtaClick } from "@/lib/tracking";
 
@@ -23,9 +25,25 @@ const KIT_SHOT: SelectedKit = { id: "shot-matinal", name: "Shot Matinal LipoVitt
 const KIT_RUSH: SelectedKit = { id: "kit-rush", name: "Kit Shot Rush + Cápsulas", productCount: 2, checkoutUrl: LINK_KIT_RUSH, value: 546.30, sku: "3QUPWLJZ74U8" };
 const KIT_PROTOCOLO: SelectedKit = { id: "protocolo", name: "Protocolo Completo LipoVitta", productCount: 3, checkoutUrl: LINK_PROTOCOLO, value: 447.95, sku: "RPQ0CD6N6Q8C" };
 
+/** Aplica o desconto promocional a um kit quando a promoção de aniversário está ativa. */
+const usePromoKit = (kit: SelectedKit): SelectedKit => {
+  const { isPromoActive, applyDiscount } = usePromo();
+  if (!isPromoActive) return kit;
+  return {
+    ...kit,
+    value: applyDiscount(kit.value, kit.productCount),
+  };
+};
+
 const OfferSection = () => {
   const sectionRef = useScrollAnimation();
   const { selectKit } = useGiftFlow();
+  const { isPromoActive, formatMoney } = usePromo();
+
+  const promoCapsulas = usePromoKit(KIT_CAPSULAS);
+  const promoShot = usePromoKit(KIT_SHOT);
+  const promoRush = usePromoKit(KIT_RUSH);
+  const promoProtocolo = usePromoKit(KIT_PROTOCOLO);
 
   /** Registra o clique no CTA e segue para a etapa de brinde. */
   const chooseKit = (kit: SelectedKit, location: string, label: string) => {
@@ -69,7 +87,7 @@ const OfferSection = () => {
     <section ref={sectionRef} id="precos" className="pt-24 md:pt-32 pb-16 md:pb-20" style={{ background: "#F5F7FA" }}>
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-10 max-w-2xl mx-auto">
+        <div className="text-center mb-6 max-w-2xl mx-auto">
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-[#4667B4] mb-3">
             Comece sua rotina LipoVitta
           </h2>
@@ -77,10 +95,14 @@ const OfferSection = () => {
             Escolha como quer começar. Você pode adicionar complementos depois.
           </p>
           <p className="font-sans font-normal text-sm text-[#5F5F5F] mt-2">
-            Frete grátis em compras a partir de R$323,00.
+            {isPromoActive
+              ? "PAC grátis em compras acima de R$400. Desconto automático no checkout."
+              : "Frete grátis em compras a partir de R$323,00."}
           </p>
           <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-gradient-to-r from-[#4667B4] to-[#9BAE52]" />
         </div>
+
+        <PromoDiscountRuler />
 
         {/* CARD 4 — Kit Shot Rush + Cápsulas (destacado no topo) */}
         <div className="max-w-6xl mx-auto mb-10 scroll-mt-32" id="kit-rush-anchor">
@@ -89,7 +111,10 @@ const OfferSection = () => {
             className="relative bg-white rounded-2xl border border-[#E8ECF1] overflow-hidden shadow-xl grid grid-cols-1 lg:grid-cols-12 scroll-mt-32"
           >
             <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
-              Novo Kit · Energia + Base diária do Sistema LipoVitta
+              <span className="inline-flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5" />
+                Aniversário LipoVitta · Até 40% OFF automático
+              </span>
             </div>
 
             <div className="lg:col-span-5 relative bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center p-4 sm:p-6 min-h-[280px]">
@@ -155,19 +180,39 @@ const OfferSection = () => {
 
               <div className="mt-auto pt-4 border-t border-[#EEF2FA] flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
-                  <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">R$546,30</p>
-                  <p className="text-sm text-[#666] mt-1">ou 3x de R$182,10 sem juros</p>
+                  {isPromoActive && (
+                    <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
+                      <Sparkles className="w-3 h-3" />
+                      30% OFF automático
+                    </span>
+                  )}
+                  <div className="flex items-center gap-3 flex-wrap">
+                    {isPromoActive && (
+                      <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R$546,30</span>
+                    )}
+                    <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
+                      R${formatMoney(promoRush.value)}
+                    </p>
+                    {isPromoActive && (
+                      <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
+                        Economize {formatMoney(KIT_RUSH.value - promoRush.value)}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-[#666] mt-1">
+                    ou 3x de R${formatMoney(promoRush.value / 3)} sem juros
+                  </p>
                 </div>
                 <button
                   type="button"
-                  onClick={() => chooseKit(KIT_RUSH, "card_kit_rush", "COMPRAR KIT AGORA")}
+                  onClick={() => chooseKit(promoRush, "card_kit_rush", "COMPRAR KIT AGORA")}
                   className="inline-block text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base sm:text-lg px-8 py-4 min-h-[56px] shadow-md"
                 >
                   COMPRAR KIT AGORA
                 </button>
               </div>
               <p className="text-xs text-[#5F5F5F] mt-3">
-                Frete grátis · Garantia de 30 dias
+                {isPromoActive ? "PAC grátis acima de R$400 · Garantia de 30 dias" : "Frete grátis · Garantia de 30 dias"}
               </p>
             </div>
           </article>
@@ -203,14 +248,30 @@ const OfferSection = () => {
             </ul>
             <div className="mt-auto">
               <div className="mb-4">
+                {isPromoActive && (
+                  <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
+                    <Sparkles className="w-3 h-3" />
+                    20% OFF automático
+                  </span>
+                )}
                 <div className="flex items-center gap-3 flex-wrap">
-                  <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">R$357,00</p>
+                  {isPromoActive && (
+                    <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R$357,00</span>
+                  )}
+                  <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
+                    R${formatMoney(promoCapsulas.value)}
+                  </p>
+                  {isPromoActive && (
+                    <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
+                      Economize {formatMoney(KIT_CAPSULAS.value - promoCapsulas.value)}
+                    </span>
+                  )}
                 </div>
-                <p className="text-sm text-[#666] mt-1">ou 3x de R$119,00 sem juros</p>
+                <p className="text-sm text-[#666] mt-1">ou 3x de R${formatMoney(promoCapsulas.value / 3)} sem juros</p>
               </div>
               <button
                 type="button"
-                onClick={() => chooseKit(KIT_CAPSULAS, "card_capsulas", "COMEÇAR MINHA ROTINA")}
+                onClick={() => chooseKit(promoCapsulas, "card_capsulas", "COMEÇAR MINHA ROTINA")}
                 className="block w-full text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base sm:text-lg py-4 sm:py-5 min-h-[56px]"
               >
                 COMEÇAR MINHA ROTINA
@@ -245,9 +306,15 @@ const OfferSection = () => {
               <span className="bg-[#9BAE52] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
                 MAIS ESCOLHIDO
               </span>
-              <span className="bg-[#4667B4] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
-                Economize 10%
-              </span>
+              {isPromoActive ? (
+                <span className="bg-[#E63946] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
+                  40% OFF automático
+                </span>
+              ) : (
+                <span className="bg-[#4667B4] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
+                  Economize 10%
+                </span>
+              )}
             </div>
 
 
@@ -287,22 +354,26 @@ const OfferSection = () => {
 
             <div className="mt-auto">
               <div className="mb-4">
-                <span className="inline-flex items-center gap-1.5 bg-[#9BAE52] text-white text-[11px] sm:text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2 shadow-sm">
+                <span className={`inline-flex items-center gap-1.5 text-white text-[11px] sm:text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2 shadow-sm ${isPromoActive ? "bg-[#E63946]" : "bg-[#9BAE52]"}`}>
                   <Tag className="w-3.5 h-3.5" />
-                  10% OFF comprando hoje
+                  {isPromoActive ? "40% OFF automático" : "10% OFF comprando hoje"}
                 </span>
                 <div className="flex items-center gap-3 flex-wrap">
-                  <span className="text-[#5F5F5F] line-through text-sm">R$497,72</span>
-                  <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">R$447,95</p>
+                  <span className="text-[#5F5F5F] line-through text-sm">
+                    {isPromoActive ? "R$497,72" : "R$497,72"}
+                  </span>
+                  <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
+                    R${formatMoney(promoProtocolo.value)}
+                  </p>
                   <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
-                    Economize 10%
+                    Economize {formatMoney(isPromoActive ? KIT_PROTOCOLO.value - promoProtocolo.value : 49.77)}
                   </span>
                 </div>
-                <p className="text-sm text-[#666] mt-1">ou 3x de R$149,32 sem juros</p>
+                <p className="text-sm text-[#666] mt-1">ou 3x de R${formatMoney(promoProtocolo.value / 3)} sem juros</p>
               </div>
               <button
                 type="button"
-                onClick={() => chooseKit(KIT_PROTOCOLO, "card_protocolo", "ESCOLHER PROTOCOLO COMPLETO")}
+                onClick={() => chooseKit(promoProtocolo, "card_protocolo", "ESCOLHER PROTOCOLO COMPLETO")}
                 className="block w-full text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base py-4 min-h-[52px]"
               >
                 ESCOLHER PROTOCOLO COMPLETO
@@ -345,20 +416,38 @@ const OfferSection = () => {
             </ul>
             <div className="mt-auto">
               <div className="mb-4">
+                {isPromoActive && (
+                  <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
+                    <Sparkles className="w-3 h-3" />
+                    20% OFF automático
+                  </span>
+                )}
                 <div className="flex items-center gap-2 flex-wrap">
-                  <p className="text-[#4667B4] font-bold text-2xl sm:text-3xl leading-none">R$170,00</p>
+                  {isPromoActive && (
+                    <span className="text-[#5F5F5F] line-through text-sm">R$170,00</span>
+                  )}
+                  <p className="text-[#4667B4] font-bold text-2xl sm:text-3xl leading-none">
+                    R${formatMoney(promoShot.value)}
+                  </p>
+                  {isPromoActive && (
+                    <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2 py-1 rounded-full">
+                      Economize {formatMoney(KIT_SHOT.value - promoShot.value)}
+                    </span>
+                  )}
                 </div>
-                <p className="text-xs sm:text-sm text-[#666] mt-1">ou 3x de R$56,67 sem juros</p>
+                <p className="text-xs sm:text-sm text-[#666] mt-1">ou 3x de R${formatMoney(promoShot.value / 3)} sem juros</p>
               </div>
               <button
                 type="button"
-                onClick={() => chooseKit(KIT_SHOT, "card_shot_matinal", "ADICIONAR À MINHA ROTINA")}
+                onClick={() => chooseKit(promoShot, "card_shot_matinal", "ADICIONAR À MINHA ROTINA")}
                 className="block w-full text-center border-2 border-[#4667B4] text-[#4667B4] hover:bg-[#4667B4] hover:text-white font-bold rounded-full transition-colors text-sm py-3 min-h-[48px]"
               >
                 ADICIONAR À MINHA ROTINA
               </button>
               <p className="text-xs text-[#5F5F5F] text-center mt-3">
-                Combine com a Cápsula para liberar frete grátis escolhendo o Protocolo Completo.
+                {isPromoActive
+                  ? "Combine com a Cápsula para chegar a 30% OFF + PAC grátis."
+                  : "Combine com a Cápsula para liberar frete grátis escolhendo o Protocolo Completo."}
               </p>
               <a
                 href="#card-protocolo"

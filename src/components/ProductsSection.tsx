@@ -1,10 +1,42 @@
-import { Check } from "lucide-react";
+import { Check, Sparkles } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
+import { usePromo } from "@/context/PromoContext";
 import { trackCtaClick } from "@/lib/tracking";
 import shotRushImg from "@/assets/shot-rush.jpg?w=300;600;900&format=avif;webp;jpg&as=picture";
 import gummyImg from "@/assets/gummy-vittaglow.png?w=300;600;900&format=avif;webp;png&as=picture";
+
+const ProductPrice = ({ kit }: { kit: SelectedKit }) => {
+  const { isPromoActive, formatMoney, applyDiscount } = usePromo();
+  const discounted = isPromoActive ? applyDiscount(kit.value, kit.productCount) : kit.value;
+  return (
+    <div className="mb-3">
+      {isPromoActive && (
+        <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full mb-1.5">
+          <Sparkles className="w-3 h-3" />
+          20% OFF automático
+        </span>
+      )}
+      <div className="flex items-center gap-2 flex-wrap">
+        {isPromoActive && (
+          <span className="text-[#5F5F5F] line-through text-sm">
+            R${formatMoney(kit.value)}
+          </span>
+        )}
+        <span className="text-[#4667B4] font-extrabold text-xl">
+          R${formatMoney(discounted)}
+        </span>
+        {isPromoActive && (
+          <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-[10px] font-bold px-2 py-0.5 rounded-full">
+            Economize {formatMoney(kit.value - discounted)}
+          </span>
+        )}
+      </div>
+      <p className="text-xs text-[#555] mt-1">ou 3x R${formatMoney(discounted / 3)} sem juros</p>
+    </div>
+  );
+};
 
 const KIT_SHOT_RUSH: SelectedKit = {
   id: "shot-rush",
@@ -18,14 +50,14 @@ const KIT_SHOT_RUSH: SelectedKit = {
 type Complemento = {
   id: string;
   inStock: boolean;
-  render: (onBuy: () => void) => JSX.Element;
+  render: (onBuy: () => void, kit: SelectedKit) => JSX.Element;
 };
 
 const complementos: Complemento[] = [
   {
     id: "shot-rush",
     inStock: true,
-    render: (onBuy) => (
+    render: (onBuy, kit) => (
       <article
         key="shot-rush"
         className="bg-white rounded-2xl border border-[#E8ECF1] p-5 flex flex-col"
@@ -68,14 +100,7 @@ const complementos: Complemento[] = [
             </li>
           ))}
         </ul>
-        <div className="mb-3">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[#4667B4] font-extrabold text-xl">
-              R$225,00
-            </span>
-          </div>
-          <p className="text-xs text-[#555] mt-1">ou 3x R$75,00 sem juros</p>
-        </div>
+        <ProductPrice kit={kit} />
 
         <button
           type="button"
@@ -106,7 +131,13 @@ const complementos: Complemento[] = [
 const ProductsSection = () => {
   const sectionRef = useScrollAnimation();
   const { selectKit } = useGiftFlow();
+  const { isPromoActive, applyDiscount } = usePromo();
   const visiveis = complementos.filter((p) => p.inStock);
+
+  const promoShotRush: SelectedKit = {
+    ...KIT_SHOT_RUSH,
+    value: isPromoActive ? applyDiscount(KIT_SHOT_RUSH.value, KIT_SHOT_RUSH.productCount) : KIT_SHOT_RUSH.value,
+  };
 
   if (visiveis.length === 0) return null;
 
@@ -126,7 +157,9 @@ const ProductsSection = () => {
             Produtos que combinam com a Cápsula LipoVitta para quem quer ir além.
           </p>
           <p className="font-sans font-normal text-sm text-[#666]">
-            Frete grátis em compras a partir de R$323,00.
+            {isPromoActive
+              ? "PAC grátis em compras acima de R$400. Desconto automático no checkout."
+              : "Frete grátis em compras a partir de R$323,00."}
           </p>
           <div className="mx-auto mt-5 h-1 w-20 rounded-full bg-gradient-to-r from-[#4667B4] to-[#9BAE52]" />
         </div>
@@ -144,13 +177,13 @@ const ProductsSection = () => {
               trackCtaClick({
                 location: "complemento_shot_rush",
                 label: "Adicionar à minha rotina",
-                productName: KIT_SHOT_RUSH.name,
-                sku: KIT_SHOT_RUSH.sku,
-                value: KIT_SHOT_RUSH.value,
+                productName: promoShotRush.name,
+                sku: promoShotRush.sku,
+                value: promoShotRush.value,
                 eventName: "AddToCart",
               });
-              selectKit(KIT_SHOT_RUSH);
-            })
+              selectKit(promoShotRush);
+            }, promoShotRush)
           )}
         </div>
       </div>
