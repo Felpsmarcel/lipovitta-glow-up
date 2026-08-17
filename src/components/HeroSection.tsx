@@ -6,6 +6,7 @@ import { Cake, Gift, Sparkles, ArrowDown } from "lucide-react";
 
 const HeroSection = () => {
   const sectionRef = useScrollAnimation();
+  const { isPromoActive } = usePromo();
   return (
     <section
       ref={sectionRef}
