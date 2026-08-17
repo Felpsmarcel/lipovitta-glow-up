@@ -38,6 +38,12 @@ const usePromoKit = (kit: SelectedKit): SelectedKit => {
 const OfferSection = () => {
   const sectionRef = useScrollAnimation();
   const { selectKit } = useGiftFlow();
+  const { isPromoActive, formatMoney } = usePromo();
+
+  const promoCapsulas = usePromoKit(KIT_CAPSULAS);
+  const promoShot = usePromoKit(KIT_SHOT);
+  const promoRush = usePromoKit(KIT_RUSH);
+  const promoProtocolo = usePromoKit(KIT_PROTOCOLO);
 
   /** Registra o clique no CTA e segue para a etapa de brinde. */
   const chooseKit = (kit: SelectedKit, location: string, label: string) => {
