@@ -23,15 +23,27 @@ const LINK_KIT_RUSH = "https://seguro.lipovitta.site/b/3QUPWLJZ74U8";
 const KIT_CAPSULAS: SelectedKit = { id: "capsulas", name: "LipoVitta Cápsulas", productCount: 1, checkoutUrl: LINK_CAPSULAS, value: 357.00, sku: "RMTIX51GQN" };
 const KIT_SHOT: SelectedKit = { id: "shot-matinal", name: "Shot Matinal LipoVitta", productCount: 1, checkoutUrl: LINK_SHOT, value: 170.00, sku: "PW60UM0Y2J" };
 const KIT_RUSH: SelectedKit = { id: "kit-rush", name: "Kit Shot Rush + Cápsulas", productCount: 2, checkoutUrl: LINK_KIT_RUSH, value: 546.30, sku: "3QUPWLJZ74U8" };
-const KIT_PROTOCOLO: SelectedKit = { id: "protocolo", name: "Protocolo Completo LipoVitta", productCount: 3, checkoutUrl: LINK_PROTOCOLO, value: 447.95, sku: "RPQ0CD6N6Q8C" };
+const KIT_PROTOCOLO: SelectedKit = { id: "protocolo", name: "Protocolo Completo LipoVitta", productCount: 2, checkoutUrl: LINK_PROTOCOLO, value: 447.95, sku: "RPQ0CD6N6Q8C" };
+
+/** Durante a promoção, o desconto incide sobre a soma real dos produtos do kit. */
+const PROMO_BASE: Record<string, number> = {
+  "kit-rush": 357.00 + 225.00, // Cápsulas + Shot Rush
+  protocolo: 357.00 + 170.00, // Cápsulas + Shot Matinal
+};
+
+type PromoKit = SelectedKit & { originalValue: number; discountPct: number };
 
 /** Aplica o desconto promocional a um kit quando a promoção de aniversário está ativa. */
-const usePromoKit = (kit: SelectedKit): SelectedKit => {
-  const { isPromoActive, applyDiscount } = usePromo();
-  if (!isPromoActive) return kit;
+const usePromoKit = (kit: SelectedKit): PromoKit => {
+  const { isPromoActive, applyDiscount, getDiscountRate } = usePromo();
+  const discountPct = Math.round(getDiscountRate(kit.productCount) * 100);
+  if (!isPromoActive) return { ...kit, originalValue: kit.value, discountPct };
+  const base = PROMO_BASE[kit.id] ?? kit.value;
   return {
     ...kit,
-    value: applyDiscount(kit.value, kit.productCount),
+    originalValue: base,
+    discountPct,
+    value: applyDiscount(base, kit.productCount),
   };
 };
 
@@ -44,6 +56,7 @@ const OfferSection = () => {
   const promoShot = usePromoKit(KIT_SHOT);
   const promoRush = usePromoKit(KIT_RUSH);
   const promoProtocolo = usePromoKit(KIT_PROTOCOLO);
+
 
   /** Registra o clique no CTA e segue para a etapa de brinde. */
   const chooseKit = (kit: SelectedKit, location: string, label: string) => {
