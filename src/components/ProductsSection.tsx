@@ -7,7 +7,7 @@ import { trackCtaClick } from "@/lib/tracking";
 import shotRushImg from "@/assets/shot-rush.jpg?w=300;600;900&format=avif;webp;jpg&as=picture";
 import gummyImg from "@/assets/gummy-vittaglow.png?w=300;600;900&format=avif;webp;png&as=picture";
 
-const ProductPrice = ({ kit }: { kit: { value: number; productCount: number } }) => {
+const ProductPrice = ({ kit }: { kit: SelectedKit }) => {
   const { isPromoActive, formatMoney, applyDiscount } = usePromo();
   const discounted = isPromoActive ? applyDiscount(kit.value, kit.productCount) : kit.value;
   return (
