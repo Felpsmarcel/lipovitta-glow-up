@@ -416,20 +416,38 @@ const OfferSection = () => {
             </ul>
             <div className="mt-auto">
               <div className="mb-4">
+                {isPromoActive && (
+                  <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
+                    <Sparkles className="w-3 h-3" />
+                    20% OFF automático
+                  </span>
+                )}
                 <div className="flex items-center gap-2 flex-wrap">
-                  <p className="text-[#4667B4] font-bold text-2xl sm:text-3xl leading-none">R$170,00</p>
+                  {isPromoActive && (
+                    <span className="text-[#5F5F5F] line-through text-sm">R$170,00</span>
+                  )}
+                  <p className="text-[#4667B4] font-bold text-2xl sm:text-3xl leading-none">
+                    R${formatMoney(promoShot.value)}
+                  </p>
+                  {isPromoActive && (
+                    <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2 py-1 rounded-full">
+                      Economize {formatMoney(KIT_SHOT.value - promoShot.value)}
+                    </span>
+                  )}
                 </div>
-                <p className="text-xs sm:text-sm text-[#666] mt-1">ou 3x de R$56,67 sem juros</p>
+                <p className="text-xs sm:text-sm text-[#666] mt-1">ou 3x de R${formatMoney(promoShot.value / 3)} sem juros</p>
               </div>
               <button
                 type="button"
-                onClick={() => chooseKit(KIT_SHOT, "card_shot_matinal", "ADICIONAR À MINHA ROTINA")}
+                onClick={() => chooseKit(promoShot, "card_shot_matinal", "ADICIONAR À MINHA ROTINA")}
                 className="block w-full text-center border-2 border-[#4667B4] text-[#4667B4] hover:bg-[#4667B4] hover:text-white font-bold rounded-full transition-colors text-sm py-3 min-h-[48px]"
               >
                 ADICIONAR À MINHA ROTINA
               </button>
               <p className="text-xs text-[#5F5F5F] text-center mt-3">
-                Combine com a Cápsula para liberar frete grátis escolhendo o Protocolo Completo.
+                {isPromoActive
+                  ? "Combine com a Cápsula para chegar a 30% OFF + PAC grátis."
+                  : "Combine com a Cápsula para liberar frete grátis escolhendo o Protocolo Completo."}
               </p>
               <a
                 href="#card-protocolo"
