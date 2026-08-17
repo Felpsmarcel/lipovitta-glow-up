@@ -25,6 +25,16 @@ const KIT_SHOT: SelectedKit = { id: "shot-matinal", name: "Shot Matinal LipoVitt
 const KIT_RUSH: SelectedKit = { id: "kit-rush", name: "Kit Shot Rush + Cápsulas", productCount: 2, checkoutUrl: LINK_KIT_RUSH, value: 546.30, sku: "3QUPWLJZ74U8" };
 const KIT_PROTOCOLO: SelectedKit = { id: "protocolo", name: "Protocolo Completo LipoVitta", productCount: 3, checkoutUrl: LINK_PROTOCOLO, value: 447.95, sku: "RPQ0CD6N6Q8C" };
 
+/** Aplica o desconto promocional a um kit quando a promoção de aniversário está ativa. */
+const usePromoKit = (kit: SelectedKit): SelectedKit => {
+  const { isPromoActive, applyDiscount } = usePromo();
+  if (!isPromoActive) return kit;
+  return {
+    ...kit,
+    value: applyDiscount(kit.value, kit.productCount),
+  };
+};
+
 const OfferSection = () => {
   const sectionRef = useScrollAnimation();
   const { selectKit } = useGiftFlow();
