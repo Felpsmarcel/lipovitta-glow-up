@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Shield, Check, Tag } from "lucide-react";
+import { Shield, Check, Tag, Sparkles } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import capsulasImg from "@/assets/capsulas-lipovitta.png?w=400;800;1200&format=avif;webp;png&as=picture";
@@ -9,6 +9,8 @@ import shotMatinalTangerinaImg from "@/assets/shot-matinal-tangerina.jpg?w=200;4
 import comboImg from "@/assets/combo-lipovitta.png.asset.json";
 import kitShotRushImg from "@/assets/kit-shot-rush-capsulas.png.asset.json";
 import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
+import { usePromo } from "@/context/PromoContext";
+import PromoDiscountRuler from "@/components/PromoDiscountRuler";
 import { trackEvent } from "@/lib/metaPixel";
 import { trackCtaClick } from "@/lib/tracking";
 
