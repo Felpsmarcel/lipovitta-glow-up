@@ -30,6 +30,7 @@ const KIT_COMPLETO: SelectedKit = { id: "kit-completo", name: "Kit Completo Lipo
 
 /** Durante a promoção, o desconto incide sobre a soma real dos produtos do kit. */
 const PROMO_BASE: Record<string, number> = {
+  "kit-completo": 357.00 + 170.00 + 225.00, // Cápsulas + Shot Matinal + Shot Rush
   "kit-rush": 357.00 + 225.00, // Cápsulas + Shot Rush
   protocolo: 357.00 + 170.00, // Cápsulas + Shot Matinal
 };
