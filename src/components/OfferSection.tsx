@@ -87,7 +87,7 @@ const OfferSection = () => {
     <section ref={sectionRef} id="precos" className="pt-24 md:pt-32 pb-16 md:pb-20" style={{ background: "#F5F7FA" }}>
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-10 max-w-2xl mx-auto">
+        <div className="text-center mb-6 max-w-2xl mx-auto">
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-[#4667B4] mb-3">
             Comece sua rotina LipoVitta
           </h2>
@@ -95,10 +95,14 @@ const OfferSection = () => {
             Escolha como quer começar. Você pode adicionar complementos depois.
           </p>
           <p className="font-sans font-normal text-sm text-[#5F5F5F] mt-2">
-            Frete grátis em compras a partir de R$323,00.
+            {isPromoActive
+              ? "PAC grátis em compras acima de R$400. Desconto automático no checkout."
+              : "Frete grátis em compras a partir de R$323,00."}
           </p>
           <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-gradient-to-r from-[#4667B4] to-[#9BAE52]" />
         </div>
+
+        <PromoDiscountRuler activeCount={2} />
 
         {/* CARD 4 — Kit Shot Rush + Cápsulas (destacado no topo) */}
         <div className="max-w-6xl mx-auto mb-10 scroll-mt-32" id="kit-rush-anchor">
