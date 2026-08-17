@@ -20,11 +20,13 @@ const LINK_CAPSULAS = "https://seguro.lipovitta.site/r/RMTIX51GQN";
 const LINK_PROTOCOLO = "https://seguro.lipovitta.site/b/RPQ0CD6N6Q8C";
 const LINK_SHOT = "https://lipovitta2.catalog.yampi.io/shot-matinal-lipovitta/p";
 const LINK_KIT_RUSH = "https://seguro.lipovitta.site/b/3QUPWLJZ74U8";
+const LINK_KIT_COMPLETO = "https://seguro.lipovitta.site/b/CLF9IC4LPI8K";
 
 const KIT_CAPSULAS: SelectedKit = { id: "capsulas", name: "LipoVitta Cápsulas", productCount: 1, checkoutUrl: LINK_CAPSULAS, value: 357.00, sku: "RMTIX51GQN" };
 const KIT_SHOT: SelectedKit = { id: "shot-matinal", name: "Shot Matinal LipoVitta", productCount: 1, checkoutUrl: LINK_SHOT, value: 170.00, sku: "PW60UM0Y2J" };
 const KIT_RUSH: SelectedKit = { id: "kit-rush", name: "Kit Shot Rush + Cápsulas", productCount: 2, checkoutUrl: LINK_KIT_RUSH, value: 546.30, sku: "3QUPWLJZ74U8" };
 const KIT_PROTOCOLO: SelectedKit = { id: "protocolo", name: "Protocolo Completo LipoVitta", productCount: 2, checkoutUrl: LINK_PROTOCOLO, value: 447.95, sku: "RPQ0CD6N6Q8C" };
+const KIT_COMPLETO: SelectedKit = { id: "kit-completo", name: "Kit Completo LipoVitta", productCount: 3, checkoutUrl: LINK_KIT_COMPLETO, value: 451.20, sku: "CLF9IC4LPI8K" };
 
 /** Durante a promoção, o desconto incide sobre a soma real dos produtos do kit. */
 const PROMO_BASE: Record<string, number> = {
