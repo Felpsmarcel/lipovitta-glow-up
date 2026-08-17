@@ -180,19 +180,39 @@ const OfferSection = () => {
 
               <div className="mt-auto pt-4 border-t border-[#EEF2FA] flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
-                  <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">R$546,30</p>
-                  <p className="text-sm text-[#666] mt-1">ou 3x de R$182,10 sem juros</p>
+                  {isPromoActive && (
+                    <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
+                      <Sparkles className="w-3 h-3" />
+                      30% OFF automático
+                    </span>
+                  )}
+                  <div className="flex items-center gap-3 flex-wrap">
+                    {isPromoActive && (
+                      <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R$546,30</span>
+                    )}
+                    <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
+                      R${formatMoney(promoRush.value)}
+                    </p>
+                    {isPromoActive && (
+                      <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
+                        Economize {formatMoney(KIT_RUSH.value - promoRush.value)}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-[#666] mt-1">
+                    ou 3x de R${formatMoney(promoRush.value / 3)} sem juros
+                  </p>
                 </div>
                 <button
                   type="button"
-                  onClick={() => chooseKit(KIT_RUSH, "card_kit_rush", "COMPRAR KIT AGORA")}
+                  onClick={() => chooseKit(promoRush, "card_kit_rush", "COMPRAR KIT AGORA")}
                   className="inline-block text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base sm:text-lg px-8 py-4 min-h-[56px] shadow-md"
                 >
                   COMPRAR KIT AGORA
                 </button>
               </div>
               <p className="text-xs text-[#5F5F5F] mt-3">
-                Frete grátis · Garantia de 30 dias
+                {isPromoActive ? "PAC grátis acima de R$400 · Garantia de 30 dias" : "Frete grátis · Garantia de 30 dias"}
               </p>
             </div>
           </article>
