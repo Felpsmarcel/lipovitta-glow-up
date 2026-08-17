@@ -120,7 +120,127 @@ const OfferSection = () => {
           <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-gradient-to-r from-[#4667B4] to-[#9BAE52]" />
         </div>
 
-        <PromoDiscountRuler />
+        <PromoDiscountRuler activeCount={3} />
+
+        {/* CARD 0 — Kit Completo LipoVitta (todos os produtos, 40% OFF) */}
+        <div className="max-w-6xl mx-auto mb-10 scroll-mt-32" id="kit-completo-anchor">
+          <article
+            id="card-kit-completo-top"
+            className="relative bg-white rounded-2xl border border-[#E8ECF1] overflow-hidden shadow-xl grid grid-cols-1 lg:grid-cols-12 scroll-mt-32"
+          >
+            <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
+              <span className="inline-flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5" />
+                Aniversário LipoVitta · Até 40% OFF automático
+              </span>
+            </div>
+
+            <div className="lg:col-span-5 relative bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center p-4 sm:p-6 min-h-[280px]">
+              <img
+                src={kitCompletoImg.url}
+                alt="Kit Completo LipoVitta: Cápsulas, Shot Matinal e Shot Rush"
+                className="w-full h-full max-h-[420px] object-contain"
+                loading="lazy"
+              />
+            </div>
+
+            <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col">
+              <span className="inline-block self-start text-xs font-semibold uppercase tracking-wide text-white bg-[#E63946] px-3 py-1 rounded-full mb-3">
+                Todos os produtos
+              </span>
+              <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-medium text-[#4667B4] mb-2 leading-tight">
+                Kit Completo LipoVitta
+              </h3>
+              <p className="font-sans text-[#4667B4] font-medium text-sm sm:text-base mb-3">
+                A rotina completa: Cápsula, Shot Matinal e Shot Rush em um único pedido.
+              </p>
+              <p className="font-sans text-[#555] text-sm sm:text-base mb-4">
+                Aproveite o máximo do Sistema LipoVitta por Clara Caldas. Cápsula como base diária, Shot Matinal para o ritual da manhã e Shot Rush para disposição e performance.
+              </p>
+
+              <div className="flex flex-wrap gap-2 mb-4">
+                {["Zero açúcares", "Sem glúten", "Sem lactose", "3 produtos", "Maior desconto"].map((s) => (
+                  <span
+                    key={s}
+                    className="text-[11px] sm:text-xs font-semibold text-[#4667B4] bg-[#EEF2FA] border border-[#D9E2F1] px-2.5 py-1 rounded-full"
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2 mb-5">
+                <ul className="space-y-2">
+                  <li className="text-xs font-bold uppercase tracking-wide text-[#5F5F5F] mb-1">O que vem</li>
+                  <li className="flex items-start gap-2 text-[#333] text-sm">
+                    <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
+                    <span>1 LipoVitta Cápsulas (30 cápsulas)</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-[#333] text-sm">
+                    <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
+                    <span>1 Shot Matinal LipoVitta</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-[#333] text-sm">
+                    <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
+                    <span>1 Shot Rush sabor Frutas Vermelhas (180g)</span>
+                  </li>
+                </ul>
+                <ul className="space-y-2">
+                  <li className="text-xs font-bold uppercase tracking-wide text-[#5F5F5F] mb-1">Pensado para</li>
+                  {[
+                    "Rotina completa de bem-estar",
+                    "Disposição durante o dia",
+                    "Performance nos treinos",
+                    "Maior economia da promoção",
+                  ].map((b) => (
+                    <li key={b} className="flex items-start gap-2 text-[#333] text-sm">
+                      <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-auto pt-4 border-t border-[#EEF2FA] flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+                <div>
+                  {isPromoActive && (
+                    <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
+                      <Sparkles className="w-3 h-3" />
+                      {promoCompleto.discountPct}% OFF automático
+                    </span>
+                  )}
+                  <div className="flex items-center gap-3 flex-wrap">
+                    {isPromoActive && (
+                      <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R${formatMoney(promoCompleto.originalValue)}</span>
+                    )}
+                    <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
+                      R${formatMoney(promoCompleto.value)}
+                    </p>
+                    {isPromoActive && (
+                      <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
+                        Economize {formatMoney(promoCompleto.originalValue - promoCompleto.value)}
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-sm text-[#666] mt-1">
+                    ou 3x de R${formatMoney(promoCompleto.value / 3)} sem juros
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => chooseKit(promoCompleto, "card_kit_completo", "COMPRAR KIT COMPLETO")}
+                  className="inline-block text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base sm:text-lg px-8 py-4 min-h-[56px] shadow-md"
+                >
+                  COMPRAR KIT COMPLETO
+                </button>
+              </div>
+              <p className="text-xs text-[#5F5F5F] mt-3">
+                {isPromoActive ? "PAC grátis acima de R$400 · Garantia de 30 dias" : "Frete grátis · Garantia de 30 dias"}
+              </p>
+            </div>
+          </article>
+        </div>
 
         {/* CARD 4 — Kit Shot Rush + Cápsulas (destacado no topo) */}
         <div className="max-w-6xl mx-auto mb-10 scroll-mt-32" id="kit-rush-anchor">
