@@ -196,22 +196,23 @@ const OfferSection = () => {
                   {isPromoActive && (
                     <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
                       <Sparkles className="w-3 h-3" />
-                      30% OFF automático
+                      {promoRush.discountPct}% OFF automático
                     </span>
                   )}
                   <div className="flex items-center gap-3 flex-wrap">
                     {isPromoActive && (
-                      <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R$546,30</span>
+                      <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R${formatMoney(promoRush.originalValue)}</span>
                     )}
                     <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
                       R${formatMoney(promoRush.value)}
                     </p>
                     {isPromoActive && (
                       <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
-                        Economize {formatMoney(KIT_RUSH.value - promoRush.value)}
+                        Economize {formatMoney(promoRush.originalValue - promoRush.value)}
                       </span>
                     )}
                   </div>
+
                   <p className="text-sm text-[#666] mt-1">
                     ou 3x de R${formatMoney(promoRush.value / 3)} sem juros
                   </p>
