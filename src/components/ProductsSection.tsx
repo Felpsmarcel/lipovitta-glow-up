@@ -1,7 +1,8 @@
-import { Check } from "lucide-react";
+import { Check, Sparkles } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
+import { usePromo } from "@/context/PromoContext";
 import { trackCtaClick } from "@/lib/tracking";
 import shotRushImg from "@/assets/shot-rush.jpg?w=300;600;900&format=avif;webp;jpg&as=picture";
 import gummyImg from "@/assets/gummy-vittaglow.png?w=300;600;900&format=avif;webp;png&as=picture";
