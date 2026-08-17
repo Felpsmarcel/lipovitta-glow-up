@@ -16,6 +16,7 @@ interface PromoContextValue {
   getDiscountRate: (productCount: number) => number;
   applyDiscount: (value: number, productCount: number) => number;
   formatMoney: (value: number) => string;
+  applyToKit: <T extends { productCount: number; value: number }>(kit: T) => T;
 }
 
 const PromoContext = createContext<PromoContextValue | undefined>(undefined);
@@ -41,6 +42,11 @@ export function PromoProvider({ children }: { children: ReactNode }) {
     return Math.round(value * (1 - rate) * 100) / 100;
   };
 
+  const applyToKit = <T extends { productCount: number; value: number }>(kit: T): T => {
+    if (!isPromoActive) return kit;
+    return { ...kit, value: applyDiscount(kit.value, kit.productCount) };
+  };
+
   const formatMoney = (value: number) =>
     value.toLocaleString("pt-BR", {
       minimumFractionDigits: 2,
@@ -55,6 +61,7 @@ export function PromoProvider({ children }: { children: ReactNode }) {
         getDiscountRate,
         applyDiscount,
         formatMoney,
+        applyToKit,
       }}
     >
       {children}
@@ -68,4 +75,10 @@ export function usePromo() {
     throw new Error("usePromo must be used within a PromoProvider");
   }
   return ctx;
+}
+
+/** Aplica o desconto promocional a um kit quando a promoção de aniversário está ativa. */
+export function usePromoKit<T extends { productCount: number; value: number }>(kit: T): T {
+  const { applyToKit } = usePromo();
+  return applyToKit(kit);
 }
