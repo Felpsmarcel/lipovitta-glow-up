@@ -131,7 +131,13 @@ const complementos: Complemento[] = [
 const ProductsSection = () => {
   const sectionRef = useScrollAnimation();
   const { selectKit } = useGiftFlow();
+  const { isPromoActive, applyDiscount } = usePromo();
   const visiveis = complementos.filter((p) => p.inStock);
+
+  const promoShotRush: SelectedKit = {
+    ...KIT_SHOT_RUSH,
+    value: isPromoActive ? applyDiscount(KIT_SHOT_RUSH.value, KIT_SHOT_RUSH.productCount) : KIT_SHOT_RUSH.value,
+  };
 
   if (visiveis.length === 0) return null;
 
@@ -151,7 +157,9 @@ const ProductsSection = () => {
             Produtos que combinam com a Cápsula LipoVitta para quem quer ir além.
           </p>
           <p className="font-sans font-normal text-sm text-[#666]">
-            Frete grátis em compras a partir de R$323,00.
+            {isPromoActive
+              ? "PAC grátis em compras acima de R$400. Desconto automático no checkout."
+              : "Frete grátis em compras a partir de R$323,00."}
           </p>
           <div className="mx-auto mt-5 h-1 w-20 rounded-full bg-gradient-to-r from-[#4667B4] to-[#9BAE52]" />
         </div>
@@ -169,13 +177,13 @@ const ProductsSection = () => {
               trackCtaClick({
                 location: "complemento_shot_rush",
                 label: "Adicionar à minha rotina",
-                productName: KIT_SHOT_RUSH.name,
-                sku: KIT_SHOT_RUSH.sku,
-                value: KIT_SHOT_RUSH.value,
+                productName: promoShotRush.name,
+                sku: promoShotRush.sku,
+                value: promoShotRush.value,
                 eventName: "AddToCart",
               });
-              selectKit(KIT_SHOT_RUSH);
-            })
+              selectKit(promoShotRush);
+            }, promoShotRush)
           )}
         </div>
       </div>
