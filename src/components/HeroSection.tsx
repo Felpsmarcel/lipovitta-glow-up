@@ -1,7 +1,8 @@
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import claraVideo from "@/assets/clara-hero.mp4.asset.json";
 import { trackCtaClick } from "@/lib/tracking";
-
+import { usePromo } from "@/context/PromoContext";
+import { Cake, Gift, Sparkles, ArrowDown } from "lucide-react";
 
 const HeroSection = () => {
   const sectionRef = useScrollAnimation();
