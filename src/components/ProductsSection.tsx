@@ -19,14 +19,14 @@ const KIT_SHOT_RUSH: SelectedKit = {
 type Complemento = {
   id: string;
   inStock: boolean;
-  render: (onBuy: () => void) => JSX.Element;
+  render: (onBuy: () => void, kit: SelectedKit) => JSX.Element;
 };
 
 const complementos: Complemento[] = [
   {
     id: "shot-rush",
     inStock: true,
-    render: (onBuy) => (
+    render: (onBuy, kit) => (
       <article
         key="shot-rush"
         className="bg-white rounded-2xl border border-[#E8ECF1] p-5 flex flex-col"
@@ -69,14 +69,7 @@ const complementos: Complemento[] = [
             </li>
           ))}
         </ul>
-        <div className="mb-3">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[#4667B4] font-extrabold text-xl">
-              R$225,00
-            </span>
-          </div>
-          <p className="text-xs text-[#555] mt-1">ou 3x R$75,00 sem juros</p>
-        </div>
+        <ProductPrice kit={kit} />
 
         <button
           type="button"
