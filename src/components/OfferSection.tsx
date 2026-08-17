@@ -354,22 +354,26 @@ const OfferSection = () => {
 
             <div className="mt-auto">
               <div className="mb-4">
-                <span className="inline-flex items-center gap-1.5 bg-[#9BAE52] text-white text-[11px] sm:text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2 shadow-sm">
+                <span className={`inline-flex items-center gap-1.5 text-white text-[11px] sm:text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2 shadow-sm ${isPromoActive ? "bg-[#E63946]" : "bg-[#9BAE52]"}`}>
                   <Tag className="w-3.5 h-3.5" />
-                  10% OFF comprando hoje
+                  {isPromoActive ? "40% OFF automático" : "10% OFF comprando hoje"}
                 </span>
                 <div className="flex items-center gap-3 flex-wrap">
-                  <span className="text-[#5F5F5F] line-through text-sm">R$497,72</span>
-                  <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">R$447,95</p>
+                  <span className="text-[#5F5F5F] line-through text-sm">
+                    {isPromoActive ? "R$497,72" : "R$497,72"}
+                  </span>
+                  <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
+                    R${formatMoney(promoProtocolo.value)}
+                  </p>
                   <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
-                    Economize 10%
+                    Economize {formatMoney(isPromoActive ? KIT_PROTOCOLO.value - promoProtocolo.value : 49.77)}
                   </span>
                 </div>
-                <p className="text-sm text-[#666] mt-1">ou 3x de R$149,32 sem juros</p>
+                <p className="text-sm text-[#666] mt-1">ou 3x de R${formatMoney(promoProtocolo.value / 3)} sem juros</p>
               </div>
               <button
                 type="button"
-                onClick={() => chooseKit(KIT_PROTOCOLO, "card_protocolo", "ESCOLHER PROTOCOLO COMPLETO")}
+                onClick={() => chooseKit(promoProtocolo, "card_protocolo", "ESCOLHER PROTOCOLO COMPLETO")}
                 className="block w-full text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base py-4 min-h-[52px]"
               >
                 ESCOLHER PROTOCOLO COMPLETO
