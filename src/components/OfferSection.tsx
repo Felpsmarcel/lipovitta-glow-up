@@ -580,10 +580,10 @@ const OfferSection = () => {
               </div>
               <button
                 type="button"
-                onClick={() => chooseKit(promoShot, "card_shot_matinal", "ADICIONAR À MINHA ROTINA")}
+                onClick={() => chooseKit(promoShot, "card_shot_matinal", "COMPRAR SHOT MATINAL")}
                 className="block w-full text-center border-2 border-[#4667B4] text-[#4667B4] hover:bg-[#4667B4] hover:text-white font-bold rounded-full transition-colors text-sm py-3 min-h-[48px]"
               >
-                ADICIONAR À MINHA ROTINA
+                COMPRAR SHOT MATINAL
               </button>
               <p className="text-xs text-[#5F5F5F] text-center mt-3">
                 {isPromoActive
