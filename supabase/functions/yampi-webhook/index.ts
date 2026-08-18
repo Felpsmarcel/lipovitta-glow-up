@@ -71,6 +71,15 @@ Deno.serve(async (req: Request) => {
   if (req.method !== "POST") return json({ error: "method_not_allowed" }, 405);
 
   const raw = await req.text();
+  const requestId = crypto.randomUUID();
+
+  console.log(`[yampi-webhook:${requestId}] received`, {
+    url: req.url,
+    method: req.method,
+    content_length: raw.length,
+    headers: Object.fromEntries(req.headers.entries()),
+    body_preview: raw.slice(0, 500),
+  });
 
   // --- Assinatura ---
   const secret = Deno.env.get("YAMPI_WEBHOOK_SECRET");
@@ -81,11 +90,12 @@ Deno.serve(async (req: Request) => {
   if (secret) {
     const valid = signature ? await verifySignature(secret, raw, signature) : false;
     if (!valid) {
-      console.warn("[yampi-webhook] assinatura inválida — evento ignorado");
-      return json({ ok: false, reason: "invalid_signature" });
+      console.warn(`[yampi-webhook:${requestId}] assinatura inválida — evento ignorado`, { signature_present: !!signature });
+      return json({ ok: false, reason: "invalid_signature", request_id: requestId });
     }
+    console.log(`[yampi-webhook:${requestId}] assinatura válida`);
   } else {
-    console.warn("[yampi-webhook] YAMPI_WEBHOOK_SECRET não configurado — validação desativada");
+    console.warn(`[yampi-webhook:${requestId}] YAMPI_WEBHOOK_SECRET não configurado — validação desativada`);
   }
 
   // deno-lint-ignore no-explicit-any
