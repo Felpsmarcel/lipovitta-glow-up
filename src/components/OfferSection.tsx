@@ -467,13 +467,13 @@ const OfferSection = () => {
               <img src={comboImg.url} alt="Cápsulas LipoVitta com Shot Matinal" className="h-full w-full object-contain" loading="lazy" />
             </button>
             <h3 className="font-sans font-semibold text-2xl sm:text-3xl text-[#4667B4] mb-1">
-              Protocolo Completo LipoVitta
+              Protocolo Favorito LipoVitta
             </h3>
             <p className="font-sans font-medium text-[#4667B4] text-sm sm:text-base mb-3">
-              Cápsula + Shot Matinal. A rotina completa em um único pedido.
+              Cápsula + Shot Matinal. O combo mais escolhido pelas nossas clientes.
             </p>
             <p className="font-sans font-normal text-[#555] text-sm sm:text-base mb-4">
-              A combinação pensada para quem quer começar com a rotina completa: a Cápsula como base diária e o Shot Matinal apoiando o início da manhã.
+              A combinação que a maioria das clientes começa: a Cápsula como base diária e o Shot Matinal para o ritual da manhã. Quer incluir o Shot Rush? Escolha o Kit Completo logo acima.
             </p>
             <ul className="space-y-2 mb-5">
               <li className="flex items-start gap-2 text-[#4667B4] font-semibold text-sm sm:text-base">
@@ -514,13 +514,16 @@ const OfferSection = () => {
               </div>
               <button
                 type="button"
-                onClick={() => chooseKit(promoProtocolo, "card_protocolo", "ESCOLHER PROTOCOLO COMPLETO")}
+                onClick={() => chooseKit(promoProtocolo, "card_protocolo", "ESCOLHER PROTOCOLO FAVORITO")}
                 className="block w-full text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base py-4 min-h-[52px]"
               >
-                ESCOLHER PROTOCOLO COMPLETO
+                ESCOLHER PROTOCOLO FAVORITO
               </button>
               <p className="text-xs text-[#5F5F5F] text-center mt-3">
                 A escolha de 7 em cada 10 clientes.
+              </p>
+              <p className="text-[11px] text-[#4667B4] text-center mt-2 font-medium">
+                Cápsula + Shot Matinal. Shot Rush não incluso.
               </p>
             </div>
           </article>
@@ -594,7 +597,7 @@ const OfferSection = () => {
                 href="#card-protocolo"
                 className="block text-center text-xs text-[#4667B4] underline underline-offset-2 hover:text-[#4667B4] mt-2"
               >
-                Ver Protocolo Completo
+                Ver Protocolo Favorito
               </a>
             </div>
           </article>
