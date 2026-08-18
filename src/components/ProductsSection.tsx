@@ -183,7 +183,7 @@ const ProductsSection = () => {
                 eventName: "InitiateCheckout",
               });
               selectKit(promoShotRush);
-            }, promoShotRush)
+            }, KIT_SHOT_RUSH)
           )}
         </div>
       </div>
