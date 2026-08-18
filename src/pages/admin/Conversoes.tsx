@@ -17,6 +17,18 @@ type ConversionEvent = {
   created_at: string;
 };
 
+const GIFT_LABELS: Record<string, string> = {
+  brinde_raspador: "Raspador de língua",
+  brinde_portacapsulas: "Porta cápsulas",
+  brinde_mixer: "Mixer Dosador",
+  brinde_garrafa: "Garrafa Térmica",
+};
+
+const giftLabel = (utm?: string | null) => {
+  if (!utm) return "—";
+  return GIFT_LABELS[utm] ?? utm;
+};
+
 const PERIODS = [
   { label: "Hoje", days: 1 },
   { label: "7 dias", days: 7 },
@@ -265,6 +277,7 @@ const Conversoes = () => {
                   <th className="px-4 py-2">Botão / Produto</th>
                   <th className="px-4 py-2">Valor</th>
                   <th className="px-4 py-2">Pedido</th>
+                  <th className="px-4 py-2">Brinde</th>
                 </tr>
               </thead>
               <tbody>
@@ -278,11 +291,12 @@ const Conversoes = () => {
                     <td className="px-4 py-2 text-foreground">{e.cta_location ?? e.product_name ?? "—"}</td>
                     <td className="px-4 py-2">{e.value != null ? brl(Number(e.value)) : "—"}</td>
                     <td className="px-4 py-2 text-muted-foreground">{e.order_id ?? "—"}</td>
+                    <td className="px-4 py-2 text-foreground">{giftLabel(e.gift)}</td>
                   </tr>
                 ))}
                 {events.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="px-4 py-6 text-center text-muted-foreground">
+                    <td colSpan={7} className="px-4 py-6 text-center text-muted-foreground">
                       Nenhum evento registrado no período.
                     </td>
                   </tr>
