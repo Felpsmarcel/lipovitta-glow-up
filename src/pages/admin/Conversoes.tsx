@@ -17,6 +17,18 @@ type ConversionEvent = {
   created_at: string;
 };
 
+const GIFT_LABELS: Record<string, string> = {
+  brinde_raspador: "Raspador de língua",
+  brinde_portacapsulas: "Porta cápsulas",
+  brinde_mixer: "Mixer Dosador",
+  brinde_garrafa: "Garrafa Térmica",
+};
+
+const giftLabel = (utm?: string | null) => {
+  if (!utm) return "—";
+  return GIFT_LABELS[utm] ?? utm;
+};
+
 const PERIODS = [
   { label: "Hoje", days: 1 },
   { label: "7 dias", days: 7 },
