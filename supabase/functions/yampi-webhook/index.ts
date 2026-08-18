@@ -87,16 +87,16 @@ Deno.serve(async (req: Request) => {
     req.headers.get("x-yampi-hmac-sha256") ??
     req.headers.get("X-Yampi-Hmac-SHA256") ??
     "";
-  if (secret) {
-    const valid = signature ? await verifySignature(secret, raw, signature) : false;
-    if (!valid) {
-      console.warn(`[yampi-webhook:${requestId}] assinatura inválida — evento ignorado`, { signature_present: !!signature });
-      return json({ ok: false, reason: "invalid_signature", request_id: requestId });
-    }
-    console.log(`[yampi-webhook:${requestId}] assinatura válida`);
-  } else {
-    console.warn(`[yampi-webhook:${requestId}] YAMPI_WEBHOOK_SECRET não configurado — validação desativada`);
+  if (!secret) {
+    console.error(`[yampi-webhook:${requestId}] YAMPI_WEBHOOK_SECRET não configurado — rejeitando evento`);
+    return json({ ok: false, reason: "webhook_secret_not_configured", request_id: requestId }, 500);
   }
+  const valid = signature ? await verifySignature(secret, raw, signature) : false;
+  if (!valid) {
+    console.warn(`[yampi-webhook:${requestId}] assinatura inválida — evento ignorado`, { signature_present: !!signature });
+    return json({ ok: false, reason: "invalid_signature", request_id: requestId });
+  }
+  console.log(`[yampi-webhook:${requestId}] assinatura válida`);
 
   // deno-lint-ignore no-explicit-any
   let payload: any;
