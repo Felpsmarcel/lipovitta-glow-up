@@ -31,20 +31,6 @@ const Navbar = () => {
 
         <div className="flex items-center gap-2 sm:gap-3">
           <a
-            href="#card-kit-rush-top"
-            onClick={(e) => {
-              e.preventDefault();
-              trackCtaClick({ location: "navbar", label: "Kit Rush" });
-              document.getElementById("card-kit-rush-top")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className={`hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full transition-colors ${
-              scrolled ? "text-white hover:bg-white/15" : "text-[#4667B4] hover:bg-[#EEF2FA]"
-            }`}
-          >
-            <span className="inline-block text-[9px] font-bold uppercase tracking-wide text-white bg-[#E63946] px-1.5 py-0.5 rounded-full">Novo</span>
-            Kit Rush
-          </a>
-          <a
             href="#precos"
             onClick={(e) => {
               e.preventDefault();
