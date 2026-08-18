@@ -190,10 +190,10 @@ Deno.serve(async (req: Request) => {
       /* mantém o status HTTP */
     }
     metaStatus = upstream >= 200 && upstream < 300 ? `sent_${upstream}` : `error_${upstream}`;
-    console.log("[yampi-webhook] meta-capi:", resp.status, text.slice(0, 300));
+    console.log(`[yampi-webhook:${requestId}] meta-capi:`, resp.status, text.slice(0, 300));
   } catch (e) {
     metaStatus = "error";
-    console.error("[yampi-webhook] meta-capi falhou:", (e as Error).message);
+    console.error(`[yampi-webhook:${requestId}] meta-capi falhou:`, (e as Error).message);
   }
 
   // --- Registro interno ---
@@ -218,11 +218,13 @@ Deno.serve(async (req: Request) => {
       metadata: { event, status: statusAlias, items_count: items.length, skus },
     });
     if (error && !error.message.includes("duplicate key")) {
-      console.error("[yampi-webhook] insert falhou:", error.message);
+      console.error(`[yampi-webhook:${requestId}] insert falhou:`, error.message);
+    } else {
+      console.log(`[yampi-webhook:${requestId}] purchase recorded`, { order_id: orderId, value, meta_status: metaStatus });
     }
   } catch (e) {
-    console.error("[yampi-webhook] banco falhou:", (e as Error).message);
+    console.error(`[yampi-webhook:${requestId}] banco falhou:`, (e as Error).message);
   }
 
-  return json({ ok: true, order_id: orderId, meta: metaStatus });
+  return json({ ok: true, order_id: orderId, meta: metaStatus, request_id: requestId });
 });
