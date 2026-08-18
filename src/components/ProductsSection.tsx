@@ -107,7 +107,7 @@ const complementos: Complemento[] = [
           onClick={onBuy}
           className="mt-auto block w-full text-center border-2 border-[#4667B4] text-[#4667B4] hover:bg-[#4667B4] hover:text-white font-semibold py-2.5 rounded-full transition-colors text-sm"
         >
-          Adicionar à minha rotina
+          COMPRAR SHOT RUSH
         </button>
         <p className="text-[11px] text-[#5F5F5F] text-center mt-2">
           Receba junto com sua Cápsula.
