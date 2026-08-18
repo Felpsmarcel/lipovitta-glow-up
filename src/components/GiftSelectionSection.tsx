@@ -39,8 +39,11 @@ const GiftSelectionSection = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-10">
           <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[#4667B4] bg-white border border-[#D9E2F1] px-3 py-1.5 rounded-full mb-4">
-            <GiftIcon className="w-3.5 h-3.5" /> Etapa final · {selectedKit.name}
+            <GiftIcon className="w-3.5 h-3.5" /> Etapa final
           </span>
+          <p className="font-sans text-base sm:text-lg text-[#4667B4] font-bold mb-3">
+            Seu pedido: {selectedKit.name}
+          </p>
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-[#4667B4] mb-3">
             Seu cuidado vem com um presente.
           </h2>
