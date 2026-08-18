@@ -176,7 +176,7 @@ const ProductsSection = () => {
             p.render(() => {
               trackCtaClick({
                 location: "complemento_shot_rush",
-                label: "Adicionar à minha rotina",
+                label: "COMPRAR SHOT RUSH",
                 productName: promoShotRush.name,
                 sku: promoShotRush.sku,
                 value: promoShotRush.value,
