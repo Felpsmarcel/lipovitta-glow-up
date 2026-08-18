@@ -71,7 +71,7 @@ const OfferSection = () => {
       productName: kit.name,
       sku: kit.sku,
       value: kit.value,
-      eventName: "AddToCart",
+      eventName: "InitiateCheckout",
     });
     selectKit(kit);
   };

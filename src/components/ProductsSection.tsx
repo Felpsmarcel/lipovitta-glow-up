@@ -180,7 +180,7 @@ const ProductsSection = () => {
                 productName: promoShotRush.name,
                 sku: promoShotRush.sku,
                 value: promoShotRush.value,
-                eventName: "AddToCart",
+                eventName: "InitiateCheckout",
               });
               selectKit(promoShotRush);
             }, promoShotRush)

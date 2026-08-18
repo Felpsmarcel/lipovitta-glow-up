@@ -71,6 +71,15 @@ Deno.serve(async (req: Request) => {
   if (req.method !== "POST") return json({ error: "method_not_allowed" }, 405);
 
   const raw = await req.text();
+  const requestId = crypto.randomUUID();
+
+  console.log(`[yampi-webhook:${requestId}] received`, {
+    url: req.url,
+    method: req.method,
+    content_length: raw.length,
+    headers: Object.fromEntries(req.headers.entries()),
+    body_preview: raw.slice(0, 500),
+  });
 
   // --- Assinatura ---
   const secret = Deno.env.get("YAMPI_WEBHOOK_SECRET");
@@ -78,32 +87,35 @@ Deno.serve(async (req: Request) => {
     req.headers.get("x-yampi-hmac-sha256") ??
     req.headers.get("X-Yampi-Hmac-SHA256") ??
     "";
-  if (secret) {
-    const valid = signature ? await verifySignature(secret, raw, signature) : false;
-    if (!valid) {
-      console.warn("[yampi-webhook] assinatura inválida — evento ignorado");
-      return json({ ok: false, reason: "invalid_signature" });
-    }
-  } else {
-    console.warn("[yampi-webhook] YAMPI_WEBHOOK_SECRET não configurado — validação desativada");
+  if (!secret) {
+    console.error(`[yampi-webhook:${requestId}] YAMPI_WEBHOOK_SECRET não configurado — rejeitando evento`);
+    return json({ ok: false, reason: "webhook_secret_not_configured", request_id: requestId }, 500);
   }
+  const valid = signature ? await verifySignature(secret, raw, signature) : false;
+  if (!valid) {
+    console.warn(`[yampi-webhook:${requestId}] assinatura inválida — evento ignorado`, { signature_present: !!signature });
+    return json({ ok: false, reason: "invalid_signature", request_id: requestId });
+  }
+  console.log(`[yampi-webhook:${requestId}] assinatura válida`);
 
   // deno-lint-ignore no-explicit-any
   let payload: any;
   try {
     payload = JSON.parse(raw);
   } catch {
-    console.error("[yampi-webhook] JSON inválido");
-    return json({ ok: false, reason: "invalid_json" });
+    console.error(`[yampi-webhook:${requestId}] JSON inválido`);
+    return json({ ok: false, reason: "invalid_json", request_id: requestId });
   }
 
   const event = String(payload?.event ?? "");
   const resource = payload?.resource ?? {};
   const orderId = String(resource?.id ?? resource?.number ?? "").trim();
 
+  console.log(`[yampi-webhook:${requestId}] parsed`, { event, order_id: orderId, status: resource?.status });
+
   if (!orderId) {
-    console.warn("[yampi-webhook] pedido sem id — ignorado", event);
-    return json({ ok: false, reason: "missing_order_id" });
+    console.warn(`[yampi-webhook:${requestId}] pedido sem id — ignorado`, event);
+    return json({ ok: false, reason: "missing_order_id", request_id: requestId });
   }
 
   // Só contabilizamos pedidos pagos/aprovados quando o status vier no payload.
@@ -116,8 +128,8 @@ Deno.serve(async (req: Request) => {
     event === "transaction.paid";
 
   if (!isPaid) {
-    console.log("[yampi-webhook] evento ignorado (não pago):", event, statusAlias, paidEvents.includes(event));
-    return json({ ok: true, skipped: true, event, status: statusAlias });
+    console.log(`[yampi-webhook:${requestId}] evento ignorado (não pago):`, event, statusAlias, paidEvents.includes(event));
+    return json({ ok: true, skipped: true, event, status: statusAlias, request_id: requestId });
   }
 
   const value = Number(
@@ -178,10 +190,10 @@ Deno.serve(async (req: Request) => {
       /* mantém o status HTTP */
     }
     metaStatus = upstream >= 200 && upstream < 300 ? `sent_${upstream}` : `error_${upstream}`;
-    console.log("[yampi-webhook] meta-capi:", resp.status, text.slice(0, 300));
+    console.log(`[yampi-webhook:${requestId}] meta-capi:`, resp.status, text.slice(0, 300));
   } catch (e) {
     metaStatus = "error";
-    console.error("[yampi-webhook] meta-capi falhou:", (e as Error).message);
+    console.error(`[yampi-webhook:${requestId}] meta-capi falhou:`, (e as Error).message);
   }
 
   // --- Registro interno ---
@@ -206,11 +218,13 @@ Deno.serve(async (req: Request) => {
       metadata: { event, status: statusAlias, items_count: items.length, skus },
     });
     if (error && !error.message.includes("duplicate key")) {
-      console.error("[yampi-webhook] insert falhou:", error.message);
+      console.error(`[yampi-webhook:${requestId}] insert falhou:`, error.message);
+    } else {
+      console.log(`[yampi-webhook:${requestId}] purchase recorded`, { order_id: orderId, value, meta_status: metaStatus });
     }
   } catch (e) {
-    console.error("[yampi-webhook] banco falhou:", (e as Error).message);
+    console.error(`[yampi-webhook:${requestId}] banco falhou:`, (e as Error).message);
   }
 
-  return json({ ok: true, order_id: orderId, meta: metaStatus });
+  return json({ ok: true, order_id: orderId, meta: metaStatus, request_id: requestId });
 });
