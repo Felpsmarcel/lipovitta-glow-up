@@ -103,17 +103,19 @@ Deno.serve(async (req: Request) => {
   try {
     payload = JSON.parse(raw);
   } catch {
-    console.error("[yampi-webhook] JSON inválido");
-    return json({ ok: false, reason: "invalid_json" });
+    console.error(`[yampi-webhook:${requestId}] JSON inválido`);
+    return json({ ok: false, reason: "invalid_json", request_id: requestId });
   }
 
   const event = String(payload?.event ?? "");
   const resource = payload?.resource ?? {};
   const orderId = String(resource?.id ?? resource?.number ?? "").trim();
 
+  console.log(`[yampi-webhook:${requestId}] parsed`, { event, order_id: orderId, status: resource?.status });
+
   if (!orderId) {
-    console.warn("[yampi-webhook] pedido sem id — ignorado", event);
-    return json({ ok: false, reason: "missing_order_id" });
+    console.warn(`[yampi-webhook:${requestId}] pedido sem id — ignorado`, event);
+    return json({ ok: false, reason: "missing_order_id", request_id: requestId });
   }
 
   // Só contabilizamos pedidos pagos/aprovados quando o status vier no payload.
@@ -126,8 +128,8 @@ Deno.serve(async (req: Request) => {
     event === "transaction.paid";
 
   if (!isPaid) {
-    console.log("[yampi-webhook] evento ignorado (não pago):", event, statusAlias, paidEvents.includes(event));
-    return json({ ok: true, skipped: true, event, status: statusAlias });
+    console.log(`[yampi-webhook:${requestId}] evento ignorado (não pago):`, event, statusAlias, paidEvents.includes(event));
+    return json({ ok: true, skipped: true, event, status: statusAlias, request_id: requestId });
   }
 
   const value = Number(
