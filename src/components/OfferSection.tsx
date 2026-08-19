@@ -494,21 +494,28 @@ const OfferSection = () => {
 
             <div className="mt-auto">
               <div className="mb-4">
-                <span className={`inline-flex items-center gap-1.5 text-white text-[11px] sm:text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2 shadow-sm ${isPromoActive ? "bg-[#E63946]" : "bg-[#9BAE52]"}`}>
-                  <Tag className="w-3.5 h-3.5" />
-                  {isPromoActive ? `${promoProtocolo.discountPct}% OFF automático` : "10% OFF comprando hoje"}
-                </span>
-                <div className="flex items-center gap-3 flex-wrap">
-                  <span className="text-[#5F5F5F] line-through text-sm">
-                    {isPromoActive ? `R$${formatMoney(promoProtocolo.originalValue)}` : "R$497,72"}
+                {isPromoActive && (
+                  <span className="inline-flex items-center gap-1.5 text-white text-[11px] sm:text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2 shadow-sm bg-[#E63946]">
+                    <Tag className="w-3.5 h-3.5" />
+                    {promoProtocolo.discountPct}% OFF automático
                   </span>
+                )}
+                <div className="flex items-center gap-3 flex-wrap">
+                  {isPromoActive && (
+                    <span className="text-[#5F5F5F] line-through text-sm">
+                      R${formatMoney(promoProtocolo.originalValue)}
+                    </span>
+                  )}
                   <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
                     R${formatMoney(promoProtocolo.value)}
                   </p>
-                  <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
-                    Economize {formatMoney(isPromoActive ? promoProtocolo.originalValue - promoProtocolo.value : 49.77)}
-                  </span>
+                  {isPromoActive && (
+                    <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
+                      Economize {formatMoney(promoProtocolo.originalValue - promoProtocolo.value)}
+                    </span>
+                  )}
                 </div>
+
 
                 <p className="text-sm text-[#666] mt-1">ou 3x de R${formatMoney(promoProtocolo.value / 3)} sem juros</p>
               </div>
