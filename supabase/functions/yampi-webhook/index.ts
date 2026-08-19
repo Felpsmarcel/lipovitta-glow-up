@@ -203,20 +203,59 @@ Deno.serve(async (req: Request) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
       { auth: { persistSession: false } }
     );
+
+    // Valor esperado: veio do clique que originou o pedido (mesmo event_id).
+    let expectedValue: number | null = null;
+    if (eidMatch) {
+      const { data: clicks } = await supabase
+        .from("conversion_events")
+        .select("value")
+        .eq("event_id", eventId)
+        .neq("event_name", "Purchase")
+        .not("value", "is", null)
+        .order("created_at", { ascending: true })
+        .limit(1);
+      const v = Number(clicks?.[0]?.value);
+      if (Number.isFinite(v) && v > 0) expectedValue = v;
+    }
+    const paidValue = Number.isFinite(value) ? value : null;
+    const priceDiff =
+      expectedValue !== null && paidValue !== null
+        ? Math.round((paidValue - expectedValue) * 100) / 100
+        : null;
+    const priceMismatch = priceDiff !== null && Math.abs(priceDiff) > 1;
+    if (priceMismatch) {
+      console.warn(`[yampi-webhook:${requestId}] divergência de preço`, {
+        order_id: orderId,
+        expected: expectedValue,
+        paid: paidValue,
+        diff: priceDiff,
+      });
+    }
+
     const { error } = await supabase.from("conversion_events").insert({
       event_name: "Purchase",
       event_id: eventId,
       source: "yampi",
       order_id: orderId,
-      value: Number.isFinite(value) ? value : null,
+      value: paidValue,
       currency: "BRL",
       sku: skus[0] ?? null,
       product_name: items[0]?.product_name ?? items[0]?.name ?? null,
       gift: utms.utm_content ?? null,
       ...utms,
       meta_status: metaStatus,
-      metadata: { event, status: statusAlias, items_count: items.length, skus },
+      metadata: {
+        event,
+        status: statusAlias,
+        items_count: items.length,
+        skus,
+        expected_value: expectedValue,
+        price_diff: priceDiff,
+        price_mismatch: priceMismatch,
+      },
     });
+
     if (error && !error.message.includes("duplicate key")) {
       console.error(`[yampi-webhook:${requestId}] insert falhou:`, error.message);
     } else {

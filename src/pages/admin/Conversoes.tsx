@@ -14,8 +14,23 @@ type ConversionEvent = {
   utm_source: string | null;
   utm_campaign: string | null;
   meta_status: string | null;
+  metadata: {
+    expected_value?: number | null;
+    price_diff?: number | null;
+    price_mismatch?: boolean;
+  } | null;
   created_at: string;
 };
+
+const priceAlert = (e: ConversionEvent) => {
+  const m = e.metadata;
+  if (!m?.price_mismatch || m.price_diff == null) return null;
+  return {
+    diff: Number(m.price_diff),
+    expected: m.expected_value != null ? Number(m.expected_value) : null,
+  };
+};
+
 
 const GIFT_LABELS: Record<string, string> = {
   brinde_raspador: "Raspador de língua",
@@ -76,7 +91,7 @@ const Conversoes = () => {
     const { data } = await supabase
       .from("conversion_events")
       .select(
-        "id,event_name,source,cta_location,product_name,value,order_id,gift,utm_source,utm_campaign,meta_status,created_at"
+        "id,event_name,source,cta_location,product_name,value,order_id,gift,utm_source,utm_campaign,meta_status,metadata,created_at"
       )
       .gte("created_at", since)
       .order("created_at", { ascending: false })
@@ -289,7 +304,21 @@ const Conversoes = () => {
                     <td className="px-4 py-2 font-semibold text-foreground">{e.event_name}</td>
                     <td className="px-4 py-2 text-muted-foreground">{e.utm_source ?? e.source}</td>
                     <td className="px-4 py-2 text-foreground">{e.cta_location ?? e.product_name ?? "—"}</td>
-                    <td className="px-4 py-2">{e.value != null ? brl(Number(e.value)) : "—"}</td>
+                    <td className="px-4 py-2">
+                      <div className="flex flex-col gap-1">
+                        <span>{e.value != null ? brl(Number(e.value)) : "—"}</span>
+                        {priceAlert(e) && (
+                          <span
+                            className="inline-flex w-fit items-center rounded-full bg-destructive/10 px-2 py-0.5 text-[11px] font-semibold text-destructive"
+                            title={`Esperado ${
+                              priceAlert(e)!.expected != null ? brl(priceAlert(e)!.expected!) : "—"
+                            } · diferença ${brl(priceAlert(e)!.diff)}`}
+                          >
+                            ⚠ Divergência {brl(priceAlert(e)!.diff)}
+                          </span>
+                        )}
+                      </div>
+                    </td>
                     <td className="px-4 py-2 text-muted-foreground">{e.order_id ?? "—"}</td>
                     <td className="px-4 py-2 text-foreground">{giftLabel(e.gift)}</td>
                   </tr>
