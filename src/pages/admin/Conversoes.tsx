@@ -91,7 +91,7 @@ const Conversoes = () => {
     const { data } = await supabase
       .from("conversion_events")
       .select(
-        "id,event_name,source,cta_location,product_name,value,order_id,gift,utm_source,utm_campaign,meta_status,created_at"
+        "id,event_name,source,cta_location,product_name,value,order_id,gift,utm_source,utm_campaign,meta_status,metadata,created_at"
       )
       .gte("created_at", since)
       .order("created_at", { ascending: false })
