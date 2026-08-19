@@ -14,8 +14,23 @@ type ConversionEvent = {
   utm_source: string | null;
   utm_campaign: string | null;
   meta_status: string | null;
+  metadata: {
+    expected_value?: number | null;
+    price_diff?: number | null;
+    price_mismatch?: boolean;
+  } | null;
   created_at: string;
 };
+
+const priceAlert = (e: ConversionEvent) => {
+  const m = e.metadata;
+  if (!m?.price_mismatch || m.price_diff == null) return null;
+  return {
+    diff: Number(m.price_diff),
+    expected: m.expected_value != null ? Number(m.expected_value) : null,
+  };
+};
+
 
 const GIFT_LABELS: Record<string, string> = {
   brinde_raspador: "Raspador de língua",
