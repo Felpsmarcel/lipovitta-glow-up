@@ -304,7 +304,21 @@ const Conversoes = () => {
                     <td className="px-4 py-2 font-semibold text-foreground">{e.event_name}</td>
                     <td className="px-4 py-2 text-muted-foreground">{e.utm_source ?? e.source}</td>
                     <td className="px-4 py-2 text-foreground">{e.cta_location ?? e.product_name ?? "—"}</td>
-                    <td className="px-4 py-2">{e.value != null ? brl(Number(e.value)) : "—"}</td>
+                    <td className="px-4 py-2">
+                      <div className="flex flex-col gap-1">
+                        <span>{e.value != null ? brl(Number(e.value)) : "—"}</span>
+                        {priceAlert(e) && (
+                          <span
+                            className="inline-flex w-fit items-center rounded-full bg-destructive/10 px-2 py-0.5 text-[11px] font-semibold text-destructive"
+                            title={`Esperado ${
+                              priceAlert(e)!.expected != null ? brl(priceAlert(e)!.expected!) : "—"
+                            } · diferença ${brl(priceAlert(e)!.diff)}`}
+                          >
+                            ⚠ Divergência {brl(priceAlert(e)!.diff)}
+                          </span>
+                        )}
+                      </div>
+                    </td>
                     <td className="px-4 py-2 text-muted-foreground">{e.order_id ?? "—"}</td>
                     <td className="px-4 py-2 text-foreground">{giftLabel(e.gift)}</td>
                   </tr>
