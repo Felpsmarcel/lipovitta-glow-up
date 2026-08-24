@@ -27,7 +27,6 @@ const GiftSelectionSection = () => {
     const url = appendTrackingParams(selectedKit.checkoutUrl, {
       eventId,
       gift: selectedGift.utm,
-      flavor: selectedKit.flavor,
     });
     window.open(url, "_blank", "noopener");
   };
