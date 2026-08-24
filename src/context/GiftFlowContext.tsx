@@ -7,6 +7,8 @@ export type SelectedKit = {
   checkoutUrl: string;
   value?: number;
   sku?: string;
+  /** Sabor escolhido do Shot Matinal, quando o kit inclui esse produto. */
+  flavor?: string;
 };
 
 type GiftFlowContextValue = {
