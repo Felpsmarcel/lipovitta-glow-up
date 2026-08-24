@@ -22,10 +22,12 @@ const GiftSelectionSection = () => {
       value: selectedKit.value,
       eventName: "InitiateCheckout",
       gift: selectedGift.utm,
+      flavor: selectedKit.flavor,
     });
     const url = appendTrackingParams(selectedKit.checkoutUrl, {
       eventId,
       gift: selectedGift.utm,
+      flavor: selectedKit.flavor,
     });
     window.open(url, "_blank", "noopener");
   };
@@ -43,6 +45,7 @@ const GiftSelectionSection = () => {
           </span>
           <p className="font-sans text-base sm:text-lg text-[#4667B4] font-bold mb-3">
             Seu pedido: {selectedKit.name}
+            {selectedKit.flavor ? ` · Sabor: ${selectedKit.flavor}` : ""}
           </p>
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-[#4667B4] mb-3">
             Seu cuidado vem com um presente.

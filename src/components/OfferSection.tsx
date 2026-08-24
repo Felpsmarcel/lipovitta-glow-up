@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Shield, Check, Tag, Sparkles } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
@@ -21,6 +21,91 @@ const LINK_PROTOCOLO = "https://seguro.lipovitta.site/b/RPQ0CD6N6Q8C";
 const LINK_SHOT = "https://lipovitta2.catalog.yampi.io/shot-matinal-lipovitta/p";
 const LINK_KIT_RUSH = "https://seguro.lipovitta.site/b/3QUPWLJZ74U8";
 const LINK_KIT_COMPLETO = "https://seguro.lipovitta.site/b/CLF9IC4LPI8K";
+
+/** Sabores disponíveis do Shot Matinal. */
+const SHOT_FLAVORS = [
+  { id: "abacaxi", label: "Abacaxi", picture: shotMatinalAbacaxiImg },
+  { id: "limao", label: "Limão", picture: shotMatinalLimaoImg },
+  { id: "tangerina", label: "Tangerina", picture: shotMatinalTangerinaImg },
+] as const;
+
+type FlavorId = (typeof SHOT_FLAVORS)[number]["id"];
+
+/**
+ * Link de checkout por kit + sabor. Preencher com os links definitivos da Yampi.
+ * Enquanto um sabor não tiver link próprio, usamos o link do kit + ?sabor=.
+ */
+const SHOT_FLAVOR_LINKS: Record<string, Partial<Record<FlavorId, string>>> = {
+  "shot-matinal": {},
+  protocolo: {},
+  "kit-completo": {},
+};
+
+/** Resolve o link final do checkout considerando o sabor escolhido. */
+const withFlavor = (kit: SelectedKit, flavor: FlavorId): SelectedKit => {
+  const mapped = SHOT_FLAVOR_LINKS[kit.id]?.[flavor];
+  let url = mapped ?? kit.checkoutUrl;
+  if (!mapped) {
+    try {
+      const u = new URL(kit.checkoutUrl);
+      u.searchParams.set("sabor", flavor);
+      url = u.toString();
+    } catch {
+      url = kit.checkoutUrl;
+    }
+  }
+  const label = SHOT_FLAVORS.find((f) => f.id === flavor)?.label ?? flavor;
+  return { ...kit, checkoutUrl: url, flavor: label };
+};
+
+const FlavorPicker = ({
+  value,
+  onChange,
+  idPrefix,
+}: {
+  value: FlavorId | null;
+  onChange: (f: FlavorId) => void;
+  idPrefix: string;
+}) => (
+  <div className="mb-4">
+    <p className="text-xs font-bold uppercase tracking-wide text-[#5F5F5F] mb-2">
+      Escolha o sabor do Shot Matinal
+    </p>
+    <div className="grid grid-cols-3 gap-2">
+      {SHOT_FLAVORS.map((f) => {
+        const selected = value === f.id;
+        return (
+          <button
+            key={f.id}
+            type="button"
+            id={`${idPrefix}-sabor-${f.id}`}
+            aria-pressed={selected}
+            onClick={() => onChange(f.id)}
+            className={`rounded-xl p-2 flex flex-col items-center gap-1 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4667B4] ${
+              selected
+                ? "border-2 border-[#4667B4] bg-[#EEF2FA] shadow-sm"
+                : "border border-[#E8ECF1] bg-white hover:border-[#9BAE52]"
+            }`}
+          >
+            <ResponsiveImage
+              picture={f.picture}
+              alt={`Shot Matinal sabor ${f.label}`}
+              className="h-14 w-auto object-contain"
+              loading="lazy"
+              sizes="80px"
+            />
+            <span className={`text-[11px] font-semibold ${selected ? "text-[#4667B4]" : "text-[#555]"}`}>
+              {f.label}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+    {!value && (
+      <p className="text-[11px] text-[#E63946] mt-1.5">Selecione um sabor para continuar.</p>
+    )}
+  </div>
+);
 
 const KIT_CAPSULAS: SelectedKit = { id: "capsulas", name: "LipoVitta Cápsulas", productCount: 1, checkoutUrl: LINK_CAPSULAS, value: 357.00, sku: "RMTIX51GQN" };
 const KIT_SHOT: SelectedKit = { id: "shot-matinal", name: "Shot Matinal LipoVitta", productCount: 1, checkoutUrl: LINK_SHOT, value: 170.00, sku: "PW60UM0Y2J" };
@@ -62,18 +147,24 @@ const OfferSection = () => {
   const promoProtocolo = usePromoKit(KIT_PROTOCOLO);
   const promoCompleto = usePromoKit(KIT_COMPLETO);
 
+  const [flavorCompleto, setFlavorCompleto] = useState<FlavorId | null>(null);
+  const [flavorProtocolo, setFlavorProtocolo] = useState<FlavorId | null>(null);
+  const [flavorShot, setFlavorShot] = useState<FlavorId | null>(null);
+
 
   /** Registra o clique no CTA e segue para a etapa de brinde. */
-  const chooseKit = (kit: SelectedKit, location: string, label: string) => {
+  const chooseKit = (kit: SelectedKit, location: string, label: string, flavor?: FlavorId | null) => {
+    const finalKit = flavor ? withFlavor(kit, flavor) : kit;
     trackCtaClick({
       location,
       label,
-      productName: kit.name,
-      sku: kit.sku,
-      value: kit.value,
+      productName: finalKit.name,
+      sku: finalKit.sku,
+      value: finalKit.value,
       eventName: "InitiateCheckout",
+      flavor: finalKit.flavor,
     });
-    selectKit(kit);
+    selectKit(finalKit);
   };
   const viewFired = useRef(false);
 
@@ -201,6 +292,8 @@ const OfferSection = () => {
                 </ul>
               </div>
 
+              <FlavorPicker value={flavorCompleto} onChange={setFlavorCompleto} idPrefix="kit-completo" />
+
               <div className="mt-auto pt-4 border-t border-[#EEF2FA] flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
                   {isPromoActive && (
@@ -229,8 +322,11 @@ const OfferSection = () => {
                 </div>
                 <button
                   type="button"
-                  onClick={() => chooseKit(promoCompleto, "card_kit_completo", "COMPRAR KIT COMPLETO")}
-                  className="inline-block text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base sm:text-lg px-8 py-4 min-h-[56px] shadow-md"
+                  onClick={() => chooseKit(promoCompleto, "card_kit_completo", "COMPRAR KIT COMPLETO", flavorCompleto)}
+                  disabled={!flavorCompleto}
+                  className={`inline-block text-center text-white font-bold rounded-full transition-colors text-base sm:text-lg px-8 py-4 min-h-[56px] shadow-md ${
+                    flavorCompleto ? "bg-[#9BAE52] hover:bg-[#8A9D45]" : "bg-[#B7BFC9] cursor-not-allowed"
+                  }`}
                 >
                   COMPRAR KIT COMPLETO
                 </button>
@@ -385,6 +481,8 @@ const OfferSection = () => {
                 </li>
               ))}
             </ul>
+            <FlavorPicker value={flavorShot} onChange={setFlavorShot} idPrefix="shot" />
+
             <div className="mt-auto">
               <div className="mb-4">
                 {isPromoActive && (
@@ -460,8 +558,11 @@ const OfferSection = () => {
 
             <button
               type="button"
-              onClick={() => chooseKit(KIT_PROTOCOLO, "card_protocolo_imagem", "Imagem Protocolo")}
-              aria-label="Escolher Protocolo Completo LipoVitta"
+              onClick={() => {
+                const el = document.getElementById("protocolo-sabor-abacaxi");
+                el?.scrollIntoView({ behavior: "smooth", block: "center" });
+              }}
+              aria-label="Ver opções do Protocolo Favorito LipoVitta"
               className="block w-full h-44 sm:h-52 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] overflow-hidden mb-5 mt-2 transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#9BAE52]"
             >
               <img src={comboImg.url} alt="Cápsulas LipoVitta com Shot Matinal" className="h-full w-full object-contain" loading="lazy" />
@@ -492,6 +593,8 @@ const OfferSection = () => {
               ))}
             </ul>
 
+            <FlavorPicker value={flavorProtocolo} onChange={setFlavorProtocolo} idPrefix="protocolo" />
+
             <div className="mt-auto">
               <div className="mb-4">
                 {isPromoActive && (
@@ -521,8 +624,11 @@ const OfferSection = () => {
               </div>
               <button
                 type="button"
-                onClick={() => chooseKit(promoProtocolo, "card_protocolo", "ESCOLHER PROTOCOLO FAVORITO")}
-                className="block w-full text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base py-4 min-h-[52px]"
+                onClick={() => chooseKit(promoProtocolo, "card_protocolo", "ESCOLHER PROTOCOLO FAVORITO", flavorProtocolo)}
+                disabled={!flavorProtocolo}
+                className={`block w-full text-center text-white font-bold rounded-full transition-colors text-base py-4 min-h-[52px] ${
+                  flavorProtocolo ? "bg-[#9BAE52] hover:bg-[#8A9D45]" : "bg-[#B7BFC9] cursor-not-allowed"
+                }`}
               >
                 ESCOLHER PROTOCOLO FAVORITO
               </button>
@@ -565,6 +671,8 @@ const OfferSection = () => {
                 </li>
               ))}
             </ul>
+            <FlavorPicker value={flavorShot} onChange={setFlavorShot} idPrefix="shot" />
+
             <div className="mt-auto">
               <div className="mb-4">
                 {isPromoActive && (
@@ -590,8 +698,13 @@ const OfferSection = () => {
               </div>
               <button
                 type="button"
-                onClick={() => chooseKit(promoShot, "card_shot_matinal", "COMPRAR SHOT MATINAL")}
-                className="block w-full text-center border-2 border-[#4667B4] text-[#4667B4] hover:bg-[#4667B4] hover:text-white font-bold rounded-full transition-colors text-sm py-3 min-h-[48px]"
+                onClick={() => chooseKit(promoShot, "card_shot_matinal", "COMPRAR SHOT MATINAL", flavorShot)}
+                disabled={!flavorShot}
+                className={`block w-full text-center border-2 font-bold rounded-full transition-colors text-sm py-3 min-h-[48px] ${
+                  flavorShot
+                    ? "border-[#4667B4] text-[#4667B4] hover:bg-[#4667B4] hover:text-white"
+                    : "border-[#D1D5DB] text-[#9AA3AE] cursor-not-allowed"
+                }`}
               >
                 COMPRAR SHOT MATINAL
               </button>
