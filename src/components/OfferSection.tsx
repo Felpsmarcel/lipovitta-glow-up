@@ -481,7 +481,6 @@ const OfferSection = () => {
                 </li>
               ))}
             </ul>
-            <FlavorPicker value={flavorShot} onChange={setFlavorShot} idPrefix="shot" />
 
             <div className="mt-auto">
               <div className="mb-4">
