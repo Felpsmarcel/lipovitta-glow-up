@@ -69,6 +69,8 @@ export type CtaClickInput = {
   eventName?: string;
   /** Brinde escolhido (utm), quando houver. */
   gift?: string;
+  /** Sabor escolhido (Shot Matinal), quando houver. */
+  flavor?: string;
 };
 
 /**
@@ -90,6 +92,7 @@ export function trackCtaClick(input: CtaClickInput): { eventId: string; url?: st
       cta_location: input.location,
       cta_label: input.label,
       gift: input.gift,
+      flavor: input.flavor,
     },
     { eventID: eventId }
   );
@@ -98,7 +101,9 @@ export function trackCtaClick(input: CtaClickInput): { eventId: string; url?: st
     event_name: eventName,
     event_id: eventId,
     cta_location: input.location,
-    product_name: input.productName ?? input.label,
+    product_name: input.flavor
+      ? `${input.productName ?? input.label} — Sabor ${input.flavor}`
+      : input.productName ?? input.label,
     sku: input.sku,
     value: input.value,
     gift: input.gift,
