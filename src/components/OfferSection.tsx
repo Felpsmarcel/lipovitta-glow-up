@@ -56,8 +56,9 @@ const withFlavor = (kit: SelectedKit, flavor: FlavorId): SelectedKit => {
     }
   }
   const label = SHOT_FLAVORS.find((f) => f.id === flavor)?.label ?? flavor;
-  return { ...kit, checkoutUrl: url, flavor: label };
+  return { ...kit, checkoutUrl: url, flavor: label, flavorId: flavor, requiresFlavor: true };
 };
+
 
 const FlavorPicker = ({
   value,
