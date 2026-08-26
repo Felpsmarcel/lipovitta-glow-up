@@ -267,6 +267,24 @@ Deno.serve(async (req: Request) => {
     } else {
       console.log(`[yampi-webhook:${requestId}] purchase recorded`, { order_id: orderId, value, meta_status: metaStatus });
     }
+
+    // Marca carrinhos abandonados correspondentes como recuperados (idempotente).
+    try {
+      const orFilters: string[] = [];
+      if (email) orFilters.push(`customer_email.eq.${email}`);
+      if (phone) orFilters.push(`customer_phone.eq.${phone}`);
+      if (orFilters.length) {
+        const { error: recErr } = await supabase
+          .from("abandoned_checkouts")
+          .update({ recovered_at: new Date().toISOString(), recovered_order_id: orderId })
+          .is("recovered_at", null)
+          .or(orFilters.join(","));
+        if (recErr) console.error(`[yampi-webhook:${requestId}] recovery mark falhou:`, recErr.message);
+      }
+    } catch (e) {
+      console.error(`[yampi-webhook:${requestId}] recovery mark erro:`, (e as Error).message);
+
+    }
   } catch (e) {
     console.error(`[yampi-webhook:${requestId}] banco falhou:`, (e as Error).message);
   }
