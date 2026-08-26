@@ -114,7 +114,7 @@ const GiftSelectionSection = () => {
               <button
                 key={gift.id}
                 type="button"
-                onClick={() => setSelectedGiftId(gift.id)}
+                onClick={() => handleSelectGift(gift.id)}
                 aria-pressed={isSelected}
                 className={`relative text-left bg-white rounded-2xl overflow-hidden transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4667B4] ${
                   isSelected
