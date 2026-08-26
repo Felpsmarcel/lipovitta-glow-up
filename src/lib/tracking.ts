@@ -69,8 +69,10 @@ export type CtaClickInput = {
   eventName?: string;
   /** Brinde escolhido (utm), quando houver. */
   gift?: string;
-  /** Sabor escolhido (Shot Matinal), quando houver. */
+  /** Sabor escolhido (Shot Matinal), rótulo exibido. */
   flavor?: string;
+  /** Id do sabor, usado no parâmetro `sabor` do link. */
+  flavorId?: string;
 };
 
 /**
