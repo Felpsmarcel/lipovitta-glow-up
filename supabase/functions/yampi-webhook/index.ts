@@ -117,12 +117,46 @@ Deno.serve(async (req: Request) => {
   const resource = payload?.resource ?? {};
   const orderId = String(resource?.id ?? resource?.number ?? "").trim();
 
-  console.log(`[yampi-webhook:${requestId}] parsed`, { event, order_id: orderId, status: resource?.status });
+  console.log(`[yampi-webhook:${requestId}] parsed`, {
+    event,
+    order_id: orderId || null,
+    status: norm(resource?.status?.data?.alias ?? resource?.status?.alias ?? "") || null,
+  });
+
+  // --- Carrinho abandonado / lembrete de carrinho ---
+  if (event.startsWith("cart.")) {
+    const cart = extractCart(resource, event);
+    if (!cart.cart_token) {
+      console.warn(`[yampi-webhook:${requestId}] carrinho sem token — ignorado`, { event });
+      return json({ ok: false, reason: "missing_cart_token", request_id: requestId });
+    }
+    try {
+      const supabase = serviceClient();
+      const { error } = await supabase
+        .from("abandoned_checkouts")
+        .upsert(cart, { onConflict: "cart_token" });
+      if (error) {
+        console.error(`[yampi-webhook:${requestId}] upsert carrinho falhou:`, error.message);
+        return json({ ok: false, reason: "cart_upsert_failed", request_id: requestId });
+      }
+      console.log(`[yampi-webhook:${requestId}] cart recorded`, {
+        event,
+        cart_token: cart.cart_token,
+        total: cart.total,
+        email: maskEmail(cart.customer_email),
+        phone: maskPhone(cart.customer_phone),
+      });
+    } catch (e) {
+      console.error(`[yampi-webhook:${requestId}] carrinho erro:`, (e as Error).message);
+    }
+    return json({ ok: true, event, cart_token: cart.cart_token, request_id: requestId });
+  }
 
   if (!orderId) {
     console.warn(`[yampi-webhook:${requestId}] pedido sem id — ignorado`, event);
     return json({ ok: false, reason: "missing_order_id", request_id: requestId });
   }
+
 
   // Só contabilizamos pedidos pagos/aprovados quando o status vier no payload.
   const statusAlias = norm(resource?.status?.data?.alias ?? resource?.status?.alias ?? "");
