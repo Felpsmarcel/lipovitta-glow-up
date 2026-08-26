@@ -169,6 +169,7 @@ const OfferSection = () => {
       value: finalKit.value,
       eventName: "InitiateCheckout",
       flavor: finalKit.flavor,
+      flavorId: finalKit.flavorId,
     });
     selectKit(finalKit);
   };
