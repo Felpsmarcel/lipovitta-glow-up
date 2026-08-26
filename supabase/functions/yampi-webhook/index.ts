@@ -79,13 +79,15 @@ Deno.serve(async (req: Request) => {
   const raw = await req.text();
   const requestId = crypto.randomUUID();
 
+  // Log sem PII: nada de headers completos nem corpo bruto.
   console.log(`[yampi-webhook:${requestId}] received`, {
-    url: req.url,
     method: req.method,
     content_length: raw.length,
-    headers: Object.fromEntries(req.headers.entries()),
-    body_preview: raw.slice(0, 500),
+    has_signature: Boolean(
+      req.headers.get("x-yampi-hmac-sha256") ?? req.headers.get("X-Yampi-Hmac-SHA256")
+    ),
   });
+
 
   // --- Assinatura ---
   const secret = Deno.env.get("YAMPI_WEBHOOK_SECRET");
