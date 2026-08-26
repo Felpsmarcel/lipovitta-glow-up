@@ -152,6 +152,7 @@ const GiftSelectionSection = () => {
         <div className="mt-8 flex justify-center">
           <button
             type="button"
+            ref={checkoutRef}
             onClick={handleCheckout}
             disabled={!canCheckout}
             className={`inline-block text-white font-bold text-base sm:text-lg px-10 py-4 rounded-full shadow-md transition-all duration-300 ${
