@@ -175,6 +175,7 @@ export type Database = {
       }
       conversion_events: {
         Row: {
+          buyer_hash: string | null
           created_at: string
           cta_location: string | null
           currency: string
@@ -198,6 +199,7 @@ export type Database = {
           value: number | null
         }
         Insert: {
+          buyer_hash?: string | null
           created_at?: string
           cta_location?: string | null
           currency?: string
@@ -221,6 +223,7 @@ export type Database = {
           value?: number | null
         }
         Update: {
+          buyer_hash?: string | null
           created_at?: string
           cta_location?: string | null
           currency?: string
