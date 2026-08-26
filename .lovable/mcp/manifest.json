@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "sdk_version": "0.28.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://ecgquvfoipmoqlhfkfol.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "lipovitta-transformation",
+      "version": "0.1.0",
+      "title": "LipoVitta Transformation"
+    },
+    "tools": [
+      {
+        "name": "conversion_summary",
+        "title": "Resumo de conversões",
+        "description": "Resume o desempenho do período: cliques, leads, compras, receita total e origens (UTM) mais fortes.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "days": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 365,
+              "default": 30,
+              "description": "Período em dias."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_conversions",
+        "title": "Listar conversões",
+        "description": "Lista os eventos de conversão recentes (cliques, leads e compras) registrados pelo site LipoVitta.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "days": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 365,
+              "default": 7,
+              "description": "Período em dias a consultar."
+            },
+            "event_name": {
+              "type": "string",
+              "description": "Filtrar por evento, ex.: Purchase, InitiateCheckout, Lead."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50,
+              "description": "Máximo de linhas."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_applications",
+        "title": "Listar candidaturas",
+        "description": "Lista as candidaturas recebidas de afiliadas ou de parceiros comerciais do site LipoVitta.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "afiliada",
+                "parceiro"
+              ],
+              "default": "afiliada",
+              "description": "Tipo de candidatura a listar."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25,
+              "description": "Máximo de linhas."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
