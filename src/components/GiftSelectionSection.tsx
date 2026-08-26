@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Check, Gift as GiftIcon } from "lucide-react";
 import { useGiftFlow } from "@/context/GiftFlowContext";
 import { getEligibleGifts } from "@/data/gifts";
