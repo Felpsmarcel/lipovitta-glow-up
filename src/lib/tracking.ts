@@ -112,15 +112,19 @@ export function trackCtaClick(input: CtaClickInput): { eventId: string; url?: st
   return {
     eventId,
     url: input.checkoutUrl
-      ? appendTrackingParams(input.checkoutUrl, { eventId, gift: input.gift })
+      ? appendTrackingParams(input.checkoutUrl, {
+          eventId,
+          gift: input.gift,
+          flavor: input.flavorId ?? input.flavor,
+        })
       : undefined,
   };
 }
 
-/** Acrescenta eventId e UTMs de origem ao link de checkout. */
+/** Acrescenta eventId, sabor e UTMs de origem ao link de checkout. */
 export function appendTrackingParams(
   checkoutUrl: string,
-  opts: { eventId?: string; gift?: string } = {}
+  opts: { eventId?: string; gift?: string; flavor?: string } = {}
 ): string {
   try {
     const url = new URL(checkoutUrl);
@@ -130,6 +134,7 @@ export function appendTrackingParams(
       // utm_term e utm_content são reservados para eventId/brinde.
       if (v && k !== "utm_term" && k !== "utm_content") url.searchParams.set(k, v);
     });
+    if (opts.flavor) url.searchParams.set("sabor", opts.flavor);
     if (opts.gift) url.searchParams.set("utm_content", opts.gift);
     if (opts.eventId) url.searchParams.set("utm_term", `eid_${opts.eventId}`);
     return url.toString();
@@ -137,6 +142,7 @@ export function appendTrackingParams(
     return checkoutUrl;
   }
 }
+
 
 export function trackLead(input: {
   formName: string;
