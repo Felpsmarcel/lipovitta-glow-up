@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Check, Gift as GiftIcon } from "lucide-react";
 import { useGiftFlow } from "@/context/GiftFlowContext";
 import { getEligibleGifts } from "@/data/gifts";
@@ -6,6 +7,18 @@ import { appendTrackingParams, trackCtaClick } from "@/lib/tracking";
 
 const GiftSelectionSection = () => {
   const { selectedKit, selectedGiftId, setSelectedGiftId } = useGiftFlow();
+  const checkoutRef = useRef<HTMLButtonElement>(null);
+
+  const handleSelectGift = (id: string) => {
+    setSelectedGiftId(id);
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    requestAnimationFrame(() => {
+      const el = checkoutRef.current;
+      if (!el) return;
+      el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+      el.focus({ preventScroll: true });
+    });
+  };
 
   if (!selectedKit) return null;
 
@@ -101,7 +114,7 @@ const GiftSelectionSection = () => {
               <button
                 key={gift.id}
                 type="button"
-                onClick={() => setSelectedGiftId(gift.id)}
+                onClick={() => handleSelectGift(gift.id)}
                 aria-pressed={isSelected}
                 className={`relative text-left bg-white rounded-2xl overflow-hidden transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4667B4] ${
                   isSelected
@@ -139,6 +152,7 @@ const GiftSelectionSection = () => {
         <div className="mt-8 flex justify-center">
           <button
             type="button"
+            ref={checkoutRef}
             onClick={handleCheckout}
             disabled={!canCheckout}
             className={`inline-block text-white font-bold text-base sm:text-lg px-10 py-4 rounded-full shadow-md transition-all duration-300 ${
