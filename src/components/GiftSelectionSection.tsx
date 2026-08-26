@@ -7,6 +7,18 @@ import { appendTrackingParams, trackCtaClick } from "@/lib/tracking";
 
 const GiftSelectionSection = () => {
   const { selectedKit, selectedGiftId, setSelectedGiftId } = useGiftFlow();
+  const checkoutRef = useRef<HTMLButtonElement>(null);
+
+  const handleSelectGift = (id: string) => {
+    setSelectedGiftId(id);
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    requestAnimationFrame(() => {
+      const el = checkoutRef.current;
+      if (!el) return;
+      el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+      el.focus({ preventScroll: true });
+    });
+  };
 
   if (!selectedKit) return null;
 
