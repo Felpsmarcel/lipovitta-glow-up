@@ -9,7 +9,7 @@
 // - Sempre responde 200 (a Yampi não deve reenviar por erro nosso)
 
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { maskEmail, maskPhone, isTestOrderId, normalizePhoneBR } from "../_shared/privacy.ts";
+import { maskEmail, maskPhone, isTestOrderId, normalizePhoneBR, buyerHash } from "../_shared/privacy.ts";
 
 
 const corsHeaders = {
@@ -355,6 +355,7 @@ Deno.serve(async (req: Request) => {
       is_test: isTestOrderId(orderId),
 
       order_id: orderId,
+      buyer_hash: await buyerHash(email, phone),
       value: paidValue,
       currency: "BRL",
       sku: skus[0] ?? null,
