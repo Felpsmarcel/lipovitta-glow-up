@@ -12,14 +12,14 @@
   "mcp": {
     "server": {
       "name": "lipovitta-transformation",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "title": "LipoVitta Transformation"
     },
     "tools": [
       {
-        "name": "conversion_summary",
-        "title": "Resumo de conversões",
-        "description": "Resume o desempenho do período: cliques, leads, compras, receita total e origens (UTM) mais fortes.",
+        "name": "sales_metrics",
+        "title": "Métricas de vendas",
+        "description": "Compradores únicos, número de pedidos, faturamento, ticket médio, taxa de conversão a partir dos checkouts iniciados e produtos mais vendidos. Exclui pedidos de teste por padrão.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -34,6 +34,120 @@
               "maximum": 365,
               "default": 30,
               "description": "Período em dias."
+            },
+            "include_tests": {
+              "type": "boolean",
+              "default": false,
+              "description": "Incluir pedidos de teste (TEST...) no cálculo."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "conversion_summary",
+        "title": "Resumo de conversões",
+        "description": "Resume o desempenho do período: cliques, leads, compras, receita total e origens (UTM) mais fortes. Os totais são calculados no banco (sem truncagem) e pedidos de teste ficam fora por padrão.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "days": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 365,
+              "default": 30,
+              "description": "Período em dias."
+            },
+            "include_tests": {
+              "type": "boolean",
+              "default": false,
+              "description": "Incluir pedidos de teste (TEST...) no cálculo."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_yampi_orders",
+        "title": "Listar pedidos Yampi",
+        "description": "Lista os pedidos reais registrados pelo webhook da Yampi com status, itens, valores, UTMs e situação do envio para a Meta. Pedidos de teste (TEST...) ficam fora por padrão.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "days": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 365,
+              "default": 30,
+              "description": "Período em dias."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50,
+              "description": "Máximo de linhas."
+            },
+            "include_tests": {
+              "type": "boolean",
+              "default": false,
+              "description": "Incluir pedidos de teste."
+            },
+            "only_mismatches": {
+              "type": "boolean",
+              "default": false,
+              "description": "Mostrar apenas pedidos com divergência de preço."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_abandoned_checkouts",
+        "title": "Listar carrinhos abandonados",
+        "description": "Lista os carrinhos abandonados capturados pelo webhook da Yampi: nome, telefone, e-mail, produtos, valor, UTMs, links de recuperação/recompra e data. Contém dados pessoais — apenas administradores conseguem ler.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "days": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 365,
+              "default": 7,
+              "description": "Período em dias."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50,
+              "description": "Máximo de linhas."
+            },
+            "only_unrecovered": {
+              "type": "boolean",
+              "default": true,
+              "description": "Mostrar apenas carrinhos ainda não recuperados."
             }
           },
           "additionalProperties": false,
@@ -104,6 +218,36 @@
               "maximum": 100,
               "default": 25,
               "description": "Máximo de linhas."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "tracking_health",
+        "title": "Saúde do rastreamento",
+        "description": "Compara checkouts iniciados, carrinhos abandonados, pedidos pagos, Purchase interno e envio para a Meta. Aponta inconsistências, erros error_404 e divergências de preço.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "days": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 365,
+              "default": 7,
+              "description": "Período em dias."
+            },
+            "include_tests": {
+              "type": "boolean",
+              "default": false,
+              "description": "Incluir pedidos de teste (TEST...) na análise."
             }
           },
           "additionalProperties": false,

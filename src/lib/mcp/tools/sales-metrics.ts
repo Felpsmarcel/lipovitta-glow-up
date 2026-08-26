@@ -3,10 +3,10 @@ import { z } from "zod";
 import { supabaseForUser } from "../supabase";
 
 export default defineTool({
-  name: "conversion_summary",
-  title: "Resumo de conversões",
+  name: "sales_metrics",
+  title: "Métricas de vendas",
   description:
-    "Resume o desempenho do período: cliques, leads, compras, receita total e origens (UTM) mais fortes. Os totais são calculados no banco (sem truncagem) e pedidos de teste ficam fora por padrão.",
+    "Compradores únicos, número de pedidos, faturamento, ticket médio, taxa de conversão a partir dos checkouts iniciados e produtos mais vendidos. Exclui pedidos de teste por padrão.",
   inputSchema: {
     days: z.number().int().min(1).max(365).default(30).describe("Período em dias."),
     include_tests: z
@@ -19,15 +19,15 @@ export default defineTool({
     if (!ctx.isAuthenticated())
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     const supabase = supabaseForUser(ctx);
-    const { data, error } = await supabase.rpc("mcp_conversion_summary", {
+    const { data, error } = await supabase.rpc("mcp_sales_metrics", {
       _days: days,
       _include_tests: include_tests ?? false,
     });
     if (error) return { content: [{ type: "text", text: error.message }], isError: true };
-    const summary = (data ?? {}) as Record<string, unknown>;
+    const metrics = (data ?? {}) as Record<string, unknown>;
     return {
-      content: [{ type: "text", text: JSON.stringify(summary) }],
-      structuredContent: summary,
+      content: [{ type: "text", text: JSON.stringify(metrics) }],
+      structuredContent: metrics,
     };
   },
 });

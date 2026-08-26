@@ -14,6 +14,78 @@ export type Database = {
   }
   public: {
     Tables: {
+      abandoned_checkouts: {
+        Row: {
+          abandoned_at: string
+          cart_token: string
+          created_at: string
+          currency: string
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          id: string
+          items: Json
+          raw: Json | null
+          recovered_at: string | null
+          recovered_order_id: string | null
+          recovery_url: string | null
+          reorder_url: string | null
+          total: number | null
+          updated_at: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+        }
+        Insert: {
+          abandoned_at?: string
+          cart_token: string
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          id?: string
+          items?: Json
+          raw?: Json | null
+          recovered_at?: string | null
+          recovered_order_id?: string | null
+          recovery_url?: string | null
+          reorder_url?: string | null
+          total?: number | null
+          updated_at?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Update: {
+          abandoned_at?: string
+          cart_token?: string
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          id?: string
+          items?: Json
+          raw?: Json | null
+          recovered_at?: string | null
+          recovered_order_id?: string | null
+          recovery_url?: string | null
+          reorder_url?: string | null
+          total?: number | null
+          updated_at?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Relationships: []
+      }
       affiliate_applications: {
         Row: {
           created_at: string
@@ -110,6 +182,7 @@ export type Database = {
           event_name: string
           gift: string | null
           id: string
+          is_test: boolean
           meta_status: string | null
           metadata: Json | null
           order_id: string | null
@@ -132,6 +205,7 @@ export type Database = {
           event_name: string
           gift?: string | null
           id?: string
+          is_test?: boolean
           meta_status?: string | null
           metadata?: Json | null
           order_id?: string | null
@@ -154,6 +228,7 @@ export type Database = {
           event_name?: string
           gift?: string | null
           id?: string
+          is_test?: boolean
           meta_status?: string | null
           metadata?: Json | null
           order_id?: string | null
@@ -257,6 +332,45 @@ export type Database = {
         }
         Relationships: []
       }
+      mcp_action_log: {
+        Row: {
+          action: string
+          actor_user_id: string | null
+          created_at: string
+          id: string
+          idempotency_key: string
+          request: Json | null
+          response: Json | null
+          status: string
+          target_ref: string | null
+          updated_at: string
+        }
+        Insert: {
+          action: string
+          actor_user_id?: string | null
+          created_at?: string
+          id?: string
+          idempotency_key: string
+          request?: Json | null
+          response?: Json | null
+          status?: string
+          target_ref?: string | null
+          updated_at?: string
+        }
+        Update: {
+          action?: string
+          actor_user_id?: string | null
+          created_at?: string
+          id?: string
+          idempotency_key?: string
+          request?: Json | null
+          response?: Json | null
+          status?: string
+          target_ref?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       suppressed_emails: {
         Row: {
           created_at: string
@@ -322,6 +436,18 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      mcp_conversion_summary: {
+        Args: { _days?: number; _include_tests?: boolean }
+        Returns: Json
+      }
+      mcp_sales_metrics: {
+        Args: { _days?: number; _include_tests?: boolean }
+        Returns: Json
+      }
+      mcp_tracking_health: {
+        Args: { _days?: number; _include_tests?: boolean }
+        Returns: Json
       }
       move_to_dlq: {
         Args: {

@@ -1,10 +1,16 @@
-// Yampi Webhook — Fase 2: registra a compra e envia o evento Purchase para a Meta (CAPI).
+// Yampi Webhook — Fase 3: registra a compra, captura carrinhos abandonados e
+// envia o evento Purchase para a Meta (CAPI).
 // - Valida a assinatura HMAC quando YAMPI_WEBHOOK_SECRET estiver configurado
+// - cart.reminder / cart.abandoned -> upsert idempotente em public.abandoned_checkouts
 // - Grava o pedido em public.conversion_events (dedup por order_id)
+// - Marca o carrinho correspondente como recuperado quando o pedido é pago
 // - Envia Purchase para a função meta-capi com dados do cliente hasheados
+// - Logs sem PII bruta (e-mail/telefone mascarados, sem headers nem body)
 // - Sempre responde 200 (a Yampi não deve reenviar por erro nosso)
 
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { maskEmail, maskPhone, isTestOrderId, normalizePhoneBR } from "../_shared/privacy.ts";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -66,6 +72,79 @@ function pickUtms(resource: any): Record<string, string | undefined> {
   };
 }
 
+function serviceClient() {
+  return createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    { auth: { persistSession: false } }
+  );
+}
+
+const str = (v: unknown, max = 500): string | null => {
+  const s = String(v ?? "").trim();
+  return s ? s.slice(0, max) : null;
+};
+
+/** Normaliza o payload de carrinho da Yampi (cart.reminder / cart.abandoned). */
+// deno-lint-ignore no-explicit-any
+function extractCart(resource: any, event: string) {
+  const customer = resource?.customer?.data ?? resource?.customer ?? {};
+  const rawItems = Array.isArray(resource?.items?.data)
+    ? resource.items.data
+    : Array.isArray(resource?.items)
+      ? resource.items
+      : [];
+  // deno-lint-ignore no-explicit-any
+  const items = rawItems.map((i: any) => ({
+    sku: str(i?.sku ?? i?.item_sku, 120),
+    name: str(i?.product_name ?? i?.name ?? i?.title, 200),
+    quantity: Number(i?.quantity ?? 1),
+    price: Number(i?.price ?? i?.unit_price ?? 0) || null,
+  }));
+  const total = Number(
+    resource?.value_total ?? resource?.total ?? resource?.value ?? resource?.subtotal ?? 0
+  );
+  const phone = normalizePhoneBR(
+    customer?.phone?.full_number ?? customer?.phone?.number ?? customer?.phone
+  );
+  const abandonedRaw = str(
+    resource?.abandoned_at ?? resource?.updated_at ?? resource?.created_at,
+    40
+  );
+  const abandonedParsed = abandonedRaw ? new Date(abandonedRaw) : null;
+  const abandonedAt =
+    abandonedParsed && !Number.isNaN(abandonedParsed.getTime())
+      ? abandonedParsed.toISOString()
+      : new Date().toISOString();
+
+
+  return {
+    cart_token: str(
+      resource?.token ?? resource?.cart_token ?? resource?.id ?? resource?.uuid,
+      200
+    ),
+    customer_name: str(
+      customer?.name ??
+        [customer?.first_name, customer?.last_name].filter(Boolean).join(" "),
+      200
+    ),
+    customer_email: str(customer?.email, 255)?.toLowerCase() ?? null,
+    customer_phone: phone || null,
+    items,
+    total: Number.isFinite(total) && total > 0 ? total : null,
+    currency: "BRL",
+    recovery_url: str(
+      resource?.recovery_url ?? resource?.cart_url ?? resource?.url ?? resource?.checkout_url
+    ),
+    reorder_url: str(resource?.reorder_url ?? resource?.reorder?.url),
+    ...pickUtms(resource),
+    raw: { event },
+    abandoned_at: abandonedAt,
+    updated_at: new Date().toISOString(),
+  };
+}
+
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "method_not_allowed" }, 405);
@@ -73,13 +152,15 @@ Deno.serve(async (req: Request) => {
   const raw = await req.text();
   const requestId = crypto.randomUUID();
 
+  // Log sem PII: nada de headers completos nem corpo bruto.
   console.log(`[yampi-webhook:${requestId}] received`, {
-    url: req.url,
     method: req.method,
     content_length: raw.length,
-    headers: Object.fromEntries(req.headers.entries()),
-    body_preview: raw.slice(0, 500),
+    has_signature: Boolean(
+      req.headers.get("x-yampi-hmac-sha256") ?? req.headers.get("X-Yampi-Hmac-SHA256")
+    ),
   });
+
 
   // --- Assinatura ---
   const secret = Deno.env.get("YAMPI_WEBHOOK_SECRET");
@@ -111,12 +192,46 @@ Deno.serve(async (req: Request) => {
   const resource = payload?.resource ?? {};
   const orderId = String(resource?.id ?? resource?.number ?? "").trim();
 
-  console.log(`[yampi-webhook:${requestId}] parsed`, { event, order_id: orderId, status: resource?.status });
+  console.log(`[yampi-webhook:${requestId}] parsed`, {
+    event,
+    order_id: orderId || null,
+    status: norm(resource?.status?.data?.alias ?? resource?.status?.alias ?? "") || null,
+  });
+
+  // --- Carrinho abandonado / lembrete de carrinho ---
+  if (event.startsWith("cart.")) {
+    const cart = extractCart(resource, event);
+    if (!cart.cart_token) {
+      console.warn(`[yampi-webhook:${requestId}] carrinho sem token — ignorado`, { event });
+      return json({ ok: false, reason: "missing_cart_token", request_id: requestId });
+    }
+    try {
+      const supabase = serviceClient();
+      const { error } = await supabase
+        .from("abandoned_checkouts")
+        .upsert(cart, { onConflict: "cart_token" });
+      if (error) {
+        console.error(`[yampi-webhook:${requestId}] upsert carrinho falhou:`, error.message);
+        return json({ ok: false, reason: "cart_upsert_failed", request_id: requestId });
+      }
+      console.log(`[yampi-webhook:${requestId}] cart recorded`, {
+        event,
+        cart_token: cart.cart_token,
+        total: cart.total,
+        email: maskEmail(cart.customer_email),
+        phone: maskPhone(cart.customer_phone),
+      });
+    } catch (e) {
+      console.error(`[yampi-webhook:${requestId}] carrinho erro:`, (e as Error).message);
+    }
+    return json({ ok: true, event, cart_token: cart.cart_token, request_id: requestId });
+  }
 
   if (!orderId) {
     console.warn(`[yampi-webhook:${requestId}] pedido sem id — ignorado`, event);
     return json({ ok: false, reason: "missing_order_id", request_id: requestId });
   }
+
 
   // Só contabilizamos pedidos pagos/aprovados quando o status vier no payload.
   const statusAlias = norm(resource?.status?.data?.alias ?? resource?.status?.alias ?? "");
@@ -237,6 +352,8 @@ Deno.serve(async (req: Request) => {
       event_name: "Purchase",
       event_id: eventId,
       source: "yampi",
+      is_test: isTestOrderId(orderId),
+
       order_id: orderId,
       value: paidValue,
       currency: "BRL",
@@ -260,6 +377,24 @@ Deno.serve(async (req: Request) => {
       console.error(`[yampi-webhook:${requestId}] insert falhou:`, error.message);
     } else {
       console.log(`[yampi-webhook:${requestId}] purchase recorded`, { order_id: orderId, value, meta_status: metaStatus });
+    }
+
+    // Marca carrinhos abandonados correspondentes como recuperados (idempotente).
+    try {
+      const orFilters: string[] = [];
+      if (email) orFilters.push(`customer_email.eq.${email}`);
+      if (phone) orFilters.push(`customer_phone.eq.${phone}`);
+      if (orFilters.length) {
+        const { error: recErr } = await supabase
+          .from("abandoned_checkouts")
+          .update({ recovered_at: new Date().toISOString(), recovered_order_id: orderId })
+          .is("recovered_at", null)
+          .or(orFilters.join(","));
+        if (recErr) console.error(`[yampi-webhook:${requestId}] recovery mark falhou:`, recErr.message);
+      }
+    } catch (e) {
+      console.error(`[yampi-webhook:${requestId}] recovery mark erro:`, (e as Error).message);
+
     }
   } catch (e) {
     console.error(`[yampi-webhook:${requestId}] banco falhou:`, (e as Error).message);
