@@ -5,6 +5,8 @@ import {
   idempotencyKey,
   isTestOrderId,
   normalizePhoneBR,
+  buyerHash,
+  sha256Hex,
 } from "./privacy";
 
 describe("maskEmail", () => {
@@ -54,5 +56,35 @@ describe("normalizePhoneBR", () => {
     expect(normalizePhoneBR("(11) 98765-4321")).toBe("5511987654321");
     expect(normalizePhoneBR("5511987654321")).toBe("5511987654321");
     expect(normalizePhoneBR("")).toBe("");
+  });
+});
+
+describe("buyerHash", () => {
+  it("usa o e-mail normalizado quando existe", async () => {
+    const a = await buyerHash("Maria@Dominio.com ", "11987654321");
+    const b = await buyerHash("maria@dominio.com");
+    expect(a).toBe(b);
+    expect(a).toMatch(/^[0-9a-f]{64}$/);
+    expect(a).not.toContain("maria");
+  });
+
+  it("cai para o telefone normalizado sem e-mail", async () => {
+    const a = await buyerHash(null, "(11) 98765-4321");
+    const b = await sha256Hex("5511987654321");
+    expect(a).toBe(b);
+  });
+
+  it("retorna null sem identificadores", async () => {
+    expect(await buyerHash(null, null)).toBeNull();
+    expect(await buyerHash("sem-arroba", "")).toBeNull();
+  });
+
+  it("compradores distintos geram hashes distintos (unique_buyers != unique_orders)", async () => {
+    const hashes = await Promise.all([
+      buyerHash("a@x.com"),
+      buyerHash("a@x.com"),
+      buyerHash("b@x.com"),
+    ]);
+    expect(new Set(hashes).size).toBe(2);
   });
 });
