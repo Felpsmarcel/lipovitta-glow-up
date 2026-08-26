@@ -103,7 +103,11 @@ const FlavorPicker = ({
         );
       })}
     </div>
-    {!value && (
+    {value ? (
+      <p className="text-[11px] font-semibold text-[#4667B4] mt-1.5">
+        Sabor escolhido: {SHOT_FLAVORS.find((f) => f.id === value)?.label}
+      </p>
+    ) : (
       <p className="text-[11px] text-[#E63946] mt-1.5">Selecione um sabor para continuar.</p>
     )}
   </div>
