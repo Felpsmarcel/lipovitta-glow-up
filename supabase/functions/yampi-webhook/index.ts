@@ -1,10 +1,16 @@
-// Yampi Webhook — Fase 2: registra a compra e envia o evento Purchase para a Meta (CAPI).
+// Yampi Webhook — Fase 3: registra a compra, captura carrinhos abandonados e
+// envia o evento Purchase para a Meta (CAPI).
 // - Valida a assinatura HMAC quando YAMPI_WEBHOOK_SECRET estiver configurado
+// - cart.reminder / cart.abandoned -> upsert idempotente em public.abandoned_checkouts
 // - Grava o pedido em public.conversion_events (dedup por order_id)
+// - Marca o carrinho correspondente como recuperado quando o pedido é pago
 // - Envia Purchase para a função meta-capi com dados do cliente hasheados
+// - Logs sem PII bruta (e-mail/telefone mascarados, sem headers nem body)
 // - Sempre responde 200 (a Yampi não deve reenviar por erro nosso)
 
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { maskEmail, maskPhone, isTestOrderId, normalizePhoneBR } from "../_shared/privacy.ts";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
