@@ -243,6 +243,8 @@ Deno.serve(async (req: Request) => {
       event_name: "Purchase",
       event_id: eventId,
       source: "yampi",
+      is_test: isTestOrderId(orderId),
+
       order_id: orderId,
       value: paidValue,
       currency: "BRL",
