@@ -142,18 +142,193 @@ var list_applications_default = defineTool3({
   }
 });
 
+// src/lib/mcp/tools/sales-metrics.ts
+import { defineTool as defineTool4 } from "npm:@lovable.dev/mcp-js@0.28.0";
+import { z as z4 } from "npm:zod@^3.25.76";
+var sales_metrics_default = defineTool4({
+  name: "sales_metrics",
+  title: "M\xE9tricas de vendas",
+  description: "Compradores \xFAnicos, n\xFAmero de pedidos, faturamento, ticket m\xE9dio, taxa de convers\xE3o a partir dos checkouts iniciados e produtos mais vendidos. Exclui pedidos de teste por padr\xE3o.",
+  inputSchema: {
+    days: z4.number().int().min(1).max(365).default(30).describe("Per\xEDodo em dias."),
+    include_tests: z4.boolean().default(false).describe("Incluir pedidos de teste (TEST...) no c\xE1lculo.")
+  },
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: async ({ days, include_tests }, ctx) => {
+    if (!ctx.isAuthenticated())
+      return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    const supabase = supabaseForUser(ctx);
+    const { data, error } = await supabase.rpc("mcp_sales_metrics", {
+      _days: days,
+      _include_tests: include_tests ?? false
+    });
+    if (error) return { content: [{ type: "text", text: error.message }], isError: true };
+    const metrics = data ?? {};
+    return {
+      content: [{ type: "text", text: JSON.stringify(metrics) }],
+      structuredContent: metrics
+    };
+  }
+});
+
+// src/lib/mcp/tools/tracking-health.ts
+import { defineTool as defineTool5 } from "npm:@lovable.dev/mcp-js@0.28.0";
+import { z as z5 } from "npm:zod@^3.25.76";
+var tracking_health_default = defineTool5({
+  name: "tracking_health",
+  title: "Sa\xFAde do rastreamento",
+  description: "Compara checkouts iniciados, carrinhos abandonados, pedidos pagos, Purchase interno e envio para a Meta. Aponta inconsist\xEAncias, erros error_404 e diverg\xEAncias de pre\xE7o.",
+  inputSchema: {
+    days: z5.number().int().min(1).max(365).default(7).describe("Per\xEDodo em dias."),
+    include_tests: z5.boolean().default(false).describe("Incluir pedidos de teste (TEST...) na an\xE1lise.")
+  },
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: async ({ days, include_tests }, ctx) => {
+    if (!ctx.isAuthenticated())
+      return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    const supabase = supabaseForUser(ctx);
+    const { data, error } = await supabase.rpc("mcp_tracking_health", {
+      _days: days,
+      _include_tests: include_tests ?? false
+    });
+    if (error) return { content: [{ type: "text", text: error.message }], isError: true };
+    const health = data ?? {};
+    const gaps = [];
+    const num = (k) => Number(health[k] ?? 0);
+    if (num("meta_error_404") > 0)
+      gaps.push(`${num("meta_error_404")} compras com meta_status=error_404 (endpoint CAPI inv\xE1lido).`);
+    if (num("meta_missing_status") > 0)
+      gaps.push(`${num("meta_missing_status")} compras sem status de envio para a Meta.`);
+    if (num("internal_purchases") > 0 && num("meta_sent") < num("internal_purchases"))
+      gaps.push(
+        `Apenas ${num("meta_sent")} de ${num("internal_purchases")} compras chegaram \xE0 Meta.`
+      );
+    if (num("price_mismatches") > 0)
+      gaps.push(`${num("price_mismatches")} pedidos com diverg\xEAncia entre valor esperado e pago.`);
+    if (num("initiate_checkouts") > 0 && num("internal_purchases") === 0)
+      gaps.push("Houve checkouts iniciados, mas nenhuma compra registrada no per\xEDodo.");
+    const result = { ...health, gaps };
+    return {
+      content: [{ type: "text", text: JSON.stringify(result) }],
+      structuredContent: result
+    };
+  }
+});
+
+// src/lib/mcp/tools/list-abandoned-checkouts.ts
+import { defineTool as defineTool6 } from "npm:@lovable.dev/mcp-js@0.28.0";
+import { z as z6 } from "npm:zod@^3.25.76";
+var list_abandoned_checkouts_default = defineTool6({
+  name: "list_abandoned_checkouts",
+  title: "Listar carrinhos abandonados",
+  description: "Lista os carrinhos abandonados capturados pelo webhook da Yampi: nome, telefone, e-mail, produtos, valor, UTMs, links de recupera\xE7\xE3o/recompra e data. Cont\xE9m dados pessoais \u2014 apenas administradores conseguem ler.",
+  inputSchema: {
+    days: z6.number().int().min(1).max(365).default(7).describe("Per\xEDodo em dias."),
+    limit: z6.number().int().min(1).max(200).default(50).describe("M\xE1ximo de linhas."),
+    only_unrecovered: z6.boolean().default(true).describe("Mostrar apenas carrinhos ainda n\xE3o recuperados.")
+  },
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: async ({ days, limit, only_unrecovered }, ctx) => {
+    if (!ctx.isAuthenticated())
+      return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    const supabase = supabaseForUser(ctx);
+    const since = new Date(Date.now() - days * 864e5).toISOString();
+    let query = supabase.from("abandoned_checkouts").select(
+      "cart_token,customer_name,customer_email,customer_phone,items,total,currency,recovery_url,reorder_url,utm_source,utm_medium,utm_campaign,utm_content,utm_term,abandoned_at,recovered_at,recovered_order_id"
+    ).gte("abandoned_at", since).order("abandoned_at", { ascending: false }).limit(limit);
+    if (only_unrecovered) query = query.is("recovered_at", null);
+    const { data, error } = await query;
+    if (error) return { content: [{ type: "text", text: error.message }], isError: true };
+    const items = data ?? [];
+    const payload = { items, count: items.length, days, only_unrecovered };
+    return {
+      content: [{ type: "text", text: JSON.stringify(payload) }],
+      structuredContent: payload
+    };
+  }
+});
+
+// src/lib/mcp/tools/list-yampi-orders.ts
+import { defineTool as defineTool7 } from "npm:@lovable.dev/mcp-js@0.28.0";
+import { z as z7 } from "npm:zod@^3.25.76";
+var list_yampi_orders_default = defineTool7({
+  name: "list_yampi_orders",
+  title: "Listar pedidos Yampi",
+  description: "Lista os pedidos reais registrados pelo webhook da Yampi com status, itens, valores, UTMs e situa\xE7\xE3o do envio para a Meta. Pedidos de teste (TEST...) ficam fora por padr\xE3o.",
+  inputSchema: {
+    days: z7.number().int().min(1).max(365).default(30).describe("Per\xEDodo em dias."),
+    limit: z7.number().int().min(1).max(200).default(50).describe("M\xE1ximo de linhas."),
+    include_tests: z7.boolean().default(false).describe("Incluir pedidos de teste."),
+    only_mismatches: z7.boolean().default(false).describe("Mostrar apenas pedidos com diverg\xEAncia de pre\xE7o.")
+  },
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: async ({ days, limit, include_tests, only_mismatches }, ctx) => {
+    if (!ctx.isAuthenticated())
+      return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    const supabase = supabaseForUser(ctx);
+    const since = new Date(Date.now() - days * 864e5).toISOString();
+    let query = supabase.from("conversion_events").select(
+      "order_id,event_id,value,currency,product_name,sku,gift,utm_source,utm_medium,utm_campaign,utm_content,meta_status,metadata,is_test,created_at"
+    ).eq("event_name", "Purchase").gte("created_at", since).order("created_at", { ascending: false }).limit(limit);
+    if (!include_tests) query = query.eq("is_test", false);
+    const { data, error } = await query;
+    if (error) return { content: [{ type: "text", text: error.message }], isError: true };
+    let orders = (data ?? []).map((row) => {
+      const meta = row.metadata ?? {};
+      return {
+        order_id: row.order_id,
+        event_id: row.event_id,
+        value: row.value,
+        currency: row.currency,
+        status: meta.status ?? null,
+        source_event: meta.event ?? null,
+        items_count: meta.items_count ?? null,
+        skus: meta.skus ?? (row.sku ? [row.sku] : []),
+        product_name: row.product_name,
+        gift: row.gift,
+        utm: {
+          source: row.utm_source,
+          medium: row.utm_medium,
+          campaign: row.utm_campaign,
+          content: row.utm_content
+        },
+        meta_status: row.meta_status,
+        expected_value: meta.expected_value ?? null,
+        price_diff: meta.price_diff ?? null,
+        price_mismatch: meta.price_mismatch === true,
+        is_test: row.is_test,
+        created_at: row.created_at
+      };
+    });
+    if (only_mismatches) orders = orders.filter((o) => o.price_mismatch);
+    const payload = { orders, count: orders.length, days, include_tests };
+    return {
+      content: [{ type: "text", text: JSON.stringify(payload) }],
+      structuredContent: payload
+    };
+  }
+});
+
 // src/lib/mcp/index.ts
 var projectRef = "ecgquvfoipmoqlhfkfol";
 var mcp_default = defineMcp({
   name: "lipovitta-transformation",
   title: "LipoVitta Transformation",
-  version: "0.1.0",
-  instructions: "Ferramentas da LipoVitta. Use `conversion_summary` para o panorama de vendas do per\xEDodo, `list_conversions` para eventos detalhados (cliques, leads, compras) e `list_applications` para candidaturas de afiliadas e parceiros. Os dados respeitam as permiss\xF5es da conta conectada (apenas administradores enxergam os registros).",
+  version: "0.2.0",
+  instructions: "Ferramentas operacionais da LipoVitta (loja Yampi + rastreamento Meta). Leitura: `sales_metrics` para faturamento, ticket m\xE9dio e convers\xE3o; `conversion_summary` para o panorama de eventos; `list_yampi_orders` para pedidos reais com status, itens e diverg\xEAncias de pre\xE7o; `list_abandoned_checkouts` para carrinhos abandonados com contato e link de recupera\xE7\xE3o; `list_conversions` para o log bruto de eventos; `list_applications` para candidaturas de afiliadas e parceiros; `tracking_health` para conferir se checkouts, pedidos pagos, Purchase interno e envio \xE0 Meta batem. Pedidos de teste (TEST...) s\xE3o exclu\xEDdos por padr\xE3o \u2014 use include_tests para v\xEA-los. Todos os dados respeitam as permiss\xF5es da conta conectada: apenas administradores enxergam registros e dados pessoais. Nenhuma ferramenta escreve dados nesta vers\xE3o.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated"
   }),
-  tools: [conversion_summary_default, list_conversions_default, list_applications_default]
+  tools: [
+    sales_metrics_default,
+    conversion_summary_default,
+    list_yampi_orders_default,
+    list_abandoned_checkouts_default,
+    list_conversions_default,
+    list_applications_default,
+    tracking_health_default
+  ]
 });
 
 // lovable-mcp-supabase-entry.ts
