@@ -140,14 +140,14 @@ const GiftSelectionSection = () => {
           <button
             type="button"
             onClick={handleCheckout}
-            disabled={!selectedGift}
+            disabled={!canCheckout}
             className={`inline-block text-white font-bold text-base sm:text-lg px-10 py-4 rounded-full shadow-md transition-all duration-300 ${
-              selectedGift
+              canCheckout
                 ? "bg-gradient-brand hover:-translate-y-0.5 hover:shadow-xl cursor-pointer"
                 : "bg-[#B7BFC9] opacity-70 cursor-not-allowed"
             }`}
           >
-            Finalizar minha compra
+            {selectedKit.flavor ? `Finalizar compra · ${selectedKit.flavor}` : "Finalizar minha compra"}
           </button>
         </div>
       </div>
