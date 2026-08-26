@@ -12,8 +12,11 @@ const GiftSelectionSection = () => {
   const eligible = getEligibleGifts(selectedKit.productCount);
   const selectedGift = eligible.find((g) => g.id === selectedGiftId) ?? null;
 
+  const missingFlavor = Boolean(selectedKit.requiresFlavor && !selectedKit.flavor);
+  const canCheckout = Boolean(selectedGift) && !missingFlavor;
+
   const handleCheckout = () => {
-    if (!selectedGift) return;
+    if (!selectedGift || !canCheckout) return;
     const { eventId } = trackCtaClick({
       location: "checkout_brinde",
       label: "Finalizar minha compra",
@@ -23,10 +26,12 @@ const GiftSelectionSection = () => {
       eventName: "InitiateCheckout",
       gift: selectedGift.utm,
       flavor: selectedKit.flavor,
+      flavorId: selectedKit.flavorId,
     });
     const url = appendTrackingParams(selectedKit.checkoutUrl, {
       eventId,
       gift: selectedGift.utm,
+      flavor: selectedKit.flavorId,
     });
     window.open(url, "_blank", "noopener");
   };
@@ -42,10 +47,40 @@ const GiftSelectionSection = () => {
           <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[#4667B4] bg-white border border-[#D9E2F1] px-3 py-1.5 rounded-full mb-4">
             <GiftIcon className="w-3.5 h-3.5" /> Etapa final
           </span>
-          <p className="font-sans text-base sm:text-lg text-[#4667B4] font-bold mb-3">
-            Seu pedido: {selectedKit.name}
-            {selectedKit.flavor ? ` · Sabor: ${selectedKit.flavor}` : ""}
-          </p>
+
+          <div className="bg-white border border-[#D9E2F1] rounded-2xl p-4 sm:p-5 text-left max-w-md mx-auto mb-6 shadow-sm">
+            <p className="text-[11px] font-bold uppercase tracking-wide text-[#9BAE52] mb-2">
+              Seu pedido
+            </p>
+            <p className="font-sans text-base sm:text-lg text-[#4667B4] font-bold">
+              {selectedKit.name}
+            </p>
+            {selectedKit.flavor && (
+              <p className="font-sans text-sm text-[#555] mt-1 flex items-center gap-2 flex-wrap">
+                <span>
+                  Sabor do Shot Matinal: <strong className="text-[#4667B4]">{selectedKit.flavor}</strong>
+                </span>
+                <a href="#oferta" className="text-xs underline text-[#9BAE52] font-semibold">
+                  Trocar sabor
+                </a>
+              </p>
+            )}
+            {missingFlavor && (
+              <p className="font-sans text-sm text-[#E63946] mt-1">
+                Escolha o sabor do Shot Matinal antes de finalizar.{" "}
+                <a href="#oferta" className="underline font-semibold">
+                  Escolher sabor
+                </a>
+              </p>
+            )}
+            <p className="font-sans text-sm text-[#555] mt-1">
+              Presente escolhido:{" "}
+              <strong className="text-[#4667B4]">
+                {selectedGift ? selectedGift.nome : "escolha abaixo"}
+              </strong>
+            </p>
+          </div>
+
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-[#4667B4] mb-3">
             Seu cuidado vem com um presente.
           </h2>
@@ -53,6 +88,7 @@ const GiftSelectionSection = () => {
             Quanto mais completa sua rotina, mais especial seu presente. Escolha o seu abaixo — você leva um.
           </p>
         </div>
+
 
         <div
           className={`grid grid-cols-2 sm:grid-cols-2 ${
