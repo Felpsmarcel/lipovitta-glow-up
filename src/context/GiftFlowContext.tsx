@@ -7,9 +7,14 @@ export type SelectedKit = {
   checkoutUrl: string;
   value?: number;
   sku?: string;
-  /** Sabor escolhido do Shot Matinal, quando o kit inclui esse produto. */
+  /** Rótulo do sabor escolhido do Shot Matinal (ex.: "Limão"). */
   flavor?: string;
+  /** Id normalizado do sabor, usado no link e no rastreio (ex.: "limao"). */
+  flavorId?: string;
+  /** Indica que o kit inclui Shot Matinal e exige escolha de sabor. */
+  requiresFlavor?: boolean;
 };
+
 
 type GiftFlowContextValue = {
   selectedKit: SelectedKit | null;
