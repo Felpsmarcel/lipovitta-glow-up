@@ -19,7 +19,7 @@
       {
         "name": "conversion_summary",
         "title": "Resumo de conversões",
-        "description": "Resume o desempenho do período: cliques, leads, compras, receita total e origens (UTM) mais fortes.",
+        "description": "Resume o desempenho do período: cliques, leads, compras, receita total e origens (UTM) mais fortes. Os totais são calculados no banco (sem truncagem) e pedidos de teste ficam fora por padrão.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -34,6 +34,11 @@
               "maximum": 365,
               "default": 30,
               "description": "Período em dias."
+            },
+            "include_tests": {
+              "type": "boolean",
+              "default": false,
+              "description": "Incluir pedidos de teste (TEST...) no cálculo."
             }
           },
           "additionalProperties": false,
