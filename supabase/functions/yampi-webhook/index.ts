@@ -107,9 +107,16 @@ function extractCart(resource: any, event: string) {
   const phone = normalizePhoneBR(
     customer?.phone?.full_number ?? customer?.phone?.number ?? customer?.phone
   );
+  const abandonedRaw = str(
+    resource?.abandoned_at ?? resource?.updated_at ?? resource?.created_at,
+    40
+  );
+  const abandonedParsed = abandonedRaw ? new Date(abandonedRaw) : null;
   const abandonedAt =
-    str(resource?.abandoned_at ?? resource?.updated_at ?? resource?.created_at, 40) ??
-    new Date().toISOString();
+    abandonedParsed && !Number.isNaN(abandonedParsed.getTime())
+      ? abandonedParsed.toISOString()
+      : new Date().toISOString();
+
 
   return {
     cart_token: str(
