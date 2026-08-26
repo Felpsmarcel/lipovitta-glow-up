@@ -60,7 +60,7 @@ const GiftSelectionSection = () => {
                 <span>
                   Sabor do Shot Matinal: <strong className="text-[#4667B4]">{selectedKit.flavor}</strong>
                 </span>
-                <a href="#oferta" className="text-xs underline text-[#9BAE52] font-semibold">
+                <a href="#precos" className="text-xs underline text-[#9BAE52] font-semibold">
                   Trocar sabor
                 </a>
               </p>
@@ -68,7 +68,7 @@ const GiftSelectionSection = () => {
             {missingFlavor && (
               <p className="font-sans text-sm text-[#E63946] mt-1">
                 Escolha o sabor do Shot Matinal antes de finalizar.{" "}
-                <a href="#oferta" className="underline font-semibold">
+                <a href="#precos" className="underline font-semibold">
                   Escolher sabor
                 </a>
               </p>
