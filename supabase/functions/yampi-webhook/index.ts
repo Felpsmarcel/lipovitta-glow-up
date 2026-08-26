@@ -72,6 +72,72 @@ function pickUtms(resource: any): Record<string, string | undefined> {
   };
 }
 
+function serviceClient() {
+  return createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    { auth: { persistSession: false } }
+  );
+}
+
+const str = (v: unknown, max = 500): string | null => {
+  const s = String(v ?? "").trim();
+  return s ? s.slice(0, max) : null;
+};
+
+/** Normaliza o payload de carrinho da Yampi (cart.reminder / cart.abandoned). */
+// deno-lint-ignore no-explicit-any
+function extractCart(resource: any, event: string) {
+  const customer = resource?.customer?.data ?? resource?.customer ?? {};
+  const rawItems = Array.isArray(resource?.items?.data)
+    ? resource.items.data
+    : Array.isArray(resource?.items)
+      ? resource.items
+      : [];
+  // deno-lint-ignore no-explicit-any
+  const items = rawItems.map((i: any) => ({
+    sku: str(i?.sku ?? i?.item_sku, 120),
+    name: str(i?.product_name ?? i?.name ?? i?.title, 200),
+    quantity: Number(i?.quantity ?? 1),
+    price: Number(i?.price ?? i?.unit_price ?? 0) || null,
+  }));
+  const total = Number(
+    resource?.value_total ?? resource?.total ?? resource?.value ?? resource?.subtotal ?? 0
+  );
+  const phone = normalizePhoneBR(
+    customer?.phone?.full_number ?? customer?.phone?.number ?? customer?.phone
+  );
+  const abandonedAt =
+    str(resource?.abandoned_at ?? resource?.updated_at ?? resource?.created_at, 40) ??
+    new Date().toISOString();
+
+  return {
+    cart_token: str(
+      resource?.token ?? resource?.cart_token ?? resource?.id ?? resource?.uuid,
+      200
+    ),
+    customer_name: str(
+      customer?.name ??
+        [customer?.first_name, customer?.last_name].filter(Boolean).join(" "),
+      200
+    ),
+    customer_email: str(customer?.email, 255)?.toLowerCase() ?? null,
+    customer_phone: phone || null,
+    items,
+    total: Number.isFinite(total) && total > 0 ? total : null,
+    currency: "BRL",
+    recovery_url: str(
+      resource?.recovery_url ?? resource?.cart_url ?? resource?.url ?? resource?.checkout_url
+    ),
+    reorder_url: str(resource?.reorder_url ?? resource?.reorder?.url),
+    ...pickUtms(resource),
+    raw: { event },
+    abandoned_at: abandonedAt,
+    updated_at: new Date().toISOString(),
+  };
+}
+
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "method_not_allowed" }, 405);
