@@ -56,8 +56,9 @@ const withFlavor = (kit: SelectedKit, flavor: FlavorId): SelectedKit => {
     }
   }
   const label = SHOT_FLAVORS.find((f) => f.id === flavor)?.label ?? flavor;
-  return { ...kit, checkoutUrl: url, flavor: label };
+  return { ...kit, checkoutUrl: url, flavor: label, flavorId: flavor, requiresFlavor: true };
 };
+
 
 const FlavorPicker = ({
   value,
@@ -102,7 +103,11 @@ const FlavorPicker = ({
         );
       })}
     </div>
-    {!value && (
+    {value ? (
+      <p className="text-[11px] font-semibold text-[#4667B4] mt-1.5">
+        Sabor escolhido: {SHOT_FLAVORS.find((f) => f.id === value)?.label}
+      </p>
+    ) : (
       <p className="text-[11px] text-[#E63946] mt-1.5">Selecione um sabor para continuar.</p>
     )}
   </div>
@@ -164,6 +169,7 @@ const OfferSection = () => {
       value: finalKit.value,
       eventName: "InitiateCheckout",
       flavor: finalKit.flavor,
+      flavorId: finalKit.flavorId,
     });
     selectKit(finalKit);
   };
