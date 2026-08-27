@@ -577,7 +577,31 @@ Deno.serve(async (req: Request) => {
     console.error(`[yampi-webhook:${requestId}] upsert pedido erro:`, (e as Error).message);
   }
 
-  // Pedido criado/aguardando pagamento: registrado acima, mas sem Purchase/faturamento.
+  // Todos os eventos de pedido entram na fila; somente pedidos pagos geram Purchase.
+  await enqueueGhl(
+    {
+      event_type: isPaid ? "purchase" : "order_status",
+      order_id: orderId,
+      order_number: str(resource?.number ?? resource?.order_number, 40),
+      status: statusAlias || event || null,
+      value: paidValue,
+      items: items.map((i: Record<string, unknown>) => ({
+        sku: itemSku(i),
+        name: itemName(i),
+        quantity: Number(i?.quantity ?? 1),
+        price: numOrNull(i?.price ?? i?.unit_price ?? i?.total),
+      })),
+      first_name: firstName || null,
+      last_name: lastName || null,
+      email: email || null,
+      phone: phone || null,
+      ...utms,
+      is_test: isTest,
+    },
+    `${event}:${orderId}`,
+    { logPrefix: `[yampi-webhook:${requestId}]` },
+  );
+
   if (!isPaid) {
     console.log(`[yampi-webhook:${requestId}] pedido não pago — sem Purchase:`, event, statusAlias);
     await logDelivery({
@@ -592,6 +616,7 @@ Deno.serve(async (req: Request) => {
     });
     return json({ ok: true, order_id: orderId, status: statusAlias, purchase: false, request_id: requestId });
   }
+
 
 
   // --- Envia Purchase para a Meta via meta-capi ---
