@@ -90,6 +90,20 @@ const num = (v: unknown): number => {
   return Number.isFinite(n) ? n : NaN;
 };
 
+const numOrNull = (v: unknown): number | null => {
+  if (v === null || v === undefined || v === "") return null;
+  const n = num(v);
+  return Number.isFinite(n) ? n : null;
+};
+
+const isoOrNull = (v: unknown): string | null => {
+  const s = String(v ?? "").trim();
+  if (!s) return null;
+  const d = new Date(s);
+  return Number.isNaN(d.getTime()) ? null : d.toISOString();
+};
+
+
 /** SKU e nome de um item, no payload oficial atual e nos formatos legados. */
 // deno-lint-ignore no-explicit-any
 function itemSku(i: any): string | null {
