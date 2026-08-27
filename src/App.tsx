@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound.tsx";
 import Afiliados from "./pages/Afiliados.tsx";
 import Unsubscribe from "./pages/Unsubscribe.tsx";
 import Conversoes from "./pages/admin/Conversoes.tsx";
+import Webhooks from "./pages/admin/Webhooks.tsx";
 import OAuthConsent from "./pages/OAuthConsent.tsx";
 import MetaPixelRouteTracker from "./components/MetaPixelRouteTracker";
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/afiliados" element={<Afiliados />} />
           <Route path="/unsubscribe" element={<Unsubscribe />} />
           <Route path="/admin/conversoes" element={<Conversoes />} />
+          <Route path="/admin/webhooks" element={<Webhooks />} />
           <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
