@@ -6,7 +6,8 @@ export default defineTool({
   name: "tracking_health",
   title: "Saúde do rastreamento",
   description:
-    "Compara checkouts iniciados, carrinhos abandonados, pedidos pagos, Purchase interno e envio para a Meta. Aponta inconsistências, erros error_404 e divergências de preço.",
+    "Compara checkouts iniciados, carrinhos abandonados, pedidos criados na Yampi (aguardando pagamento, pagos, cancelados), Purchase interno e envio para a Meta. Aponta inconsistências, erros error_404 e divergências de preço.",
+
   inputSchema: {
     days: z.number().int().min(1).max(365).default(7).describe("Período em dias."),
     include_tests: z

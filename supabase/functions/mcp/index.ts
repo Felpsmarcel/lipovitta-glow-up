@@ -177,7 +177,7 @@ import { z as z5 } from "npm:zod@^3.25.76";
 var tracking_health_default = defineTool5({
   name: "tracking_health",
   title: "Sa\xFAde do rastreamento",
-  description: "Compara checkouts iniciados, carrinhos abandonados, pedidos pagos, Purchase interno e envio para a Meta. Aponta inconsist\xEAncias, erros error_404 e diverg\xEAncias de pre\xE7o.",
+  description: "Compara checkouts iniciados, carrinhos abandonados, pedidos criados na Yampi (aguardando pagamento, pagos, cancelados), Purchase interno e envio para a Meta. Aponta inconsist\xEAncias, erros error_404 e diverg\xEAncias de pre\xE7o.",
   inputSchema: {
     days: z5.number().int().min(1).max(365).default(7).describe("Per\xEDodo em dias."),
     include_tests: z5.boolean().default(false).describe("Incluir pedidos de teste (TEST...) na an\xE1lise.")

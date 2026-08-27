@@ -232,7 +232,7 @@
       {
         "name": "tracking_health",
         "title": "Saúde do rastreamento",
-        "description": "Compara checkouts iniciados, carrinhos abandonados, pedidos pagos, Purchase interno e envio para a Meta. Aponta inconsistências, erros error_404 e divergências de preço.",
+        "description": "Compara checkouts iniciados, carrinhos abandonados, pedidos criados na Yampi (aguardando pagamento, pagos, cancelados), Purchase interno e envio para a Meta. Aponta inconsistências, erros error_404 e divergências de preço.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
