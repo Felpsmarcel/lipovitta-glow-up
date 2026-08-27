@@ -389,29 +389,13 @@ Deno.serve(async (req: Request) => {
   }
 
 
-  // Eventos de pedido observados: order.paid, order.status.updated (+ legados).
+  // Eventos de pedido observados: order.created, order.status.updated, order.paid (+ legados).
   const statusAlias = norm(resource?.status?.data?.alias ?? resource?.status?.alias ?? "");
-  const orderEvents = ["order.paid", "order.status.updated", "order.created", "transaction.paid"];
   const isPaid =
     statusAlias === "paid" ||
     statusAlias === "approved" ||
     event === "order.paid" ||
     event === "transaction.paid";
-
-  if (!isPaid) {
-    console.log(`[yampi-webhook:${requestId}] evento ignorado (não pago):`, event, statusAlias, orderEvents.includes(event));
-    await logDelivery({
-      request_id: requestId,
-      event,
-      outcome: "skipped",
-      reason: statusAlias ? `status_${statusAlias}` : "not_paid",
-      ref: await safeRef(orderId),
-      is_test: isTest,
-      signature_present: true,
-      content_length: raw.length,
-    });
-    return json({ ok: true, skipped: true, event, status: statusAlias, request_id: requestId });
-  }
 
   const value = resourceTotal(resource);
   const items = itemList(resource);
@@ -435,6 +419,108 @@ Deno.serve(async (req: Request) => {
   if (phone) user_data.ph = [await sha256Hex(phone)];
   if (firstName) user_data.fn = [await sha256Hex(firstName)];
   if (lastName) user_data.ln = [await sha256Hex(lastName)];
+
+  // Valor esperado: veio do clique que originou o pedido (mesmo event_id).
+  const paidValue = Number.isFinite(value) ? value : null;
+  let expectedValue: number | null = null;
+  try {
+    if (eidMatch) {
+      const { data: clicks } = await serviceClient()
+        .from("conversion_events")
+        .select("value")
+        .eq("event_id", eventId)
+        .neq("event_name", "Purchase")
+        .not("value", "is", null)
+        .order("created_at", { ascending: true })
+        .limit(1);
+      const v = Number(clicks?.[0]?.value);
+      if (Number.isFinite(v) && v > 0) expectedValue = v;
+    }
+  } catch (e) {
+    console.error(`[yampi-webhook:${requestId}] expected_value falhou:`, (e as Error).message);
+  }
+  const priceDiff =
+    expectedValue !== null && paidValue !== null
+      ? Math.round((paidValue - expectedValue) * 100) / 100
+      : null;
+  const priceMismatch = priceDiff !== null && Math.abs(priceDiff) > 1;
+  if (priceMismatch) {
+    console.warn(`[yampi-webhook:${requestId}] divergência de preço`, {
+      order_id: orderId,
+      expected: expectedValue,
+      paid: paidValue,
+      diff: priceDiff,
+    });
+  }
+
+  // --- Registro do pedido (sem PII) — idempotente por order_id ---
+  try {
+    const nowIso = new Date().toISOString();
+    const orderRow = {
+      order_id: orderId,
+      order_number: str(resource?.number ?? resource?.order_number, 40),
+      status: statusAlias || null,
+      event: event || null,
+      value_total: paidValue,
+      value_products: numOrNull(resource?.totalizers?.products ?? resource?.value_products),
+      value_discount: numOrNull(resource?.totalizers?.discount ?? resource?.value_discount),
+      payment_alias: str(
+        resource?.payments?.data?.[0]?.payment_method?.data?.alias ??
+          resource?.payments?.[0]?.payment_method?.alias ??
+          resource?.payment_method?.data?.alias ??
+          resource?.payment_method?.alias ??
+          resource?.payment?.alias,
+        60
+      ),
+      // deno-lint-ignore no-explicit-any
+      items: items.map((i: any) => ({
+        sku: itemSku(i),
+        name: itemName(i),
+        quantity: Number(i?.quantity ?? 1),
+        price: numOrNull(i?.price ?? i?.unit_price ?? i?.total),
+      })),
+      ...utms,
+      event_id: eventId,
+      gift: utms.utm_content ?? null,
+      expected_value: expectedValue,
+      price_diff: priceDiff,
+      price_mismatch: priceMismatch,
+      is_test: isTest,
+      created_at_yampi: isoOrNull(resource?.created_at?.date ?? resource?.created_at),
+      updated_at_yampi: isoOrNull(resource?.updated_at?.date ?? resource?.updated_at),
+      last_seen_at: nowIso,
+    };
+    const { error: orderErr } = await serviceClient()
+      .from("yampi_orders")
+      .upsert(orderRow, { onConflict: "order_id" });
+    if (orderErr) console.error(`[yampi-webhook:${requestId}] upsert pedido falhou:`, orderErr.message);
+    else
+      console.log(`[yampi-webhook:${requestId}] order recorded`, {
+        order_id: orderId,
+        status: statusAlias || null,
+        value_total: paidValue,
+        is_test: isTest,
+      });
+  } catch (e) {
+    console.error(`[yampi-webhook:${requestId}] upsert pedido erro:`, (e as Error).message);
+  }
+
+  // Pedido criado/aguardando pagamento: registrado acima, mas sem Purchase/faturamento.
+  if (!isPaid) {
+    console.log(`[yampi-webhook:${requestId}] pedido não pago — sem Purchase:`, event, statusAlias);
+    await logDelivery({
+      request_id: requestId,
+      event,
+      outcome: "accepted",
+      reason: statusAlias ? `order_${statusAlias}` : "order_not_paid",
+      ref: await safeRef(orderId),
+      is_test: isTest,
+      signature_present: true,
+      content_length: raw.length,
+    });
+    return json({ ok: true, order_id: orderId, status: statusAlias, purchase: false, request_id: requestId });
+  }
+
 
   // --- Envia Purchase para a Meta via meta-capi ---
   let metaStatus = "skipped";
