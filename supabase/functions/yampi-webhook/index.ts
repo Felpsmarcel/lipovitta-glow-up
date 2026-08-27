@@ -85,30 +85,63 @@ const str = (v: unknown, max = 500): string | null => {
   return s ? s.slice(0, max) : null;
 };
 
-/** Normaliza o payload de carrinho da Yampi (cart.reminder / cart.abandoned). */
+const num = (v: unknown): number => {
+  const n = Number(String(v ?? "").toString().replace(",", "."));
+  return Number.isFinite(n) ? n : NaN;
+};
+
+/** SKU e nome de um item, no payload oficial atual e nos formatos legados. */
+// deno-lint-ignore no-explicit-any
+function itemSku(i: any): string | null {
+  return str(i?.item_sku ?? i?.sku?.data?.sku ?? i?.sku_code ?? (typeof i?.sku === "string" ? i.sku : null), 120);
+}
+// deno-lint-ignore no-explicit-any
+function itemName(i: any): string | null {
+  return str(i?.sku?.data?.title ?? i?.product_name ?? i?.name ?? i?.title, 200);
+}
+// deno-lint-ignore no-explicit-any
+function itemList(resource: any): any[] {
+  if (Array.isArray(resource?.items?.data)) return resource.items.data;
+  if (Array.isArray(resource?.items)) return resource.items;
+  return [];
+}
+
+/** Total do recurso: totalizers.total (oficial) com fallback para campos legados. */
+// deno-lint-ignore no-explicit-any
+function resourceTotal(resource: any): number {
+  const candidates = [
+    resource?.totalizers?.total,
+    resource?.totalizers?.data?.total,
+    resource?.value_total,
+    resource?.total,
+    resource?.value,
+    resource?.subtotal,
+  ];
+  for (const c of candidates) {
+    const n = num(c);
+    if (Number.isFinite(n) && n > 0) return n;
+  }
+  return NaN;
+}
+
+/** Normaliza o payload de carrinho da Yampi (cart.reminder). */
 // deno-lint-ignore no-explicit-any
 function extractCart(resource: any, event: string) {
   const customer = resource?.customer?.data ?? resource?.customer ?? {};
-  const rawItems = Array.isArray(resource?.items?.data)
-    ? resource.items.data
-    : Array.isArray(resource?.items)
-      ? resource.items
-      : [];
   // deno-lint-ignore no-explicit-any
-  const items = rawItems.map((i: any) => ({
-    sku: str(i?.sku ?? i?.item_sku, 120),
-    name: str(i?.product_name ?? i?.name ?? i?.title, 200),
+  const items = itemList(resource).map((i: any) => ({
+    sku: itemSku(i),
+    name: itemName(i),
     quantity: Number(i?.quantity ?? 1),
-    price: Number(i?.price ?? i?.unit_price ?? 0) || null,
+    price: num(i?.price ?? i?.unit_price ?? i?.total) || null,
   }));
-  const total = Number(
-    resource?.value_total ?? resource?.total ?? resource?.value ?? resource?.subtotal ?? 0
-  );
+  const total = resourceTotal(resource);
   const phone = normalizePhoneBR(
     customer?.phone?.full_number ?? customer?.phone?.number ?? customer?.phone
   );
   const abandonedRaw = str(
-    resource?.abandoned_at ?? resource?.updated_at ?? resource?.created_at,
+    resource?.abandoned_at ?? resource?.updated_at?.date ?? resource?.updated_at ??
+      resource?.created_at?.date ?? resource?.created_at,
     40
   );
   const abandonedParsed = abandonedRaw ? new Date(abandonedRaw) : null;
@@ -117,6 +150,23 @@ function extractCart(resource: any, event: string) {
       ? abandonedParsed.toISOString()
       : new Date().toISOString();
 
+  // Payload oficial: simulate_url / unauth_simulate_url para recuperar o carrinho
+  // e spreadsheet.data.purchase_url para recompra.
+  const recoveryUrl = str(
+    resource?.simulate_url ??
+      resource?.unauth_simulate_url ??
+      resource?.recovery_url ??
+      resource?.cart_url ??
+      resource?.url ??
+      resource?.checkout_url
+  );
+  const reorderUrl = str(
+    resource?.spreadsheet?.data?.purchase_url ??
+      resource?.spreadsheet?.purchase_url ??
+      resource?.reorder_url ??
+      resource?.reorder?.url ??
+      resource?.unauth_simulate_url
+  );
 
   return {
     cart_token: str(
@@ -133,16 +183,53 @@ function extractCart(resource: any, event: string) {
     items,
     total: Number.isFinite(total) && total > 0 ? total : null,
     currency: "BRL",
-    recovery_url: str(
-      resource?.recovery_url ?? resource?.cart_url ?? resource?.url ?? resource?.checkout_url
-    ),
-    reorder_url: str(resource?.reorder_url ?? resource?.reorder?.url),
+    recovery_url: recoveryUrl,
+    reorder_url: reorderUrl,
     ...pickUtms(resource),
     raw: { event },
     abandoned_at: abandonedAt,
     updated_at: new Date().toISOString(),
   };
 }
+
+/**
+ * Diagnóstico persistente das entregas — sem PII bruta.
+ * `ref` só guarda identificadores de teste (TEST...) ou um hash curto.
+ */
+async function safeRef(value: unknown): Promise<string | null> {
+  const v = String(value ?? "").trim();
+  if (!v) return null;
+  if (/^test/i.test(v)) return v.slice(0, 60);
+  return `h_${(await sha256Hex(v)).slice(0, 16)}`;
+}
+
+async function logDelivery(entry: {
+  request_id: string;
+  event?: string | null;
+  outcome: string;
+  reason?: string | null;
+  ref?: string | null;
+  is_test?: boolean;
+  signature_present?: boolean;
+  content_length?: number;
+}) {
+  try {
+    const supabase = serviceClient();
+    await supabase.from("yampi_webhook_deliveries").insert({
+      request_id: entry.request_id,
+      event: entry.event ? String(entry.event).slice(0, 80) : null,
+      outcome: entry.outcome,
+      reason: entry.reason ?? null,
+      ref: entry.ref ?? null,
+      is_test: entry.is_test ?? false,
+      signature_present: entry.signature_present ?? false,
+      content_length: entry.content_length ?? null,
+    });
+  } catch (e) {
+    console.error(`[yampi-webhook:${entry.request_id}] delivery log falhou:`, (e as Error).message);
+  }
+}
+
 
 
 Deno.serve(async (req: Request) => {
