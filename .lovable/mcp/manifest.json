@@ -79,7 +79,7 @@
       {
         "name": "list_yampi_orders",
         "title": "Listar pedidos Yampi",
-        "description": "Lista os pedidos reais registrados pelo webhook da Yampi com status, itens, valores, UTMs e situação do envio para a Meta. Pedidos de teste (TEST...) ficam fora por padrão.",
+        "description": "Lista os pedidos registrados pelo webhook da Yampi (criados, aguardando pagamento, pagos, cancelados) com status, itens, valores, UTMs, brinde e divergências de preço. Pedidos de teste (TEST...) ficam fora por padrão.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -101,6 +101,10 @@
               "maximum": 200,
               "default": 50,
               "description": "Máximo de linhas."
+            },
+            "status": {
+              "type": "string",
+              "description": "Filtrar por status da Yampi, ex.: paid, waiting_payment, cancelled."
             },
             "include_tests": {
               "type": "boolean",
