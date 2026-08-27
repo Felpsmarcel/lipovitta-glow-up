@@ -1,0 +1,1 @@
+ALTER TABLE public.yampi_webhook_deliveries ADD COLUMN IF NOT EXISTS signature_format text;

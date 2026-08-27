@@ -514,6 +514,7 @@ export type Database = {
           reason: string | null
           ref: string | null
           request_id: string
+          signature_format: string | null
           signature_present: boolean
         }
         Insert: {
@@ -526,6 +527,7 @@ export type Database = {
           reason?: string | null
           ref?: string | null
           request_id: string
+          signature_format?: string | null
           signature_present?: boolean
         }
         Update: {
@@ -538,6 +540,7 @@ export type Database = {
           reason?: string | null
           ref?: string | null
           request_id?: string
+          signature_format?: string | null
           signature_present?: boolean
         }
         Relationships: []
