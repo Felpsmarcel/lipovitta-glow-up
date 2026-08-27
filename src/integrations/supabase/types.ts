@@ -419,6 +419,45 @@ export type Database = {
         }
         Relationships: []
       }
+      yampi_webhook_deliveries: {
+        Row: {
+          content_length: number | null
+          created_at: string
+          event: string | null
+          id: string
+          is_test: boolean
+          outcome: string
+          reason: string | null
+          ref: string | null
+          request_id: string
+          signature_present: boolean
+        }
+        Insert: {
+          content_length?: number | null
+          created_at?: string
+          event?: string | null
+          id?: string
+          is_test?: boolean
+          outcome: string
+          reason?: string | null
+          ref?: string | null
+          request_id: string
+          signature_present?: boolean
+        }
+        Update: {
+          content_length?: number | null
+          created_at?: string
+          event?: string | null
+          id?: string
+          is_test?: boolean
+          outcome?: string
+          reason?: string | null
+          ref?: string | null
+          request_id?: string
+          signature_present?: boolean
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
