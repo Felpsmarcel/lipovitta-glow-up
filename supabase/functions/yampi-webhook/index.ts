@@ -416,7 +416,7 @@ Deno.serve(async (req: Request) => {
   const value = resourceTotal(resource);
   const items = itemList(resource);
 
-  const skus = items.map((i: Record<string, unknown>) => String(i?.sku ?? i?.item_sku ?? "")).filter(Boolean);
+  const skus = items.map((i: Record<string, unknown>) => itemSku(i) ?? "").filter(Boolean);
   const numItems = items.reduce((acc: number, i: Record<string, unknown>) => acc + Number(i?.quantity ?? 1), 0);
 
   const utms = pickUtms(resource);
@@ -524,7 +524,7 @@ Deno.serve(async (req: Request) => {
       value: paidValue,
       currency: "BRL",
       sku: skus[0] ?? null,
-      product_name: items[0]?.product_name ?? items[0]?.name ?? null,
+      product_name: itemName(items[0]),
       gift: utms.utm_content ?? null,
       ...utms,
       meta_status: metaStatus,
