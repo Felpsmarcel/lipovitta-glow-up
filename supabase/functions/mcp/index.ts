@@ -177,7 +177,7 @@ import { z as z5 } from "npm:zod@^3.25.76";
 var tracking_health_default = defineTool5({
   name: "tracking_health",
   title: "Sa\xFAde do rastreamento",
-  description: "Compara checkouts iniciados, carrinhos abandonados, pedidos pagos, Purchase interno e envio para a Meta. Aponta inconsist\xEAncias, erros error_404 e diverg\xEAncias de pre\xE7o.",
+  description: "Compara checkouts iniciados, carrinhos abandonados, pedidos criados na Yampi (aguardando pagamento, pagos, cancelados), Purchase interno e envio para a Meta. Aponta inconsist\xEAncias, erros error_404 e diverg\xEAncias de pre\xE7o.",
   inputSchema: {
     days: z5.number().int().min(1).max(365).default(7).describe("Per\xEDodo em dias."),
     include_tests: z5.boolean().default(false).describe("Incluir pedidos de teste (TEST...) na an\xE1lise.")
@@ -203,8 +203,20 @@ var tracking_health_default = defineTool5({
       gaps.push(
         `Apenas ${num("meta_sent")} de ${num("internal_purchases")} compras chegaram \xE0 Meta.`
       );
-    if (num("price_mismatches") > 0)
-      gaps.push(`${num("price_mismatches")} pedidos com diverg\xEAncia entre valor esperado e pago.`);
+    if (num("price_mismatches") > 0 || num("yampi_price_mismatches") > 0)
+      gaps.push(
+        `${Math.max(num("price_mismatches"), num("yampi_price_mismatches"))} pedidos com diverg\xEAncia entre valor esperado e pago.`
+      );
+    if (num("yampi_orders_paid") > num("purchases_from_yampi"))
+      gaps.push(
+        `${num("yampi_orders_paid")} pedidos pagos na Yampi, mas apenas ${num("purchases_from_yampi")} Purchase interno registrado.`
+      );
+    if (num("yampi_orders_waiting_payment") > 0)
+      gaps.push(
+        `${num("yampi_orders_waiting_payment")} pedidos aguardando pagamento (n\xE3o contam como faturamento).`
+      );
+    if (num("initiate_checkouts") > 0 && num("yampi_orders_total") === 0)
+      gaps.push("Houve checkouts iniciados, mas nenhum pedido da Yampi chegou ao webhook no per\xEDodo.");
     if (num("initiate_checkouts") > 0 && num("internal_purchases") === 0)
       gaps.push("Houve checkouts iniciados, mas nenhuma compra registrada no per\xEDodo.");
     const result = { ...health, gaps };
@@ -254,54 +266,57 @@ import { z as z7 } from "npm:zod@^3.25.76";
 var list_yampi_orders_default = defineTool7({
   name: "list_yampi_orders",
   title: "Listar pedidos Yampi",
-  description: "Lista os pedidos reais registrados pelo webhook da Yampi com status, itens, valores, UTMs e situa\xE7\xE3o do envio para a Meta. Pedidos de teste (TEST...) ficam fora por padr\xE3o.",
+  description: "Lista os pedidos registrados pelo webhook da Yampi (criados, aguardando pagamento, pagos, cancelados) com status, itens, valores, UTMs, brinde e diverg\xEAncias de pre\xE7o. Pedidos de teste (TEST...) ficam fora por padr\xE3o.",
   inputSchema: {
     days: z7.number().int().min(1).max(365).default(30).describe("Per\xEDodo em dias."),
     limit: z7.number().int().min(1).max(200).default(50).describe("M\xE1ximo de linhas."),
+    status: z7.string().optional().describe("Filtrar por status da Yampi, ex.: paid, waiting_payment, cancelled."),
     include_tests: z7.boolean().default(false).describe("Incluir pedidos de teste."),
     only_mismatches: z7.boolean().default(false).describe("Mostrar apenas pedidos com diverg\xEAncia de pre\xE7o.")
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: async ({ days, limit, include_tests, only_mismatches }, ctx) => {
+  handler: async ({ days, limit, status, include_tests, only_mismatches }, ctx) => {
     if (!ctx.isAuthenticated())
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     const supabase = supabaseForUser(ctx);
     const since = new Date(Date.now() - days * 864e5).toISOString();
-    let query = supabase.from("conversion_events").select(
-      "order_id,event_id,value,currency,product_name,sku,gift,utm_source,utm_medium,utm_campaign,utm_content,meta_status,metadata,is_test,created_at"
-    ).eq("event_name", "Purchase").gte("created_at", since).order("created_at", { ascending: false }).limit(limit);
+    let query = supabase.from("yampi_orders").select(
+      "order_id,order_number,status,event,value_total,value_products,value_discount,payment_alias,items,utm_source,utm_medium,utm_campaign,utm_content,utm_term,event_id,gift,expected_value,price_diff,price_mismatch,is_test,created_at_yampi,updated_at_yampi,first_seen_at,last_seen_at"
+    ).gte("last_seen_at", since).order("last_seen_at", { ascending: false }).limit(limit);
     if (!include_tests) query = query.eq("is_test", false);
+    if (status?.trim()) query = query.eq("status", status.trim().toLowerCase());
+    if (only_mismatches) query = query.eq("price_mismatch", true);
     const { data, error } = await query;
     if (error) return { content: [{ type: "text", text: error.message }], isError: true };
-    let orders = (data ?? []).map((row) => {
-      const meta = row.metadata ?? {};
-      return {
-        order_id: row.order_id,
-        event_id: row.event_id,
-        value: row.value,
-        currency: row.currency,
-        status: meta.status ?? null,
-        source_event: meta.event ?? null,
-        items_count: meta.items_count ?? null,
-        skus: meta.skus ?? (row.sku ? [row.sku] : []),
-        product_name: row.product_name,
-        gift: row.gift,
-        utm: {
-          source: row.utm_source,
-          medium: row.utm_medium,
-          campaign: row.utm_campaign,
-          content: row.utm_content
-        },
-        meta_status: row.meta_status,
-        expected_value: meta.expected_value ?? null,
-        price_diff: meta.price_diff ?? null,
-        price_mismatch: meta.price_mismatch === true,
-        is_test: row.is_test,
-        created_at: row.created_at
-      };
-    });
-    if (only_mismatches) orders = orders.filter((o) => o.price_mismatch);
-    const payload = { orders, count: orders.length, days, include_tests };
+    const orders = (data ?? []).map((row) => ({
+      order_id: row.order_id,
+      order_number: row.order_number,
+      status: row.status,
+      last_event: row.event,
+      value_total: row.value_total,
+      value_products: row.value_products,
+      value_discount: row.value_discount,
+      payment: row.payment_alias,
+      items: row.items,
+      utm: {
+        source: row.utm_source,
+        medium: row.utm_medium,
+        campaign: row.utm_campaign,
+        content: row.utm_content,
+        term: row.utm_term
+      },
+      event_id: row.event_id,
+      gift: row.gift,
+      expected_value: row.expected_value,
+      price_diff: row.price_diff,
+      price_mismatch: row.price_mismatch,
+      is_test: row.is_test,
+      created_at_yampi: row.created_at_yampi,
+      updated_at_yampi: row.updated_at_yampi,
+      first_seen_at: row.first_seen_at,
+      last_seen_at: row.last_seen_at
+    }));
+    const payload = { orders, count: orders.length, days, status: status ?? null, include_tests };
     return {
       content: [{ type: "text", text: JSON.stringify(payload) }],
       structuredContent: payload

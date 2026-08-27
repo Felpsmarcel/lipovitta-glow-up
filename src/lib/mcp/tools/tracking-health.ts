@@ -6,7 +6,8 @@ export default defineTool({
   name: "tracking_health",
   title: "Saúde do rastreamento",
   description:
-    "Compara checkouts iniciados, carrinhos abandonados, pedidos pagos, Purchase interno e envio para a Meta. Aponta inconsistências, erros error_404 e divergências de preço.",
+    "Compara checkouts iniciados, carrinhos abandonados, pedidos criados na Yampi (aguardando pagamento, pagos, cancelados), Purchase interno e envio para a Meta. Aponta inconsistências, erros error_404 e divergências de preço.",
+
   inputSchema: {
     days: z.number().int().min(1).max(365).default(7).describe("Período em dias."),
     include_tests: z
@@ -36,10 +37,23 @@ export default defineTool({
       gaps.push(
         `Apenas ${num("meta_sent")} de ${num("internal_purchases")} compras chegaram à Meta.`
       );
-    if (num("price_mismatches") > 0)
-      gaps.push(`${num("price_mismatches")} pedidos com divergência entre valor esperado e pago.`);
+    if (num("price_mismatches") > 0 || num("yampi_price_mismatches") > 0)
+      gaps.push(
+        `${Math.max(num("price_mismatches"), num("yampi_price_mismatches"))} pedidos com divergência entre valor esperado e pago.`
+      );
+    if (num("yampi_orders_paid") > num("purchases_from_yampi"))
+      gaps.push(
+        `${num("yampi_orders_paid")} pedidos pagos na Yampi, mas apenas ${num("purchases_from_yampi")} Purchase interno registrado.`
+      );
+    if (num("yampi_orders_waiting_payment") > 0)
+      gaps.push(
+        `${num("yampi_orders_waiting_payment")} pedidos aguardando pagamento (não contam como faturamento).`
+      );
+    if (num("initiate_checkouts") > 0 && num("yampi_orders_total") === 0)
+      gaps.push("Houve checkouts iniciados, mas nenhum pedido da Yampi chegou ao webhook no período.");
     if (num("initiate_checkouts") > 0 && num("internal_purchases") === 0)
       gaps.push("Houve checkouts iniciados, mas nenhuma compra registrada no período.");
+
 
     const result = { ...health, gaps };
     return {
