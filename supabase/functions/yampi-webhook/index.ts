@@ -10,6 +10,9 @@
 
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { maskEmail, maskPhone, isTestOrderId, normalizePhoneBR, buyerHash } from "../_shared/privacy.ts";
+import { enqueueGhl } from "../_shared/ghl.ts";
+
+
 
 
 const corsHeaders = {

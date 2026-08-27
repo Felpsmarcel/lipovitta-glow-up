@@ -75,13 +75,16 @@ Deno.serve(async (req: Request) => {
       .eq("status", "failed");
   }
 
-  const { data: rows, error } = await supabase
+  let queue = supabase
     .from("ghl_outbox")
     .select("id,event_type,payload,attempts")
     .in("status", ["pending", "error"])
     .lte("next_attempt_at", new Date().toISOString())
     .order("created_at", { ascending: true })
     .limit(limit);
+  if (body?.include_tests !== true) queue = queue.eq("is_test", false);
+  const { data: rows, error } = await queue;
+
 
   if (error) return json({ ok: false, error: error.message }, 200);
 
