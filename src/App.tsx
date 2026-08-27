@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound.tsx";
 import Afiliados from "./pages/Afiliados.tsx";
 import Unsubscribe from "./pages/Unsubscribe.tsx";
 import Conversoes from "./pages/admin/Conversoes.tsx";
+import Webhooks from "./pages/admin/Webhooks.tsx";
 import OAuthConsent from "./pages/OAuthConsent.tsx";
 import MetaPixelRouteTracker from "./components/MetaPixelRouteTracker";
 
