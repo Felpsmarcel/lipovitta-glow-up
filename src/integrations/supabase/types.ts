@@ -335,6 +335,51 @@ export type Database = {
         }
         Relationships: []
       }
+      ghl_outbox: {
+        Row: {
+          attempts: number
+          created_at: string
+          dedupe_key: string
+          event_type: string
+          id: string
+          is_test: boolean
+          last_error: string | null
+          next_attempt_at: string
+          payload: Json
+          sent_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          dedupe_key: string
+          event_type: string
+          id?: string
+          is_test?: boolean
+          last_error?: string | null
+          next_attempt_at?: string
+          payload: Json
+          sent_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          dedupe_key?: string
+          event_type?: string
+          id?: string
+          is_test?: boolean
+          last_error?: string | null
+          next_attempt_at?: string
+          payload?: Json
+          sent_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mcp_action_log: {
         Row: {
           action: string
