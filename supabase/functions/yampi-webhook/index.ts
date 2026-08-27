@@ -566,5 +566,17 @@ Deno.serve(async (req: Request) => {
     console.error(`[yampi-webhook:${requestId}] banco falhou:`, (e as Error).message);
   }
 
+  await logDelivery({
+    request_id: requestId,
+    event,
+    outcome: "accepted",
+    reason: `purchase_meta_${metaStatus}`,
+    ref: await safeRef(orderId),
+    is_test: isTest,
+    signature_present: true,
+    content_length: raw.length,
+  });
+
   return json({ ok: true, order_id: orderId, meta: metaStatus, request_id: requestId });
+
 });
