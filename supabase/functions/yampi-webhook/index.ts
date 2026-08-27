@@ -32,6 +32,27 @@ async function sha256Hex(value: string): Promise<string> {
     .join("");
 }
 
+/** Comparação de tempo constante (evita vazar informação por timing). */
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+/** Descreve o formato da assinatura recebida — sem revelar o valor. */
+function describeSignature(signature: string): string {
+  const s = signature.trim();
+  if (!s) return "empty";
+  const body = s.replace(/^sha256=/i, "");
+  const prefixed = body !== s;
+  let kind = "unknown";
+  if (/^[0-9a-f]+$/i.test(body)) kind = "hex";
+  else if (/^[A-Za-z0-9+/]+={0,2}$/.test(body)) kind = "base64";
+  else if (/^[A-Za-z0-9\-_]+={0,2}$/.test(body)) kind = "base64url";
+  return `${kind}:${body.length}${prefixed ? ":prefixed" : ""}`;
+}
+
 async function verifySignature(secret: string, raw: string, signature: string): Promise<boolean> {
   try {
     const key = await crypto.subtle.importKey(
@@ -44,14 +65,22 @@ async function verifySignature(secret: string, raw: string, signature: string): 
     const mac = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(raw));
     const bytes = new Uint8Array(mac);
     const base64 = btoa(String.fromCharCode(...bytes));
+    const base64url = base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
     const hex = Array.from(bytes)
       .map((b) => b.toString(16).padStart(2, "0"))
       .join("");
-    return signature === base64 || signature.toLowerCase() === hex;
+
+    const received = signature.trim().replace(/^sha256=/i, "");
+    const candidates = [base64, base64url, base64.replace(/=+$/, ""), hex];
+    return candidates.some(
+      (c) => timingSafeEqual(received, c) || timingSafeEqual(received.toLowerCase(), c.toLowerCase())
+    );
   } catch {
     return false;
   }
 }
+
+
 
 const digits = (v: unknown) => String(v ?? "").replace(/\D/g, "");
 const norm = (v: unknown) => String(v ?? "").trim().toLowerCase();
@@ -225,6 +254,7 @@ async function logDelivery(entry: {
   ref?: string | null;
   is_test?: boolean;
   signature_present?: boolean;
+  signature_format?: string | null;
   content_length?: number;
 }) {
   try {
@@ -237,6 +267,7 @@ async function logDelivery(entry: {
       ref: entry.ref ?? null,
       is_test: entry.is_test ?? false,
       signature_present: entry.signature_present ?? false,
+      signature_format: entry.signature_format ?? null,
       content_length: entry.content_length ?? null,
     });
   } catch (e) {
@@ -282,12 +313,18 @@ Deno.serve(async (req: Request) => {
   }
   const valid = signature ? await verifySignature(secret, raw, signature) : false;
   if (!valid) {
-    console.warn(`[yampi-webhook:${requestId}] assinatura inválida — evento ignorado`, { signature_present: !!signature });
+    const sigFormat = describeSignature(signature);
+    console.warn(`[yampi-webhook:${requestId}] assinatura inválida — evento ignorado`, {
+      signature_present: !!signature,
+      signature_format: sigFormat,
+      content_length: raw.length,
+    });
     await logDelivery({
       request_id: requestId,
       outcome: "rejected",
       reason: signature ? "invalid_signature" : "missing_signature",
       signature_present: !!signature,
+      signature_format: sigFormat,
       content_length: raw.length,
     });
     return json({ ok: false, reason: "invalid_signature", request_id: requestId });
