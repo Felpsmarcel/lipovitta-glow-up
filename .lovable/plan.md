@@ -1,12 +1,13 @@
-# Enviar transações do site e da Yampi para o GHL
+# Enviar todos os eventos da Yampi para o GHL (operável pelo ChatGPT via MCP)
 
-Hoje o projeto registra tudo internamente (eventos do site, pedidos da Yampi, carrinhos abandonados), mas nada é enviado ao GHL. O plano cria uma ponte confiável: envio automático em tempo real + uma ferramenta MCP para reenviar ou preencher o histórico.
+Hoje o projeto registra tudo internamente (eventos do site, pedidos da Yampi, carrinhos abandonados), mas nada vai para o GHL. O plano cria a ponte: envio automático em tempo real de **todos os eventos da Yampi** + ferramentas no servidor MCP já existente, para você comandar e conferir o envio direto do ChatGPT.
 
 ## Decisões assumidas (posso mudar se quiser)
 
 - Conexão via **Inbound Webhook do GHL** (você cria em Automations e me passa a URL). É o caminho mais simples e não exige token nem Location ID.
-- Enviamos: **compras pagas da Yampi**, **mudanças de status de pedido**, **carrinhos abandonados** e **checkouts iniciados no site**.
+- Enviamos **todos os eventos da Yampi**: pedido criado, mudança de status, pedido pago/cancelado e carrinho abandonado. Também os checkouts iniciados no site.
 - Enviamos **nome, e-mail e telefone** quando existirem, porque sem isso o GHL não cria/atualiza o contato. Pedidos de teste (TEST...) não são enviados por padrão.
+
 
 ## O que será construído
 
