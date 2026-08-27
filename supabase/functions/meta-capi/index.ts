@@ -120,10 +120,13 @@ Deno.serve(async (req: Request) => {
     ? [`${OVERRIDE_URL.replace(/\/$/, "")}/v21.0/${PIXEL_ID}/events?${qs}`]
     : gatewayId
     ? [
+        // Formato oficial do CAPI Gateway da Stape: <id>.<host>
+        `https://${gatewayId}.${host}/v21.0/${PIXEL_ID}/events?${qs}`,
         `https://${host}/${gatewayId}/v21.0/${PIXEL_ID}/events?${qs}`,
         `https://${host}/${gatewayId}/${PIXEL_ID}/events?${qs}`,
         `https://${host}/v21.0/${PIXEL_ID}/events?${qs}`,
       ]
+
     : [
         `https://${host}/v21.0/${PIXEL_ID}/events?${qs}`,
         `https://${host}/${PIXEL_ID}/events?${qs}`,
