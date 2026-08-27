@@ -314,7 +314,7 @@ var projectRef = "ecgquvfoipmoqlhfkfol";
 var mcp_default = defineMcp({
   name: "lipovitta-transformation",
   title: "LipoVitta Transformation",
-  version: "0.2.0",
+  version: "0.3.0",
   instructions: "Ferramentas operacionais da LipoVitta (loja Yampi + rastreamento Meta). Leitura: `sales_metrics` para faturamento, ticket m\xE9dio e convers\xE3o; `conversion_summary` para o panorama de eventos; `list_yampi_orders` para pedidos reais com status, itens e diverg\xEAncias de pre\xE7o; `list_abandoned_checkouts` para carrinhos abandonados com contato e link de recupera\xE7\xE3o; `list_conversions` para o log bruto de eventos; `list_applications` para candidaturas de afiliadas e parceiros; `tracking_health` para conferir se checkouts, pedidos pagos, Purchase interno e envio \xE0 Meta batem. Pedidos de teste (TEST...) s\xE3o exclu\xEDdos por padr\xE3o \u2014 use include_tests para v\xEA-los. Todos os dados respeitam as permiss\xF5es da conta conectada: apenas administradores enxergam registros e dados pessoais. Nenhuma ferramenta escreve dados nesta vers\xE3o.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,

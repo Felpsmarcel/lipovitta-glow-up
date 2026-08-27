@@ -85,30 +85,63 @@ const str = (v: unknown, max = 500): string | null => {
   return s ? s.slice(0, max) : null;
 };
 
-/** Normaliza o payload de carrinho da Yampi (cart.reminder / cart.abandoned). */
+const num = (v: unknown): number => {
+  const n = Number(String(v ?? "").toString().replace(",", "."));
+  return Number.isFinite(n) ? n : NaN;
+};
+
+/** SKU e nome de um item, no payload oficial atual e nos formatos legados. */
+// deno-lint-ignore no-explicit-any
+function itemSku(i: any): string | null {
+  return str(i?.item_sku ?? i?.sku?.data?.sku ?? i?.sku_code ?? (typeof i?.sku === "string" ? i.sku : null), 120);
+}
+// deno-lint-ignore no-explicit-any
+function itemName(i: any): string | null {
+  return str(i?.sku?.data?.title ?? i?.product_name ?? i?.name ?? i?.title, 200);
+}
+// deno-lint-ignore no-explicit-any
+function itemList(resource: any): any[] {
+  if (Array.isArray(resource?.items?.data)) return resource.items.data;
+  if (Array.isArray(resource?.items)) return resource.items;
+  return [];
+}
+
+/** Total do recurso: totalizers.total (oficial) com fallback para campos legados. */
+// deno-lint-ignore no-explicit-any
+function resourceTotal(resource: any): number {
+  const candidates = [
+    resource?.totalizers?.total,
+    resource?.totalizers?.data?.total,
+    resource?.value_total,
+    resource?.total,
+    resource?.value,
+    resource?.subtotal,
+  ];
+  for (const c of candidates) {
+    const n = num(c);
+    if (Number.isFinite(n) && n > 0) return n;
+  }
+  return NaN;
+}
+
+/** Normaliza o payload de carrinho da Yampi (cart.reminder). */
 // deno-lint-ignore no-explicit-any
 function extractCart(resource: any, event: string) {
   const customer = resource?.customer?.data ?? resource?.customer ?? {};
-  const rawItems = Array.isArray(resource?.items?.data)
-    ? resource.items.data
-    : Array.isArray(resource?.items)
-      ? resource.items
-      : [];
   // deno-lint-ignore no-explicit-any
-  const items = rawItems.map((i: any) => ({
-    sku: str(i?.sku ?? i?.item_sku, 120),
-    name: str(i?.product_name ?? i?.name ?? i?.title, 200),
+  const items = itemList(resource).map((i: any) => ({
+    sku: itemSku(i),
+    name: itemName(i),
     quantity: Number(i?.quantity ?? 1),
-    price: Number(i?.price ?? i?.unit_price ?? 0) || null,
+    price: num(i?.price ?? i?.unit_price ?? i?.total) || null,
   }));
-  const total = Number(
-    resource?.value_total ?? resource?.total ?? resource?.value ?? resource?.subtotal ?? 0
-  );
+  const total = resourceTotal(resource);
   const phone = normalizePhoneBR(
     customer?.phone?.full_number ?? customer?.phone?.number ?? customer?.phone
   );
   const abandonedRaw = str(
-    resource?.abandoned_at ?? resource?.updated_at ?? resource?.created_at,
+    resource?.abandoned_at ?? resource?.updated_at?.date ?? resource?.updated_at ??
+      resource?.created_at?.date ?? resource?.created_at,
     40
   );
   const abandonedParsed = abandonedRaw ? new Date(abandonedRaw) : null;
@@ -117,6 +150,23 @@ function extractCart(resource: any, event: string) {
       ? abandonedParsed.toISOString()
       : new Date().toISOString();
 
+  // Payload oficial: simulate_url / unauth_simulate_url para recuperar o carrinho
+  // e spreadsheet.data.purchase_url para recompra.
+  const recoveryUrl = str(
+    resource?.simulate_url ??
+      resource?.unauth_simulate_url ??
+      resource?.recovery_url ??
+      resource?.cart_url ??
+      resource?.url ??
+      resource?.checkout_url
+  );
+  const reorderUrl = str(
+    resource?.spreadsheet?.data?.purchase_url ??
+      resource?.spreadsheet?.purchase_url ??
+      resource?.reorder_url ??
+      resource?.reorder?.url ??
+      resource?.unauth_simulate_url
+  );
 
   return {
     cart_token: str(
@@ -133,16 +183,53 @@ function extractCart(resource: any, event: string) {
     items,
     total: Number.isFinite(total) && total > 0 ? total : null,
     currency: "BRL",
-    recovery_url: str(
-      resource?.recovery_url ?? resource?.cart_url ?? resource?.url ?? resource?.checkout_url
-    ),
-    reorder_url: str(resource?.reorder_url ?? resource?.reorder?.url),
+    recovery_url: recoveryUrl,
+    reorder_url: reorderUrl,
     ...pickUtms(resource),
     raw: { event },
     abandoned_at: abandonedAt,
     updated_at: new Date().toISOString(),
   };
 }
+
+/**
+ * Diagnóstico persistente das entregas — sem PII bruta.
+ * `ref` só guarda identificadores de teste (TEST...) ou um hash curto.
+ */
+async function safeRef(value: unknown): Promise<string | null> {
+  const v = String(value ?? "").trim();
+  if (!v) return null;
+  if (/^test/i.test(v)) return v.slice(0, 60);
+  return `h_${(await sha256Hex(v)).slice(0, 16)}`;
+}
+
+async function logDelivery(entry: {
+  request_id: string;
+  event?: string | null;
+  outcome: string;
+  reason?: string | null;
+  ref?: string | null;
+  is_test?: boolean;
+  signature_present?: boolean;
+  content_length?: number;
+}) {
+  try {
+    const supabase = serviceClient();
+    await supabase.from("yampi_webhook_deliveries").insert({
+      request_id: entry.request_id,
+      event: entry.event ? String(entry.event).slice(0, 80) : null,
+      outcome: entry.outcome,
+      reason: entry.reason ?? null,
+      ref: entry.ref ?? null,
+      is_test: entry.is_test ?? false,
+      signature_present: entry.signature_present ?? false,
+      content_length: entry.content_length ?? null,
+    });
+  } catch (e) {
+    console.error(`[yampi-webhook:${entry.request_id}] delivery log falhou:`, (e as Error).message);
+  }
+}
+
 
 
 Deno.serve(async (req: Request) => {
@@ -170,11 +257,25 @@ Deno.serve(async (req: Request) => {
     "";
   if (!secret) {
     console.error(`[yampi-webhook:${requestId}] YAMPI_WEBHOOK_SECRET não configurado — rejeitando evento`);
+    await logDelivery({
+      request_id: requestId,
+      outcome: "rejected",
+      reason: "webhook_secret_not_configured",
+      signature_present: !!signature,
+      content_length: raw.length,
+    });
     return json({ ok: false, reason: "webhook_secret_not_configured", request_id: requestId }, 500);
   }
   const valid = signature ? await verifySignature(secret, raw, signature) : false;
   if (!valid) {
     console.warn(`[yampi-webhook:${requestId}] assinatura inválida — evento ignorado`, { signature_present: !!signature });
+    await logDelivery({
+      request_id: requestId,
+      outcome: "rejected",
+      reason: signature ? "invalid_signature" : "missing_signature",
+      signature_present: !!signature,
+      content_length: raw.length,
+    });
     return json({ ok: false, reason: "invalid_signature", request_id: requestId });
   }
   console.log(`[yampi-webhook:${requestId}] assinatura válida`);
@@ -185,12 +286,20 @@ Deno.serve(async (req: Request) => {
     payload = JSON.parse(raw);
   } catch {
     console.error(`[yampi-webhook:${requestId}] JSON inválido`);
+    await logDelivery({
+      request_id: requestId,
+      outcome: "rejected",
+      reason: "invalid_json",
+      signature_present: true,
+      content_length: raw.length,
+    });
     return json({ ok: false, reason: "invalid_json", request_id: requestId });
   }
 
   const event = String(payload?.event ?? "");
   const resource = payload?.resource ?? {};
   const orderId = String(resource?.id ?? resource?.number ?? "").trim();
+  const isTest = isTestOrderId(orderId) || /^test/i.test(String(resource?.token ?? ""));
 
   console.log(`[yampi-webhook:${requestId}] parsed`, {
     event,
@@ -198,11 +307,20 @@ Deno.serve(async (req: Request) => {
     status: norm(resource?.status?.data?.alias ?? resource?.status?.alias ?? "") || null,
   });
 
-  // --- Carrinho abandonado / lembrete de carrinho ---
+  // --- Lembrete de carrinho (cart.reminder) ---
   if (event.startsWith("cart.")) {
     const cart = extractCart(resource, event);
+    const cartIsTest = /^test/i.test(String(cart.cart_token ?? ""));
     if (!cart.cart_token) {
       console.warn(`[yampi-webhook:${requestId}] carrinho sem token — ignorado`, { event });
+      await logDelivery({
+        request_id: requestId,
+        event,
+        outcome: "rejected",
+        reason: "missing_cart_token",
+        signature_present: true,
+        content_length: raw.length,
+      });
       return json({ ok: false, reason: "missing_cart_token", request_id: requestId });
     }
     try {
@@ -212,6 +330,16 @@ Deno.serve(async (req: Request) => {
         .upsert(cart, { onConflict: "cart_token" });
       if (error) {
         console.error(`[yampi-webhook:${requestId}] upsert carrinho falhou:`, error.message);
+        await logDelivery({
+          request_id: requestId,
+          event,
+          outcome: "failed",
+          reason: "cart_upsert_failed",
+          ref: await safeRef(cart.cart_token),
+          is_test: cartIsTest,
+          signature_present: true,
+          content_length: raw.length,
+        });
         return json({ ok: false, reason: "cart_upsert_failed", request_id: requestId });
       }
       console.log(`[yampi-webhook:${requestId}] cart recorded`, {
@@ -221,21 +349,49 @@ Deno.serve(async (req: Request) => {
         email: maskEmail(cart.customer_email),
         phone: maskPhone(cart.customer_phone),
       });
+      await logDelivery({
+        request_id: requestId,
+        event,
+        outcome: "accepted",
+        reason: "cart_recorded",
+        ref: await safeRef(cart.cart_token),
+        is_test: cartIsTest,
+        signature_present: true,
+        content_length: raw.length,
+      });
     } catch (e) {
       console.error(`[yampi-webhook:${requestId}] carrinho erro:`, (e as Error).message);
+      await logDelivery({
+        request_id: requestId,
+        event,
+        outcome: "failed",
+        reason: "cart_exception",
+        ref: await safeRef(cart.cart_token),
+        is_test: cartIsTest,
+        signature_present: true,
+        content_length: raw.length,
+      });
     }
     return json({ ok: true, event, cart_token: cart.cart_token, request_id: requestId });
   }
 
   if (!orderId) {
     console.warn(`[yampi-webhook:${requestId}] pedido sem id — ignorado`, event);
+    await logDelivery({
+      request_id: requestId,
+      event,
+      outcome: "rejected",
+      reason: "missing_order_id",
+      signature_present: true,
+      content_length: raw.length,
+    });
     return json({ ok: false, reason: "missing_order_id", request_id: requestId });
   }
 
 
-  // Só contabilizamos pedidos pagos/aprovados quando o status vier no payload.
+  // Eventos de pedido observados: order.paid, order.status.updated (+ legados).
   const statusAlias = norm(resource?.status?.data?.alias ?? resource?.status?.alias ?? "");
-  const paidEvents = ["order.paid", "order.status.updated", "order.created", "transaction.paid"];
+  const orderEvents = ["order.paid", "order.status.updated", "order.created", "transaction.paid"];
   const isPaid =
     statusAlias === "paid" ||
     statusAlias === "approved" ||
@@ -243,15 +399,24 @@ Deno.serve(async (req: Request) => {
     event === "transaction.paid";
 
   if (!isPaid) {
-    console.log(`[yampi-webhook:${requestId}] evento ignorado (não pago):`, event, statusAlias, paidEvents.includes(event));
+    console.log(`[yampi-webhook:${requestId}] evento ignorado (não pago):`, event, statusAlias, orderEvents.includes(event));
+    await logDelivery({
+      request_id: requestId,
+      event,
+      outcome: "skipped",
+      reason: statusAlias ? `status_${statusAlias}` : "not_paid",
+      ref: await safeRef(orderId),
+      is_test: isTest,
+      signature_present: true,
+      content_length: raw.length,
+    });
     return json({ ok: true, skipped: true, event, status: statusAlias, request_id: requestId });
   }
 
-  const value = Number(
-    resource?.value_total ?? resource?.total ?? resource?.value ?? 0
-  );
-  const items = Array.isArray(resource?.items?.data) ? resource.items.data : [];
-  const skus = items.map((i: Record<string, unknown>) => String(i?.sku ?? i?.item_sku ?? "")).filter(Boolean);
+  const value = resourceTotal(resource);
+  const items = itemList(resource);
+
+  const skus = items.map((i: Record<string, unknown>) => itemSku(i) ?? "").filter(Boolean);
   const numItems = items.reduce((acc: number, i: Record<string, unknown>) => acc + Number(i?.quantity ?? 1), 0);
 
   const utms = pickUtms(resource);
@@ -359,7 +524,7 @@ Deno.serve(async (req: Request) => {
       value: paidValue,
       currency: "BRL",
       sku: skus[0] ?? null,
-      product_name: items[0]?.product_name ?? items[0]?.name ?? null,
+      product_name: itemName(items[0]),
       gift: utms.utm_content ?? null,
       ...utms,
       meta_status: metaStatus,
@@ -401,5 +566,17 @@ Deno.serve(async (req: Request) => {
     console.error(`[yampi-webhook:${requestId}] banco falhou:`, (e as Error).message);
   }
 
+  await logDelivery({
+    request_id: requestId,
+    event,
+    outcome: "accepted",
+    reason: `purchase_meta_${metaStatus}`,
+    ref: await safeRef(orderId),
+    is_test: isTest,
+    signature_present: true,
+    content_length: raw.length,
+  });
+
   return json({ ok: true, order_id: orderId, meta: metaStatus, request_id: requestId });
+
 });
