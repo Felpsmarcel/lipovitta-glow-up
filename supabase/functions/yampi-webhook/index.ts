@@ -397,6 +397,23 @@ Deno.serve(async (req: Request) => {
         });
         return json({ ok: false, reason: "cart_upsert_failed", request_id: requestId });
       }
+      await enqueueGhl(
+        {
+          event_type: "abandoned_cart",
+          order_id: cart.cart_token,
+          status: "abandoned",
+          value: cart.total,
+          items: cart.items,
+          first_name: cart.customer_name?.split(" ")[0] ?? null,
+          last_name: cart.customer_name?.split(" ").slice(1).join(" ") || null,
+          email: cart.customer_email,
+          phone: cart.customer_phone,
+          ...cart,
+          is_test: cartIsTest,
+        },
+        `${event}:${cart.cart_token}`,
+        { logPrefix: `[yampi-webhook:${requestId}]` },
+      );
       console.log(`[yampi-webhook:${requestId}] cart recorded`, {
         event,
         cart_token: cart.cart_token,
