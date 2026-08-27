@@ -26,6 +26,7 @@ const App = () => (
           <Route path="/afiliados" element={<Afiliados />} />
           <Route path="/unsubscribe" element={<Unsubscribe />} />
           <Route path="/admin/conversoes" element={<Conversoes />} />
+          <Route path="/admin/webhooks" element={<Webhooks />} />
           <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
