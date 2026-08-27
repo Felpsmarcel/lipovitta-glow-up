@@ -254,6 +254,7 @@ async function logDelivery(entry: {
   ref?: string | null;
   is_test?: boolean;
   signature_present?: boolean;
+  signature_format?: string | null;
   content_length?: number;
 }) {
   try {
@@ -266,6 +267,7 @@ async function logDelivery(entry: {
       ref: entry.ref ?? null,
       is_test: entry.is_test ?? false,
       signature_present: entry.signature_present ?? false,
+      signature_format: entry.signature_format ?? null,
       content_length: entry.content_length ?? null,
     });
   } catch (e) {
