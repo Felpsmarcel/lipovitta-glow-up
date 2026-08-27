@@ -224,6 +224,9 @@ const Conversoes = () => {
                 {p.label}
               </button>
             ))}
+            <a href="/admin/webhooks" className="text-sm underline text-muted-foreground ml-2">
+              Webhooks
+            </a>
             <button onClick={() => supabase.auth.signOut()} className="text-sm underline text-muted-foreground ml-2">
               Sair
             </button>
