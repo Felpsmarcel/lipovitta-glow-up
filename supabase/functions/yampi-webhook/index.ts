@@ -313,12 +313,18 @@ Deno.serve(async (req: Request) => {
   }
   const valid = signature ? await verifySignature(secret, raw, signature) : false;
   if (!valid) {
-    console.warn(`[yampi-webhook:${requestId}] assinatura inválida — evento ignorado`, { signature_present: !!signature });
+    const sigFormat = describeSignature(signature);
+    console.warn(`[yampi-webhook:${requestId}] assinatura inválida — evento ignorado`, {
+      signature_present: !!signature,
+      signature_format: sigFormat,
+      content_length: raw.length,
+    });
     await logDelivery({
       request_id: requestId,
       outcome: "rejected",
       reason: signature ? "invalid_signature" : "missing_signature",
       signature_present: !!signature,
+      signature_format: sigFormat,
       content_length: raw.length,
     });
     return json({ ok: false, reason: "invalid_signature", request_id: requestId });
