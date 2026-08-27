@@ -570,34 +570,8 @@ Deno.serve(async (req: Request) => {
       { auth: { persistSession: false } }
     );
 
-    // Valor esperado: veio do clique que originou o pedido (mesmo event_id).
-    let expectedValue: number | null = null;
-    if (eidMatch) {
-      const { data: clicks } = await supabase
-        .from("conversion_events")
-        .select("value")
-        .eq("event_id", eventId)
-        .neq("event_name", "Purchase")
-        .not("value", "is", null)
-        .order("created_at", { ascending: true })
-        .limit(1);
-      const v = Number(clicks?.[0]?.value);
-      if (Number.isFinite(v) && v > 0) expectedValue = v;
-    }
-    const paidValue = Number.isFinite(value) ? value : null;
-    const priceDiff =
-      expectedValue !== null && paidValue !== null
-        ? Math.round((paidValue - expectedValue) * 100) / 100
-        : null;
-    const priceMismatch = priceDiff !== null && Math.abs(priceDiff) > 1;
-    if (priceMismatch) {
-      console.warn(`[yampi-webhook:${requestId}] divergência de preço`, {
-        order_id: orderId,
-        expected: expectedValue,
-        paid: paidValue,
-        diff: priceDiff,
-      });
-    }
+    // expectedValue / priceDiff / priceMismatch já calculados acima (reutilizados).
+
 
     const { error } = await supabase.from("conversion_events").insert({
       event_name: "Purchase",
