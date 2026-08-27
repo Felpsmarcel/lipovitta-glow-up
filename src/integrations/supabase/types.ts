@@ -419,6 +419,90 @@ export type Database = {
         }
         Relationships: []
       }
+      yampi_orders: {
+        Row: {
+          created_at_yampi: string | null
+          event: string | null
+          event_id: string | null
+          expected_value: number | null
+          first_seen_at: string
+          gift: string | null
+          id: string
+          is_test: boolean
+          items: Json
+          last_seen_at: string
+          order_id: string
+          order_number: string | null
+          payment_alias: string | null
+          price_diff: number | null
+          price_mismatch: boolean
+          status: string | null
+          updated_at_yampi: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+          value_discount: number | null
+          value_products: number | null
+          value_total: number | null
+        }
+        Insert: {
+          created_at_yampi?: string | null
+          event?: string | null
+          event_id?: string | null
+          expected_value?: number | null
+          first_seen_at?: string
+          gift?: string | null
+          id?: string
+          is_test?: boolean
+          items?: Json
+          last_seen_at?: string
+          order_id: string
+          order_number?: string | null
+          payment_alias?: string | null
+          price_diff?: number | null
+          price_mismatch?: boolean
+          status?: string | null
+          updated_at_yampi?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          value_discount?: number | null
+          value_products?: number | null
+          value_total?: number | null
+        }
+        Update: {
+          created_at_yampi?: string | null
+          event?: string | null
+          event_id?: string | null
+          expected_value?: number | null
+          first_seen_at?: string
+          gift?: string | null
+          id?: string
+          is_test?: boolean
+          items?: Json
+          last_seen_at?: string
+          order_id?: string
+          order_number?: string | null
+          payment_alias?: string | null
+          price_diff?: number | null
+          price_mismatch?: boolean
+          status?: string | null
+          updated_at_yampi?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          value_discount?: number | null
+          value_products?: number | null
+          value_total?: number | null
+        }
+        Relationships: []
+      }
       yampi_webhook_deliveries: {
         Row: {
           content_length: number | null
