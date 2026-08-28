@@ -12,7 +12,7 @@
   "mcp": {
     "server": {
       "name": "lipovitta-transformation",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "title": "LipoVitta Transformation"
     },
     "tools": [
@@ -252,6 +252,104 @@
               "type": "boolean",
               "default": false,
               "description": "Incluir pedidos de teste (TEST...) na análise."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "ghl_sync_status",
+        "title": "Status da sincronização GHL",
+        "description": "Mostra o estado da fila de eventos enviados ou pendentes para o GoHighLevel, com os últimos erros de entrega.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "days": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 365,
+              "default": 30,
+              "description": "Período em dias."
+            },
+            "include_tests": {
+              "type": "boolean",
+              "default": false,
+              "description": "Incluir eventos de teste."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "send_transactions_to_ghl",
+        "title": "Enviar transações ao GHL",
+        "description": "Envia ao GoHighLevel os pedidos da Yampi, mudanças de status, carrinhos abandonados e checkouts do site. Use simulate=true para ver quantos eventos seriam enviados antes de enviar de verdade; retry_failed=true reprocessa entregas que falharam. Envios são idempotentes: o mesmo evento nunca vai duas vezes.",
+        "annotations": {
+          "readOnlyHint": false,
+          "idempotentHint": true,
+          "destructiveHint": false,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "days": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 365,
+              "default": 30,
+              "description": "Período em dias."
+            },
+            "event_types": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "purchase",
+                  "order_status",
+                  "abandoned_cart",
+                  "initiate_checkout"
+                ]
+              },
+              "minItems": 1,
+              "default": [
+                "purchase",
+                "order_status",
+                "abandoned_cart",
+                "initiate_checkout"
+              ],
+              "description": "Tipos de evento a enviar."
+            },
+            "include_tests": {
+              "type": "boolean",
+              "default": false,
+              "description": "Incluir eventos de teste (TEST...)."
+            },
+            "simulate": {
+              "type": "boolean",
+              "default": true,
+              "description": "Somente contar o que seria enviado, sem entregar ao GHL."
+            },
+            "retry_failed": {
+              "type": "boolean",
+              "default": false,
+              "description": "Reprocessar entregas marcadas como falha definitiva."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50,
+              "description": "Máximo de eventos por execução."
             }
           },
           "additionalProperties": false,

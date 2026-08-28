@@ -29,6 +29,17 @@ type Order = {
   last_seen_at: string;
 };
 
+type GhlEvent = {
+  id: string;
+  event_type: string;
+  status: string;
+  attempts: number;
+  last_error: string | null;
+  is_test: boolean;
+  created_at: string;
+  sent_at: string | null;
+};
+
 const PERIODS = [
   { label: "1h", hours: 1 },
   { label: "24h", hours: 24 },
@@ -51,8 +62,19 @@ const OUTCOME_STYLES: Record<string, string> = {
 const outcomeClass = (outcome: string) =>
   OUTCOME_STYLES[outcome] ?? "bg-secondary/20 text-foreground";
 
+const GHL_STATUS_STYLES: Record<string, string> = {
+  sent: "bg-primary/10 text-primary",
+  pending: "bg-secondary/20 text-foreground",
+  error: "bg-destructive/10 text-destructive",
+  failed: "bg-destructive/10 text-destructive",
+};
+
+const ghlStatusClass = (status: string) =>
+  GHL_STATUS_STYLES[status] ?? "bg-muted text-muted-foreground";
+
 const isFailure = (outcome: string) =>
   outcome.includes("error") || outcome.includes("invalid") || outcome.includes("fail");
+
 
 const Webhooks = () => {
   const [session, setSession] = useState<boolean | null>(null);
@@ -62,6 +84,9 @@ const Webhooks = () => {
   const [authError, setAuthError] = useState<string | null>(null);
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [ghlEvents, setGhlEvents] = useState<GhlEvent[]>([]);
+  const [ghlBusy, setGhlBusy] = useState(false);
+  const [ghlConfigured, setGhlConfigured] = useState<boolean | null>(null);
   const [hours, setHours] = useState(24);
   const [includeTests, setIncludeTests] = useState(true);
   const [autoRefresh, setAutoRefresh] = useState(true);
@@ -111,9 +136,19 @@ const Webhooks = () => {
       .limit(100);
     if (!includeTests) oq = oq.eq("is_test", false);
 
-    const [d, o] = await Promise.all([dq, oq]);
+    let gq = supabase
+      .from("ghl_outbox")
+      .select("id,event_type,status,attempts,last_error,is_test,created_at,sent_at")
+      .gte("created_at", since)
+      .order("created_at", { ascending: false })
+      .limit(100);
+    if (!includeTests) gq = gq.eq("is_test", false);
+
+    const [d, o, g] = await Promise.all([dq, oq, gq]);
     setDeliveries((d.data as Delivery[]) ?? []);
     setOrders((o.data as Order[]) ?? []);
+    setGhlEvents((g.data as GhlEvent[]) ?? []);
+    setGhlConfigured(g.error ? null : g.data !== null);
     setLastUpdate(new Date());
     setLoading(false);
   }, [hours, includeTests]);
@@ -149,6 +184,31 @@ const Webhooks = () => {
     };
   }, [isAdmin, includeTests]);
 
+  useEffect(() => {
+    if (!isAdmin) return;
+    const channel = supabase
+      .channel("ghl-outbox-events")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "ghl_outbox" },
+        (payload) => {
+          const row = payload.new as GhlEvent;
+          if (!includeTests && row.is_test) return;
+          setGhlEvents((prev) => [row, ...prev].slice(0, 100));
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "ghl_outbox" },
+        (payload) => {
+          const row = payload.new as GhlEvent;
+          setGhlEvents((prev) => prev.map((event) => (event.id === row.id ? row : event)));
+        },
+      )
+      .subscribe();
+    return () => { void supabase.removeChannel(channel); };
+  }, [isAdmin, includeTests]);
+
   const stats = useMemo(() => {
     const total = deliveries.length;
     const invalid = deliveries.filter((d) => d.outcome === "invalid_signature").length;
@@ -174,6 +234,21 @@ const Webhooks = () => {
       lastReceived: deliveries[0]?.created_at ?? null,
     };
   }, [deliveries, orders]);
+
+  const ghlStats = useMemo(() => {
+    const count = (status: string) => ghlEvents.filter((event) => event.status === status).length;
+    return { pending: count("pending"), sent: count("sent"), error: count("error"), failed: count("failed") };
+  }, [ghlEvents]);
+
+  const retryGhl = async () => {
+    setGhlBusy(true);
+    try {
+      const { data } = await supabase.functions.invoke("ghl-dispatch", { body: { action: "retry" } });
+      if (data?.ok) await load();
+    } finally {
+      setGhlBusy(false);
+    }
+  };
 
   const signIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -440,6 +515,81 @@ const Webhooks = () => {
                   <tr>
                     <td colSpan={5} className="px-4 py-6 text-center text-muted-foreground">
                       Nenhum pedido registrado no período.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="bg-background border border-border rounded-2xl overflow-hidden mt-8">
+          <div className="flex flex-wrap items-center justify-between gap-3 p-5 pb-3">
+            <div>
+              <h2 className="font-semibold text-lg text-foreground">Sincronização com o GHL</h2>
+              <p className="text-sm text-muted-foreground">
+                {ghlConfigured === false
+                  ? "Envio em simulação — a URL do webhook do GHL ainda não foi cadastrada."
+                  : "Eventos enfileirados para o GoHighLevel no período."}
+              </p>
+            </div>
+            <button
+              onClick={() => void retryGhl()}
+              disabled={ghlBusy || ghlStats.failed + ghlStats.error === 0}
+              className="rounded-full border border-border px-4 py-1.5 text-sm font-semibold text-primary disabled:opacity-50"
+            >
+              {ghlBusy ? "Reprocessando…" : "Reprocessar falhas"}
+            </button>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-5 pb-5">
+            {[
+              { label: "Pendentes", value: ghlStats.pending },
+              { label: "Enviados", value: ghlStats.sent },
+              { label: "Com erro", value: ghlStats.error, alert: ghlStats.error > 0 },
+              { label: "Falha definitiva", value: ghlStats.failed, alert: ghlStats.failed > 0 },
+            ].map((c) => (
+              <div key={c.label} className="rounded-xl border border-border p-4">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">{c.label}</p>
+                <p className={`text-2xl font-extrabold ${c.alert ? "text-destructive" : "text-primary"}`}>{c.value}</p>
+              </div>
+            ))}
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
+                <tr>
+                  <th className="px-4 py-2">Quando</th>
+                  <th className="px-4 py-2">Evento</th>
+                  <th className="px-4 py-2">Situação</th>
+                  <th className="px-4 py-2">Tentativas</th>
+                  <th className="px-4 py-2">Último erro</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ghlEvents.map((g) => (
+                  <tr key={g.id} className="border-t border-border/60">
+                    <td className="px-4 py-2 whitespace-nowrap text-muted-foreground">
+                      {new Date(g.created_at).toLocaleString("pt-BR")}
+                    </td>
+                    <td className="px-4 py-2 text-foreground">
+                      {g.event_type}
+                      {g.is_test && (
+                        <span className="ml-2 rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">teste</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2">
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${ghlStatusClass(g.status)}`}>
+                        {g.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-2 text-muted-foreground">{g.attempts}</td>
+                    <td className="px-4 py-2 text-muted-foreground">{g.last_error ?? "—"}</td>
+                  </tr>
+                ))}
+                {ghlEvents.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="px-4 py-6 text-center text-muted-foreground">
+                      Nenhum evento enfileirado no período.
                     </td>
                   </tr>
                 )}

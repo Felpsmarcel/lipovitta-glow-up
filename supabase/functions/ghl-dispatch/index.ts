@@ -285,6 +285,13 @@ Deno.serve(async (req: Request) => {
     const types = eventTypes(body.event_types);
     const includeTests = body.include_tests === true;
     const simulate = body.simulate !== false;
+    if (body.retry_failed === true && !simulate) {
+      await supabase.from("ghl_outbox").update({
+        status: "pending",
+        attempts: 0,
+        next_attempt_at: new Date().toISOString(),
+      }).eq("status", "failed");
+    }
     const candidates = await collectHistoricalEvents(supabase, { days, types, includeTests, limit });
     if (simulate) {
       return json({ ok: true, mode: "simulation", candidates: candidates.length, by_event: candidates.reduce<Record<string, number>>((acc, item) => {

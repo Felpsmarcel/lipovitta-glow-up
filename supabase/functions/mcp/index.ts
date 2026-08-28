@@ -324,13 +324,98 @@ var list_yampi_orders_default = defineTool7({
   }
 });
 
+// src/lib/mcp/tools/ghl-sync-status.ts
+import { defineTool as defineTool8 } from "npm:@lovable.dev/mcp-js@0.28.0";
+import { z as z8 } from "npm:zod@^3.25.76";
+var ghl_sync_status_default = defineTool8({
+  name: "ghl_sync_status",
+  title: "Status da sincroniza\xE7\xE3o GHL",
+  description: "Mostra o estado da fila de eventos enviados ou pendentes para o GoHighLevel, com os \xFAltimos erros de entrega.",
+  inputSchema: {
+    days: z8.number().int().min(1).max(365).default(30).describe("Per\xEDodo em dias."),
+    include_tests: z8.boolean().default(false).describe("Incluir eventos de teste.")
+  },
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: async ({ days, include_tests }, ctx) => {
+    if (!ctx.isAuthenticated())
+      return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    const supabase = supabaseForUser(ctx);
+    const since = new Date(Date.now() - days * 864e5).toISOString();
+    let query = supabase.from("ghl_outbox").select("id,event_type,status,attempts,last_error,is_test,created_at,sent_at").gte("created_at", since).order("created_at", { ascending: false }).limit(200);
+    if (!include_tests) query = query.eq("is_test", false);
+    const { data, error } = await query;
+    if (error) return { content: [{ type: "text", text: error.message }], isError: true };
+    const items = data ?? [];
+    const counts = items.reduce((acc, item) => {
+      acc[item.status] = (acc[item.status] ?? 0) + 1;
+      return acc;
+    }, {});
+    const result = {
+      days,
+      include_tests,
+      counts: { pending: counts.pending ?? 0, sent: counts.sent ?? 0, error: counts.error ?? 0, failed: counts.failed ?? 0 },
+      total: items.length,
+      recent_errors: items.filter((item) => item.status === "error" || item.status === "failed").slice(0, 20).map(({ id, event_type, status, attempts, last_error, created_at }) => ({ id, event_type, status, attempts, last_error, created_at }))
+    };
+    return { content: [{ type: "text", text: JSON.stringify(result) }], structuredContent: result };
+  }
+});
+
+// src/lib/mcp/tools/send-transactions-to-ghl.ts
+import { defineTool as defineTool9 } from "npm:@lovable.dev/mcp-js@0.28.0";
+import { z as z9 } from "npm:zod@^3.25.76";
+function runtimeUrl() {
+  const runtime = globalThis;
+  return runtime.Deno?.env?.get?.("SUPABASE_URL") ?? runtime.process?.env?.SUPABASE_URL;
+}
+var send_transactions_to_ghl_default = defineTool9({
+  name: "send_transactions_to_ghl",
+  title: "Enviar transa\xE7\xF5es ao GHL",
+  description: "Envia ao GoHighLevel os pedidos da Yampi, mudan\xE7as de status, carrinhos abandonados e checkouts do site. Use simulate=true para ver quantos eventos seriam enviados antes de enviar de verdade; retry_failed=true reprocessa entregas que falharam. Envios s\xE3o idempotentes: o mesmo evento nunca vai duas vezes.",
+  inputSchema: {
+    days: z9.number().int().min(1).max(365).default(30).describe("Per\xEDodo em dias."),
+    event_types: z9.array(z9.enum(["purchase", "order_status", "abandoned_cart", "initiate_checkout"])).min(1).default(["purchase", "order_status", "abandoned_cart", "initiate_checkout"]).describe("Tipos de evento a enviar."),
+    include_tests: z9.boolean().default(false).describe("Incluir eventos de teste (TEST...)."),
+    simulate: z9.boolean().default(true).describe("Somente contar o que seria enviado, sem entregar ao GHL."),
+    retry_failed: z9.boolean().default(false).describe("Reprocessar entregas marcadas como falha definitiva."),
+    limit: z9.number().int().min(1).max(100).default(50).describe("M\xE1ximo de eventos por execu\xE7\xE3o.")
+  },
+  annotations: { readOnlyHint: false, idempotentHint: true, destructiveHint: false, openWorldHint: true },
+  handler: async ({ days, event_types, include_tests, simulate, retry_failed, limit }, ctx) => {
+    if (!ctx.isAuthenticated())
+      return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    const token = ctx.getToken();
+    if (!token) return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    const url = runtimeUrl();
+    if (!url)
+      return { content: [{ type: "text", text: "SUPABASE_URL n\xE3o configurada" }], isError: true };
+    const response = await fetch(`${url}/functions/v1/ghl-dispatch`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({
+        action: "sync",
+        days,
+        event_types,
+        include_tests,
+        simulate,
+        retry_failed,
+        limit
+      })
+    });
+    const result = await response.json().catch(() => ({ error: "Resposta inv\xE1lida da fun\xE7\xE3o de entrega" }));
+    if (!response.ok || result.error)
+      return { content: [{ type: "text", text: JSON.stringify(result) }], isError: true };
+    return { content: [{ type: "text", text: JSON.stringify(result) }], structuredContent: result };
+  }
+});
+
 // src/lib/mcp/index.ts
 var projectRef = "ecgquvfoipmoqlhfkfol";
 var mcp_default = defineMcp({
   name: "lipovitta-transformation",
   title: "LipoVitta Transformation",
-  version: "0.3.0",
-  instructions: "Ferramentas operacionais da LipoVitta (loja Yampi + rastreamento Meta). Leitura: `sales_metrics` para faturamento, ticket m\xE9dio e convers\xE3o; `conversion_summary` para o panorama de eventos; `list_yampi_orders` para pedidos reais com status, itens e diverg\xEAncias de pre\xE7o; `list_abandoned_checkouts` para carrinhos abandonados com contato e link de recupera\xE7\xE3o; `list_conversions` para o log bruto de eventos; `list_applications` para candidaturas de afiliadas e parceiros; `tracking_health` para conferir se checkouts, pedidos pagos, Purchase interno e envio \xE0 Meta batem. Pedidos de teste (TEST...) s\xE3o exclu\xEDdos por padr\xE3o \u2014 use include_tests para v\xEA-los. Todos os dados respeitam as permiss\xF5es da conta conectada: apenas administradores enxergam registros e dados pessoais. Nenhuma ferramenta escreve dados nesta vers\xE3o.",
+  version: "0.4.0",
+  instructions: "Ferramentas operacionais da LipoVitta (loja Yampi + rastreamento Meta + GoHighLevel). Leitura: `sales_metrics` para faturamento, ticket m\xE9dio e convers\xE3o; `conversion_summary` para o panorama de eventos; `list_yampi_orders` para pedidos reais com status, itens e diverg\xEAncias de pre\xE7o; `list_abandoned_checkouts` para carrinhos abandonados com contato e link de recupera\xE7\xE3o; `list_conversions` para o log bruto de eventos; `list_applications` para candidaturas de afiliadas e parceiros; `tracking_health` para conferir se checkouts, pedidos pagos, Purchase interno e envio \xE0 Meta batem. GoHighLevel: `ghl_sync_status` mostra pendentes, enviados e erros da fila; `send_transactions_to_ghl` envia pedidos, mudan\xE7as de status, carrinhos abandonados e checkouts \u2014 comece sempre com simulate=true e s\xF3 depois simulate=false. Pedidos de teste (TEST...) s\xE3o exclu\xEDdos por padr\xE3o \u2014 use include_tests para v\xEA-los. Todos os dados respeitam as permiss\xF5es da conta conectada: apenas administradores enxergam registros e dados pessoais.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated"
@@ -342,7 +427,9 @@ var mcp_default = defineMcp({
     list_abandoned_checkouts_default,
     list_conversions_default,
     list_applications_default,
-    tracking_health_default
+    tracking_health_default,
+    ghl_sync_status_default,
+    send_transactions_to_ghl_default
   ]
 });
 

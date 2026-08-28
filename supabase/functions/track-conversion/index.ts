@@ -4,6 +4,9 @@
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
+import { enqueueGhl } from "../_shared/ghl.ts";
+
+
 
 
 
@@ -72,6 +75,29 @@ Deno.serve(async (req: Request) => {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
+
+    // Checkout iniciado no site também vai para o GHL (nunca bloqueia a resposta).
+    const data = parsed.data;
+    if (data.event_name === "InitiateCheckout" && data.event_id) {
+      await enqueueGhl(
+        {
+          event_type: "initiate_checkout",
+          status: "initiated",
+          value: data.value ?? null,
+          items: data.sku
+            ? [{ sku: data.sku, name: data.product_name ?? null, quantity: 1, price: data.value ?? null }]
+            : [],
+          utm_source: data.utm_source ?? null,
+          utm_medium: data.utm_medium ?? null,
+          utm_campaign: data.utm_campaign ?? null,
+          utm_content: data.utm_content ?? null,
+          utm_term: data.utm_term ?? null,
+          is_test: /^test/i.test(data.event_id),
+        },
+        `checkout:${data.event_id}`,
+        { logPrefix: "[track-conversion]" },
+      );
     }
   } catch (e) {
     console.error("[track-conversion] error:", (e as Error).message);
