@@ -210,6 +210,21 @@ const Webhooks = () => {
     };
   }, [deliveries, orders]);
 
+  const ghlStats = useMemo(() => {
+    const count = (status: string) => ghlEvents.filter((event) => event.status === status).length;
+    return { pending: count("pending"), sent: count("sent"), error: count("error"), failed: count("failed") };
+  }, [ghlEvents]);
+
+  const retryGhl = async () => {
+    setGhlBusy(true);
+    try {
+      const { data } = await supabase.functions.invoke("ghl-dispatch", { body: { action: "retry" } });
+      if (data?.ok) await load();
+    } finally {
+      setGhlBusy(false);
+    }
+  };
+
   const signIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
