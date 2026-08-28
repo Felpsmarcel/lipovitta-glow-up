@@ -136,9 +136,19 @@ const Webhooks = () => {
       .limit(100);
     if (!includeTests) oq = oq.eq("is_test", false);
 
-    const [d, o] = await Promise.all([dq, oq]);
+    let gq = supabase
+      .from("ghl_outbox")
+      .select("id,event_type,status,attempts,last_error,is_test,created_at,sent_at")
+      .gte("created_at", since)
+      .order("created_at", { ascending: false })
+      .limit(100);
+    if (!includeTests) gq = gq.eq("is_test", false);
+
+    const [d, o, g] = await Promise.all([dq, oq, gq]);
     setDeliveries((d.data as Delivery[]) ?? []);
     setOrders((o.data as Order[]) ?? []);
+    setGhlEvents((g.data as GhlEvent[]) ?? []);
+    setGhlConfigured(g.error ? null : g.data !== null);
     setLastUpdate(new Date());
     setLoading(false);
   }, [hours, includeTests]);
