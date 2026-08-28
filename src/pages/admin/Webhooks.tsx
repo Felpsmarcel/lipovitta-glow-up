@@ -184,6 +184,31 @@ const Webhooks = () => {
     };
   }, [isAdmin, includeTests]);
 
+  useEffect(() => {
+    if (!isAdmin) return;
+    const channel = supabase
+      .channel("ghl-outbox-events")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "ghl_outbox" },
+        (payload) => {
+          const row = payload.new as GhlEvent;
+          if (!includeTests && row.is_test) return;
+          setGhlEvents((prev) => [row, ...prev].slice(0, 100));
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "ghl_outbox" },
+        (payload) => {
+          const row = payload.new as GhlEvent;
+          setGhlEvents((prev) => prev.map((event) => (event.id === row.id ? row : event)));
+        },
+      )
+      .subscribe();
+    return () => { void supabase.removeChannel(channel); };
+  }, [isAdmin, includeTests]);
+
   const stats = useMemo(() => {
     const total = deliveries.length;
     const invalid = deliveries.filter((d) => d.outcome === "invalid_signature").length;
