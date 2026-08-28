@@ -447,6 +447,81 @@ const Webhooks = () => {
             </table>
           </div>
         </section>
+
+        <section className="bg-background border border-border rounded-2xl overflow-hidden mt-8">
+          <div className="flex flex-wrap items-center justify-between gap-3 p-5 pb-3">
+            <div>
+              <h2 className="font-semibold text-lg text-foreground">Sincronização com o GHL</h2>
+              <p className="text-sm text-muted-foreground">
+                {ghlConfigured === false
+                  ? "Envio em simulação — a URL do webhook do GHL ainda não foi cadastrada."
+                  : "Eventos enfileirados para o GoHighLevel no período."}
+              </p>
+            </div>
+            <button
+              onClick={() => void retryGhl()}
+              disabled={ghlBusy || ghlStats.failed + ghlStats.error === 0}
+              className="rounded-full border border-border px-4 py-1.5 text-sm font-semibold text-primary disabled:opacity-50"
+            >
+              {ghlBusy ? "Reprocessando…" : "Reprocessar falhas"}
+            </button>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-5 pb-5">
+            {[
+              { label: "Pendentes", value: ghlStats.pending },
+              { label: "Enviados", value: ghlStats.sent },
+              { label: "Com erro", value: ghlStats.error, alert: ghlStats.error > 0 },
+              { label: "Falha definitiva", value: ghlStats.failed, alert: ghlStats.failed > 0 },
+            ].map((c) => (
+              <div key={c.label} className="rounded-xl border border-border p-4">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">{c.label}</p>
+                <p className={`text-2xl font-extrabold ${c.alert ? "text-destructive" : "text-primary"}`}>{c.value}</p>
+              </div>
+            ))}
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
+                <tr>
+                  <th className="px-4 py-2">Quando</th>
+                  <th className="px-4 py-2">Evento</th>
+                  <th className="px-4 py-2">Situação</th>
+                  <th className="px-4 py-2">Tentativas</th>
+                  <th className="px-4 py-2">Último erro</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ghlEvents.map((g) => (
+                  <tr key={g.id} className="border-t border-border/60">
+                    <td className="px-4 py-2 whitespace-nowrap text-muted-foreground">
+                      {new Date(g.created_at).toLocaleString("pt-BR")}
+                    </td>
+                    <td className="px-4 py-2 text-foreground">
+                      {g.event_type}
+                      {g.is_test && (
+                        <span className="ml-2 rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">teste</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2">
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${ghlStatusClass(g.status)}`}>
+                        {g.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-2 text-muted-foreground">{g.attempts}</td>
+                    <td className="px-4 py-2 text-muted-foreground">{g.last_error ?? "—"}</td>
+                  </tr>
+                ))}
+                {ghlEvents.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="px-4 py-6 text-center text-muted-foreground">
+                      Nenhum evento enfileirado no período.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
     </main>
   );
