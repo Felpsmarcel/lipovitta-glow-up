@@ -341,7 +341,7 @@ var ghl_sync_status_default = defineTool8({
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     const supabase = supabaseForUser(ctx);
     const since = new Date(Date.now() - days * 864e5).toISOString();
-    let query = supabase.from("ghl_outbox").select("id,event_type,status,attempts,last_error,is_test,created_at,processed_at,sent_at").gte("created_at", since).order("created_at", { ascending: false }).limit(200);
+    let query = supabase.from("ghl_outbox").select("id,event_type,status,attempts,last_error,is_test,created_at,sent_at").gte("created_at", since).order("created_at", { ascending: false }).limit(200);
     if (!include_tests) query = query.eq("is_test", false);
     const { data, error } = await query;
     if (error) return { content: [{ type: "text", text: error.message }], isError: true };

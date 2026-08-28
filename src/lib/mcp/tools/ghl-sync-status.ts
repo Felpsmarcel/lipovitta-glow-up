@@ -19,7 +19,7 @@ export default defineTool({
     const since = new Date(Date.now() - days * 86400000).toISOString();
     let query = supabase
       .from("ghl_outbox")
-      .select("id,event_type,status,attempts,last_error,is_test,created_at,processed_at,sent_at")
+      .select("id,event_type,status,attempts,last_error,is_test,created_at,sent_at")
       .gte("created_at", since)
       .order("created_at", { ascending: false })
       .limit(200);
