@@ -84,6 +84,9 @@ const Webhooks = () => {
   const [authError, setAuthError] = useState<string | null>(null);
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [ghlEvents, setGhlEvents] = useState<GhlEvent[]>([]);
+  const [ghlBusy, setGhlBusy] = useState(false);
+  const [ghlConfigured, setGhlConfigured] = useState<boolean | null>(null);
   const [hours, setHours] = useState(24);
   const [includeTests, setIncludeTests] = useState(true);
   const [autoRefresh, setAutoRefresh] = useState(true);
