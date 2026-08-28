@@ -29,6 +29,17 @@ type Order = {
   last_seen_at: string;
 };
 
+type GhlEvent = {
+  id: string;
+  event_type: string;
+  status: string;
+  attempts: number;
+  last_error: string | null;
+  is_test: boolean;
+  created_at: string;
+  sent_at: string | null;
+};
+
 const PERIODS = [
   { label: "1h", hours: 1 },
   { label: "24h", hours: 24 },
@@ -51,8 +62,19 @@ const OUTCOME_STYLES: Record<string, string> = {
 const outcomeClass = (outcome: string) =>
   OUTCOME_STYLES[outcome] ?? "bg-secondary/20 text-foreground";
 
+const GHL_STATUS_STYLES: Record<string, string> = {
+  sent: "bg-primary/10 text-primary",
+  pending: "bg-secondary/20 text-foreground",
+  error: "bg-destructive/10 text-destructive",
+  failed: "bg-destructive/10 text-destructive",
+};
+
+const ghlStatusClass = (status: string) =>
+  GHL_STATUS_STYLES[status] ?? "bg-muted text-muted-foreground";
+
 const isFailure = (outcome: string) =>
   outcome.includes("error") || outcome.includes("invalid") || outcome.includes("fail");
+
 
 const Webhooks = () => {
   const [session, setSession] = useState<boolean | null>(null);
