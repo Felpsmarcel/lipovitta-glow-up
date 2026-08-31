@@ -511,19 +511,40 @@ Deno.serve(async (req: Request) => {
   } catch (e) {
     console.error(`[yampi-webhook:${requestId}] expected_value falhou:`, (e as Error).message);
   }
+  // O frete não faz parte do valor do clique (checkout do site), então é
+  // descontado antes de comparar — senão todo pedido com entrega paga vira
+  // "divergência" falsa.
+  const productsValue = numOrNull(resource?.totalizers?.products ?? resource?.value_products);
+  const shippingValue =
+    numOrNull(
+      resource?.totalizers?.shipment ??
+        resource?.totalizers?.shipping ??
+        resource?.value_shipment ??
+        resource?.shipment_price ??
+        resource?.shipping_cost,
+    ) ?? 0;
+  const comparableValue =
+    productsValue !== null
+      ? productsValue
+      : paidValue !== null
+        ? Math.round((paidValue - shippingValue) * 100) / 100
+        : null;
   const priceDiff =
-    expectedValue !== null && paidValue !== null
-      ? Math.round((paidValue - expectedValue) * 100) / 100
+    expectedValue !== null && comparableValue !== null
+      ? Math.round((comparableValue - expectedValue) * 100) / 100
       : null;
   const priceMismatch = priceDiff !== null && Math.abs(priceDiff) > 1;
   if (priceMismatch) {
     console.warn(`[yampi-webhook:${requestId}] divergência de preço`, {
       order_id: orderId,
       expected: expectedValue,
+      products: comparableValue,
+      shipping: shippingValue,
       paid: paidValue,
       diff: priceDiff,
     });
   }
+
 
   // --- Registro do pedido (sem PII) — idempotente por order_id ---
   try {
@@ -534,7 +555,7 @@ Deno.serve(async (req: Request) => {
       status: statusAlias || null,
       event: event || null,
       value_total: paidValue,
-      value_products: numOrNull(resource?.totalizers?.products ?? resource?.value_products),
+      value_products: productsValue,
       value_discount: numOrNull(resource?.totalizers?.discount ?? resource?.value_discount),
       payment_alias: str(
         resource?.payments?.data?.[0]?.payment_method?.data?.alias ??
