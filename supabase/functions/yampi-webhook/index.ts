@@ -555,7 +555,7 @@ Deno.serve(async (req: Request) => {
       status: statusAlias || null,
       event: event || null,
       value_total: paidValue,
-      value_products: numOrNull(resource?.totalizers?.products ?? resource?.value_products),
+      value_products: productsValue,
       value_discount: numOrNull(resource?.totalizers?.discount ?? resource?.value_discount),
       payment_alias: str(
         resource?.payments?.data?.[0]?.payment_method?.data?.alias ??
