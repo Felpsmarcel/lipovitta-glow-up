@@ -1,8 +1,9 @@
 /**
  * Cliente compartilhado da API direta do HighLevel (GoHighLevel).
  *
- * Espelho de `src/lib/ghlApi.ts` (Edge Functions não podem importar de `src/`).
- * Os testes vivem em `src/lib/ghlApi.test.ts` — mantenha as duas cópias iguais.
+ * Espelhado em `supabase/functions/_shared/ghl-api.ts` porque Edge Functions
+ * (Deno) não podem importar de `src/`. Mantenha as duas cópias em sincronia —
+ * os testes em `src/lib/ghlApi.test.ts` cobrem esta.
  *
  * Regras:
  * - nenhum token no código: sempre lido de secret/env em tempo de execução;
