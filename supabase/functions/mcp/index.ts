@@ -812,14 +812,14 @@ import { z as z11 } from "npm:zod@^3.25.76";
 var ghl_upsert_contact_default = defineTool12({
   name: "ghl_upsert_contact",
   title: "Criar/atualizar contato no HighLevel",
-  description: "Escrita (simulate=true por padr\xE3o): cria ou atualiza um contato na subconta LipoVitta via /contacts/upsert. N\xE3o sobrescreve tags existentes \u2014 use ghl_add_tags para tags. Rode com simulate=true antes de executar de verdade.",
+  description: "Escrita (simulate=true por padr\xE3o): cria ou atualiza um contato na subconta LipoVitta via /contacts/upsert e adiciona tags separadamente sem sobrescrever as existentes. Rode com simulate=true antes de executar de verdade.",
   inputSchema: {
     first_name: z11.string().trim().max(120).optional(),
     last_name: z11.string().trim().max(120).optional(),
     email: z11.string().trim().email().optional(),
     phone: z11.string().trim().max(30).optional(),
     source: z11.string().trim().max(80).optional().describe("Origem do contato, ex.: yampi, site."),
-    tags: z11.array(z11.string()).optional().describe("Tags a adicionar ap\xF3s o upsert (aplicadas por Add Tags, sem sobrescrever)."),
+    tags: z11.array(z11.string()).optional().describe("Tags a adicionar depois do upsert, sem sobrescrever tags existentes."),
     simulate: z11.boolean().default(true).describe("Somente mostrar o que seria feito.")
   },
   annotations: { readOnlyHint: false, idempotentHint: true, destructiveHint: false, openWorldHint: true },
@@ -828,24 +828,25 @@ var ghl_upsert_contact_default = defineTool12({
     if ("error" in guard) return guard.error;
     if (!email && !phone) return toolError("Informe pelo menos e-mail ou telefone para o upsert.");
     const contact = { first_name, last_name, email, phone, source };
+    const cleanTags = normalizeTags(tags);
     try {
       requireGhlConfig();
       if (simulate)
         return toolJson({
           simulated: true,
-          would_call: "POST /contacts/upsert",
+          would_call: cleanTags.length ? ["POST /contacts/upsert", "POST /contacts/:contactId/tags"] : ["POST /contacts/upsert"],
           payload: buildUpsertContactPayload(contact, ghlLocationId()),
           contact_masked: maskContact(contact),
-          pending_tags: tags ?? []
+          tags_to_add: cleanTags
         });
       const result = await upsertContact(contact);
+      if (result.contact_id && cleanTags.length) await addContactTags(result.contact_id, cleanTags);
       return toolJson({
         simulated: false,
         contact_id: result.contact_id,
         state: result.new ? "new" : "updated",
         contact_masked: maskContact(contact),
-        pending_tags: tags ?? [],
-        note: tags?.length ? "Use ghl_add_tags para aplicar as tags ao contato." : void 0
+        tags_added: result.contact_id ? cleanTags : []
       });
     } catch (e) {
       return toolError(e.message);

@@ -402,7 +402,7 @@
       {
         "name": "ghl_upsert_contact",
         "title": "Criar/atualizar contato no HighLevel",
-        "description": "Escrita (simulate=true por padrão): cria ou atualiza um contato na subconta LipoVitta via /contacts/upsert. Não sobrescreve tags existentes — use ghl_add_tags para tags. Rode com simulate=true antes de executar de verdade.",
+        "description": "Escrita (simulate=true por padrão): cria ou atualiza um contato na subconta LipoVitta via /contacts/upsert e adiciona tags separadamente sem sobrescrever as existentes. Rode com simulate=true antes de executar de verdade.",
         "annotations": {
           "readOnlyHint": false,
           "idempotentHint": true,
@@ -438,7 +438,7 @@
               "items": {
                 "type": "string"
               },
-              "description": "Tags a adicionar após o upsert (aplicadas por Add Tags, sem sobrescrever)."
+              "description": "Tags a adicionar depois do upsert, sem sobrescrever tags existentes."
             },
             "simulate": {
               "type": "boolean",
