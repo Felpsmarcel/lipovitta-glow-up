@@ -480,9 +480,10 @@ export async function runPaidOrderSync(
   }
 
   if (plan.tags.length) {
-    if (simulate) steps.push({ step: "add_tags", simulated: true, detail: { tags: plan.tags } });
-    else {
-      await api.addContactTags(contactId!, plan.tags);
+    if (simulate) {
+      steps.push({ step: "add_tags", simulated: true, detail: { tags: plan.tags } });
+    } else if (contactId) {
+      await api.addContactTags(contactId, plan.tags);
       steps.push({ step: "add_tags", simulated: false, detail: { tags: plan.tags } });
     }
   }

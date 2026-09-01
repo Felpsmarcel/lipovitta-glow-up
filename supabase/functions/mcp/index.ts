@@ -693,8 +693,9 @@ async function runPaidOrderSync(plan, api, simulate) {
       return { simulated: false, order_id: plan.order_id, contact_id: null, steps };
   }
   if (plan.tags.length) {
-    if (simulate) steps.push({ step: "add_tags", simulated: true, detail: { tags: plan.tags } });
-    else if (contactId) {
+    if (simulate) {
+      steps.push({ step: "add_tags", simulated: true, detail: { tags: plan.tags } });
+    } else if (contactId) {
       await api.addContactTags(contactId, plan.tags);
       steps.push({ step: "add_tags", simulated: false, detail: { tags: plan.tags } });
     }
