@@ -409,13 +409,736 @@ var send_transactions_to_ghl_default = defineTool9({
   }
 });
 
+// src/lib/mcp/tools/ghl-config-status.ts
+import { defineTool as defineTool10 } from "npm:@lovable.dev/mcp-js@0.28.0";
+
+// src/lib/privacy.ts
+function maskEmail(value) {
+  const email = String(value ?? "").trim();
+  if (!email || !email.includes("@")) return email ? "***" : "";
+  const [local, domain] = email.split("@");
+  const head = local.slice(0, 2);
+  return `${head}${local.length > 2 ? "***" : "*"}@${domain}`;
+}
+function maskPhone(value) {
+  const digits = String(value ?? "").replace(/\D/g, "");
+  if (!digits) return "";
+  if (digits.length <= 4) return "*".repeat(digits.length);
+  const head = digits.slice(0, 2);
+  const tail = digits.slice(-4);
+  return `${head}${"*".repeat(Math.max(1, digits.length - 6))}${tail}`;
+}
+
+// src/lib/ghlApi.ts
+var GHL_API_BASE = "https://services.leadconnectorhq.com";
+var GHL_DEFAULT_LOCATION_ID = "fJzQmnIkw2U71SbtBDld";
+function runtimeEnv2(name) {
+  const runtime = globalThis;
+  return runtime.Deno?.env?.get?.(name) ?? runtime.process?.env?.[name];
+}
+function firstEnv(names) {
+  for (const name of names) {
+    const value = runtimeEnv2(name)?.trim();
+    if (value) return value;
+  }
+  return void 0;
+}
+var GhlApiError = class extends Error {
+  status;
+  details;
+  constructor(message, status = 0, details = null) {
+    super(message);
+    this.name = "GhlApiError";
+    this.status = status;
+    this.details = details;
+  }
+};
+function ghlToken() {
+  return firstEnv(["GHL_PRIVATE_INTEGRATION_TOKEN", "GHL_ACCESS_TOKEN"]);
+}
+function ghlLocationId() {
+  return firstEnv(["GHL_LOCATION_ID"]) ?? GHL_DEFAULT_LOCATION_ID;
+}
+function ghlConfigStatus() {
+  const priv = runtimeEnv2("GHL_PRIVATE_INTEGRATION_TOKEN")?.trim();
+  const access = runtimeEnv2("GHL_ACCESS_TOKEN")?.trim();
+  const explicitLocation = runtimeEnv2("GHL_LOCATION_ID")?.trim();
+  const location = explicitLocation || GHL_DEFAULT_LOCATION_ID;
+  const tokenConfigured = Boolean(priv || access);
+  return {
+    token_configured: tokenConfigured,
+    token_source: priv ? "GHL_PRIVATE_INTEGRATION_TOKEN" : access ? "GHL_ACCESS_TOKEN" : null,
+    location_configured: Boolean(location),
+    location_source: explicitLocation ? "GHL_LOCATION_ID" : "fallback_lipovitta",
+    location_id_suffix: location.slice(-4),
+    direct_api_ready: tokenConfigured && Boolean(location),
+    webhook_configured: Boolean(runtimeEnv2("GHL_WEBHOOK_URL")?.trim())
+  };
+}
+function requireGhlConfig() {
+  const token = ghlToken();
+  const locationId = ghlLocationId();
+  if (!token)
+    throw new GhlApiError(
+      "GHL_PRIVATE_INTEGRATION_TOKEN (ou GHL_ACCESS_TOKEN) n\xE3o configurado \u2014 configure o segredo antes de usar a API direta do HighLevel.",
+      412
+    );
+  if (!locationId) throw new GhlApiError("GHL_LOCATION_ID n\xE3o configurado.", 412);
+  return { token, locationId };
+}
+async function ghlRequest(path, options = {}) {
+  const { token } = requireGhlConfig();
+  const { method = "GET", body, query, version = "2021-07-28", fetchImpl } = options;
+  const doFetch = fetchImpl ?? fetch;
+  const url = new URL(path.startsWith("http") ? path : `${GHL_API_BASE}${path}`);
+  for (const [key, value] of Object.entries(query ?? {})) {
+    if (value !== void 0 && value !== null && value !== "") url.searchParams.set(key, String(value));
+  }
+  let response;
+  try {
+    response = await doFetch(url.toString(), {
+      method,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Version: version,
+        Accept: "application/json",
+        ...body !== void 0 ? { "Content-Type": "application/json" } : {}
+      },
+      ...body !== void 0 ? { body: JSON.stringify(body) } : {}
+    });
+  } catch (e) {
+    throw new GhlApiError(`Falha de rede ao chamar o HighLevel: ${e.message}`, 0);
+  }
+  const text = await response.text();
+  let parsed = null;
+  if (text) {
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      parsed = { raw: text.slice(0, 500) };
+    }
+  }
+  if (!response.ok) {
+    const detail = parsed?.message ?? parsed?.error ?? text.slice(0, 300);
+    throw new GhlApiError(
+      `HighLevel respondeu ${response.status} em ${method} ${url.pathname}: ${String(detail)}`,
+      response.status,
+      parsed
+    );
+  }
+  return parsed;
+}
+function sanitizeTag(value) {
+  return String(value ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60);
+}
+function normalizeTags(tags) {
+  const seen = /* @__PURE__ */ new Set();
+  for (const tag of tags ?? []) {
+    const clean = sanitizeTag(tag);
+    if (clean) seen.add(clean);
+  }
+  return [...seen];
+}
+function buildOrderTags(items, extra = []) {
+  const productTags = (items ?? []).map((item) => sanitizeTag(item?.sku ?? item?.name));
+  return normalizeTags(["lipovitta-comprador", ...productTags, ...extra]);
+}
+function buildUpsertContactPayload(input, locationId) {
+  const payload = { locationId };
+  if (input.first_name?.trim()) payload.firstName = input.first_name.trim();
+  if (input.last_name?.trim()) payload.lastName = input.last_name.trim();
+  if (input.email?.trim()) payload.email = input.email.trim().toLowerCase();
+  if (input.phone?.trim()) payload.phone = input.phone.trim();
+  if (input.source?.trim()) payload.source = input.source.trim();
+  return payload;
+}
+function maskContact(input) {
+  return {
+    first_name: input.first_name ? `${input.first_name.trim().slice(0, 1)}***` : "",
+    last_name: input.last_name ? `${input.last_name.trim().slice(0, 1)}***` : "",
+    email: maskEmail(input.email),
+    phone: maskPhone(input.phone)
+  };
+}
+var PAID_ORDER_STATUSES = ["paid", "approved"];
+function assertPaidOrder(order) {
+  if (!order) throw new GhlApiError("Pedido n\xE3o encontrado em yampi_orders.", 404);
+  const status = String(order.status ?? "").trim().toLowerCase();
+  if (!PAID_ORDER_STATUSES.includes(status))
+    throw new GhlApiError(
+      `Pedido ${String(order.order_id ?? "")} est\xE1 com status "${status || "desconhecido"}" \u2014 somente pedidos pagos (paid/approved) podem ser sincronizados.`,
+      409
+    );
+  return { order_id: String(order.order_id ?? ""), status };
+}
+async function listWorkflows(opts = {}) {
+  const { locationId } = requireGhlConfig();
+  const data = await ghlRequest("/workflows/", {
+    query: { locationId },
+    fetchImpl: opts.fetchImpl
+  });
+  return data?.workflows ?? [];
+}
+async function upsertContact(input, opts = {}) {
+  const { locationId } = requireGhlConfig();
+  const data = await ghlRequest("/contacts/upsert", {
+    method: "POST",
+    body: buildUpsertContactPayload(input, locationId),
+    fetchImpl: opts.fetchImpl
+  });
+  return { contact_id: data?.contact?.id ?? null, new: Boolean(data?.new), raw: data };
+}
+async function addContactTags(contactId, tags, opts = {}) {
+  return ghlRequest(`/contacts/${encodeURIComponent(contactId)}/tags`, {
+    method: "POST",
+    body: { tags: normalizeTags(tags) },
+    fetchImpl: opts.fetchImpl
+  });
+}
+async function removeContactTags(contactId, tags, opts = {}) {
+  return ghlRequest(`/contacts/${encodeURIComponent(contactId)}/tags`, {
+    method: "DELETE",
+    body: { tags: normalizeTags(tags) },
+    fetchImpl: opts.fetchImpl
+  });
+}
+async function enrollContactInWorkflow(contactId, workflowId, eventStartTime, opts = {}) {
+  return ghlRequest(
+    `/contacts/${encodeURIComponent(contactId)}/workflow/${encodeURIComponent(workflowId)}`,
+    {
+      method: "POST",
+      body: { eventStartTime: eventStartTime ?? (/* @__PURE__ */ new Date()).toISOString() },
+      fetchImpl: opts.fetchImpl
+    }
+  );
+}
+async function removeContactFromWorkflow(contactId, workflowId, eventStartTime, opts = {}) {
+  return ghlRequest(
+    `/contacts/${encodeURIComponent(contactId)}/workflow/${encodeURIComponent(workflowId)}`,
+    {
+      method: "DELETE",
+      body: { eventStartTime: eventStartTime ?? (/* @__PURE__ */ new Date()).toISOString() },
+      fetchImpl: opts.fetchImpl
+    }
+  );
+}
+function buildOpportunityPayload(input, locationId) {
+  const payload = {
+    pipelineId: input.pipeline_id,
+    locationId,
+    name: input.name,
+    status: input.status,
+    contactId: input.contact_id
+  };
+  if (input.pipeline_stage_id) payload.pipelineStageId = input.pipeline_stage_id;
+  if (typeof input.monetary_value === "number") payload.monetaryValue = input.monetary_value;
+  if (input.assigned_to) payload.assignedTo = input.assigned_to;
+  return payload;
+}
+async function findOpportunity(contactId, pipelineId, opts = {}) {
+  const { locationId } = requireGhlConfig();
+  try {
+    const data = await ghlRequest(
+      "/opportunities/search",
+      {
+        query: { location_id: locationId, contact_id: contactId, pipeline_id: pipelineId, limit: 20 },
+        fetchImpl: opts.fetchImpl
+      }
+    );
+    const found = (data?.opportunities ?? []).find((o) => !o.pipelineId || o.pipelineId === pipelineId);
+    return found ?? null;
+  } catch (e) {
+    if (e instanceof GhlApiError && e.status >= 400 && e.status < 500) return null;
+    throw e;
+  }
+}
+async function createOpportunity(input, opts = {}) {
+  const { locationId } = requireGhlConfig();
+  const data = await ghlRequest("/opportunities/", {
+    method: "POST",
+    body: buildOpportunityPayload(input, locationId),
+    version: "2021-07-28",
+    fetchImpl: opts.fetchImpl
+  });
+  return data?.opportunity ?? data ?? {};
+}
+async function updateOpportunity(opportunityId, input, opts = {}) {
+  const { locationId } = requireGhlConfig();
+  const body = buildOpportunityPayload(input, locationId);
+  delete body.locationId;
+  const data = await ghlRequest(
+    `/opportunities/${encodeURIComponent(opportunityId)}`,
+    { method: "PUT", body, fetchImpl: opts.fetchImpl }
+  );
+  return data?.opportunity ?? data ?? {};
+}
+async function runPaidOrderSync(plan, api, simulate) {
+  const steps = [];
+  let contactId = null;
+  if (simulate) {
+    steps.push({
+      step: "upsert_contact",
+      simulated: true,
+      detail: { contact: maskContact(plan.contact) }
+    });
+  } else {
+    const result = await api.upsertContact(plan.contact);
+    contactId = result.contact_id;
+    steps.push({
+      step: "upsert_contact",
+      simulated: false,
+      detail: { contact_id: contactId, new: result.new, contact: maskContact(plan.contact) }
+    });
+    if (!contactId)
+      return { simulated: false, order_id: plan.order_id, contact_id: null, steps };
+  }
+  if (plan.tags.length) {
+    if (simulate) steps.push({ step: "add_tags", simulated: true, detail: { tags: plan.tags } });
+    else {
+      await api.addContactTags(contactId, plan.tags);
+      steps.push({ step: "add_tags", simulated: false, detail: { tags: plan.tags } });
+    }
+  }
+  if (plan.workflow_id) {
+    if (simulate)
+      steps.push({ step: "enroll_workflow", simulated: true, detail: { workflow_id: plan.workflow_id } });
+    else {
+      await api.enrollContactInWorkflow(contactId, plan.workflow_id);
+      steps.push({ step: "enroll_workflow", simulated: false, detail: { workflow_id: plan.workflow_id } });
+    }
+  }
+  if (plan.pipeline_id) {
+    const oppInput = {
+      contact_id: contactId ?? "(simulado)",
+      pipeline_id: plan.pipeline_id,
+      name: plan.opportunity_name || `Pedido ${plan.order_id}`,
+      status: "won",
+      pipeline_stage_id: plan.pipeline_stage_id ?? null,
+      monetary_value: plan.monetary_value ?? null
+    };
+    if (simulate)
+      steps.push({
+        step: "upsert_opportunity",
+        simulated: true,
+        detail: { pipeline_id: plan.pipeline_id, name: oppInput.name, monetary_value: oppInput.monetary_value }
+      });
+    else {
+      const existing = await api.findOpportunity(contactId, plan.pipeline_id);
+      const result = existing?.id ? await api.updateOpportunity(existing.id, oppInput) : await api.createOpportunity(oppInput);
+      steps.push({
+        step: "upsert_opportunity",
+        simulated: false,
+        detail: {
+          opportunity_id: result?.id ?? existing?.id ?? null,
+          action: existing?.id ? "updated" : "created",
+          monetary_value: oppInput.monetary_value
+        }
+      });
+    }
+  }
+  return { simulated: simulate, order_id: plan.order_id, contact_id: contactId, steps };
+}
+
+// src/lib/mcp/admin.ts
+function toolError(message) {
+  return { content: [{ type: "text", text: message }], isError: true };
+}
+function toolJson(payload) {
+  return {
+    content: [{ type: "text", text: JSON.stringify(payload) }],
+    structuredContent: payload
+  };
+}
+async function requireAdmin(ctx) {
+  if (!ctx.isAuthenticated()) return { error: toolError("Not authenticated") };
+  const userId = ctx.getUserId();
+  if (!userId) return { error: toolError("Not authenticated") };
+  const supabase = supabaseForUser(ctx);
+  const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", userId).eq("role", "admin").maybeSingle();
+  if (error) return { error: toolError(`Falha ao verificar permiss\xE3o: ${error.message}`) };
+  if (!data) return { error: toolError("Acesso negado: esta a\xE7\xE3o exige papel admin.") };
+  return { supabase };
+}
+
+// src/lib/mcp/tools/ghl-config-status.ts
+var ghl_config_status_default = defineTool10({
+  name: "ghl_config_status",
+  title: "Diagn\xF3stico da integra\xE7\xE3o HighLevel",
+  description: "Somente leitura: informa se o token da API direta e o location da subconta est\xE3o configurados e se o Inbound Webhook segue ativo. Retorna apenas booleanos \u2014 nunca o valor de token ou URL secreta.",
+  inputSchema: {},
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: async (_input, ctx) => {
+    const guard = await requireAdmin(ctx);
+    if ("error" in guard) return guard.error;
+    return toolJson({ ...ghlConfigStatus() });
+  }
+});
+
+// src/lib/mcp/tools/ghl-list-workflows.ts
+import { defineTool as defineTool11 } from "npm:@lovable.dev/mcp-js@0.28.0";
+import { z as z10 } from "npm:zod@^3.25.76";
+var ghl_list_workflows_default = defineTool11({
+  name: "ghl_list_workflows",
+  title: "Listar workflows do HighLevel",
+  description: "Somente leitura: lista os workflows existentes na subconta LipoVitta do HighLevel (id, nome, status, vers\xE3o e \xFAltima atualiza\xE7\xE3o). Nunca retorna tokens.",
+  inputSchema: {
+    status: z10.string().optional().describe("Filtrar por status, ex.: published, draft."),
+    name_contains: z10.string().optional().describe("Filtrar por parte do nome do workflow.")
+  },
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: true },
+  handler: async ({ status, name_contains }, ctx) => {
+    const guard = await requireAdmin(ctx);
+    if ("error" in guard) return guard.error;
+    try {
+      const all = await listWorkflows();
+      const needle = name_contains?.trim().toLowerCase();
+      const workflows = all.filter((w) => status ? String(w.status ?? "").toLowerCase() === status.toLowerCase() : true).filter((w) => needle ? String(w.name ?? "").toLowerCase().includes(needle) : true).map((w) => ({
+        id: w.id ?? null,
+        name: w.name ?? null,
+        status: w.status ?? null,
+        version: w.version ?? null,
+        updatedAt: w.updatedAt ?? null
+      }));
+      return toolJson({ workflows, count: workflows.length });
+    } catch (e) {
+      return toolError(e.message);
+    }
+  }
+});
+
+// src/lib/mcp/tools/ghl-upsert-contact.ts
+import { defineTool as defineTool12 } from "npm:@lovable.dev/mcp-js@0.28.0";
+import { z as z11 } from "npm:zod@^3.25.76";
+var ghl_upsert_contact_default = defineTool12({
+  name: "ghl_upsert_contact",
+  title: "Criar/atualizar contato no HighLevel",
+  description: "Escrita (simulate=true por padr\xE3o): cria ou atualiza um contato na subconta LipoVitta via /contacts/upsert. N\xE3o sobrescreve tags existentes \u2014 use ghl_add_tags para tags. Rode com simulate=true antes de executar de verdade.",
+  inputSchema: {
+    first_name: z11.string().trim().max(120).optional(),
+    last_name: z11.string().trim().max(120).optional(),
+    email: z11.string().trim().email().optional(),
+    phone: z11.string().trim().max(30).optional(),
+    source: z11.string().trim().max(80).optional().describe("Origem do contato, ex.: yampi, site."),
+    tags: z11.array(z11.string()).optional().describe("Tags a adicionar ap\xF3s o upsert (aplicadas por Add Tags, sem sobrescrever)."),
+    simulate: z11.boolean().default(true).describe("Somente mostrar o que seria feito.")
+  },
+  annotations: { readOnlyHint: false, idempotentHint: true, destructiveHint: false, openWorldHint: true },
+  handler: async ({ first_name, last_name, email, phone, source, tags, simulate }, ctx) => {
+    const guard = await requireAdmin(ctx);
+    if ("error" in guard) return guard.error;
+    if (!email && !phone) return toolError("Informe pelo menos e-mail ou telefone para o upsert.");
+    const contact = { first_name, last_name, email, phone, source };
+    try {
+      requireGhlConfig();
+      if (simulate)
+        return toolJson({
+          simulated: true,
+          would_call: "POST /contacts/upsert",
+          payload: buildUpsertContactPayload(contact, ghlLocationId()),
+          contact_masked: maskContact(contact),
+          pending_tags: tags ?? []
+        });
+      const result = await upsertContact(contact);
+      return toolJson({
+        simulated: false,
+        contact_id: result.contact_id,
+        state: result.new ? "new" : "updated",
+        contact_masked: maskContact(contact),
+        pending_tags: tags ?? [],
+        note: tags?.length ? "Use ghl_add_tags para aplicar as tags ao contato." : void 0
+      });
+    } catch (e) {
+      return toolError(e.message);
+    }
+  }
+});
+
+// src/lib/mcp/tools/ghl-add-tags.ts
+import { defineTool as defineTool13 } from "npm:@lovable.dev/mcp-js@0.28.0";
+import { z as z12 } from "npm:zod@^3.25.76";
+var ghl_add_tags_default = defineTool13({
+  name: "ghl_add_tags",
+  title: "Adicionar tags a um contato",
+  description: "Escrita (simulate=true por padr\xE3o): adiciona tags a um contato do HighLevel. As tags s\xE3o sanitizadas e deduplicadas antes do envio.",
+  inputSchema: {
+    contact_id: z12.string().trim().min(3),
+    tags: z12.array(z12.string()).min(1),
+    simulate: z12.boolean().default(true).describe("Somente mostrar o que seria feito.")
+  },
+  annotations: { readOnlyHint: false, idempotentHint: true, destructiveHint: false, openWorldHint: true },
+  handler: async ({ contact_id, tags, simulate }, ctx) => {
+    const guard = await requireAdmin(ctx);
+    if ("error" in guard) return guard.error;
+    const clean = normalizeTags(tags);
+    if (!clean.length) return toolError("Nenhuma tag v\xE1lida ap\xF3s sanitiza\xE7\xE3o.");
+    try {
+      requireGhlConfig();
+      if (simulate)
+        return toolJson({
+          simulated: true,
+          would_call: `POST /contacts/${contact_id}/tags`,
+          contact_id,
+          tags: clean
+        });
+      await addContactTags(contact_id, clean);
+      return toolJson({ simulated: false, contact_id, tags_added: clean });
+    } catch (e) {
+      return toolError(e.message);
+    }
+  }
+});
+
+// src/lib/mcp/tools/ghl-remove-tags.ts
+import { defineTool as defineTool14 } from "npm:@lovable.dev/mcp-js@0.28.0";
+import { z as z13 } from "npm:zod@^3.25.76";
+var ghl_remove_tags_default = defineTool14({
+  name: "ghl_remove_tags",
+  title: "Remover tags de um contato",
+  description: "Escrita (simulate=true por padr\xE3o): remove tags de um contato do HighLevel. As tags s\xE3o sanitizadas antes do envio.",
+  inputSchema: {
+    contact_id: z13.string().trim().min(3),
+    tags: z13.array(z13.string()).min(1),
+    simulate: z13.boolean().default(true).describe("Somente mostrar o que seria feito.")
+  },
+  annotations: { readOnlyHint: false, idempotentHint: true, destructiveHint: true, openWorldHint: true },
+  handler: async ({ contact_id, tags, simulate }, ctx) => {
+    const guard = await requireAdmin(ctx);
+    if ("error" in guard) return guard.error;
+    const clean = normalizeTags(tags);
+    if (!clean.length) return toolError("Nenhuma tag v\xE1lida ap\xF3s sanitiza\xE7\xE3o.");
+    try {
+      requireGhlConfig();
+      if (simulate)
+        return toolJson({
+          simulated: true,
+          would_call: `DELETE /contacts/${contact_id}/tags`,
+          contact_id,
+          tags: clean
+        });
+      await removeContactTags(contact_id, clean);
+      return toolJson({ simulated: false, contact_id, tags_removed: clean });
+    } catch (e) {
+      return toolError(e.message);
+    }
+  }
+});
+
+// src/lib/mcp/tools/ghl-enroll-workflow.ts
+import { defineTool as defineTool15 } from "npm:@lovable.dev/mcp-js@0.28.0";
+import { z as z14 } from "npm:zod@^3.25.76";
+var ghl_enroll_workflow_default = defineTool15({
+  name: "ghl_enroll_workflow",
+  title: "Inserir contato em um workflow",
+  description: "Escrita (simulate=true por padr\xE3o): adiciona um contato a um workflow do HighLevel. Use ghl_list_workflows para descobrir o workflow_id.",
+  inputSchema: {
+    contact_id: z14.string().trim().min(3),
+    workflow_id: z14.string().trim().min(3),
+    event_start_time: z14.string().trim().optional().describe("Data/hora ISO de in\xEDcio; padr\xE3o \xE9 agora."),
+    simulate: z14.boolean().default(true).describe("Somente mostrar o que seria feito.")
+  },
+  annotations: { readOnlyHint: false, idempotentHint: true, destructiveHint: false, openWorldHint: true },
+  handler: async ({ contact_id, workflow_id, event_start_time, simulate }, ctx) => {
+    const guard = await requireAdmin(ctx);
+    if ("error" in guard) return guard.error;
+    const startTime = event_start_time?.trim() || (/* @__PURE__ */ new Date()).toISOString();
+    try {
+      requireGhlConfig();
+      if (simulate)
+        return toolJson({
+          simulated: true,
+          would_call: `POST /contacts/${contact_id}/workflow/${workflow_id}`,
+          contact_id,
+          workflow_id,
+          event_start_time: startTime
+        });
+      await enrollContactInWorkflow(contact_id, workflow_id, startTime);
+      return toolJson({ simulated: false, contact_id, workflow_id, event_start_time: startTime });
+    } catch (e) {
+      return toolError(e.message);
+    }
+  }
+});
+
+// src/lib/mcp/tools/ghl-remove-from-workflow.ts
+import { defineTool as defineTool16 } from "npm:@lovable.dev/mcp-js@0.28.0";
+import { z as z15 } from "npm:zod@^3.25.76";
+var ghl_remove_from_workflow_default = defineTool16({
+  name: "ghl_remove_from_workflow",
+  title: "Remover contato de um workflow",
+  description: "Escrita (simulate=true por padr\xE3o): remove um contato de um workflow do HighLevel.",
+  inputSchema: {
+    contact_id: z15.string().trim().min(3),
+    workflow_id: z15.string().trim().min(3),
+    event_start_time: z15.string().trim().optional().describe("Data/hora ISO; padr\xE3o \xE9 agora."),
+    simulate: z15.boolean().default(true).describe("Somente mostrar o que seria feito.")
+  },
+  annotations: { readOnlyHint: false, idempotentHint: true, destructiveHint: true, openWorldHint: true },
+  handler: async ({ contact_id, workflow_id, event_start_time, simulate }, ctx) => {
+    const guard = await requireAdmin(ctx);
+    if ("error" in guard) return guard.error;
+    const startTime = event_start_time?.trim() || (/* @__PURE__ */ new Date()).toISOString();
+    try {
+      requireGhlConfig();
+      if (simulate)
+        return toolJson({
+          simulated: true,
+          would_call: `DELETE /contacts/${contact_id}/workflow/${workflow_id}`,
+          contact_id,
+          workflow_id,
+          event_start_time: startTime
+        });
+      await removeContactFromWorkflow(contact_id, workflow_id, startTime);
+      return toolJson({ simulated: false, contact_id, workflow_id, event_start_time: startTime });
+    } catch (e) {
+      return toolError(e.message);
+    }
+  }
+});
+
+// src/lib/mcp/tools/ghl-create-or-update-opportunity.ts
+import { defineTool as defineTool17 } from "npm:@lovable.dev/mcp-js@0.28.0";
+import { z as z16 } from "npm:zod@^3.25.76";
+var ghl_create_or_update_opportunity_default = defineTool17({
+  name: "ghl_create_or_update_opportunity",
+  title: "Criar/atualizar oportunidade",
+  description: "Escrita (simulate=true por padr\xE3o): cria ou atualiza uma oportunidade no HighLevel. Com opportunity_id atualiza; sem ele procura uma oportunidade compat\xEDvel do contato no pipeline antes de criar, evitando duplicata.",
+  inputSchema: {
+    contact_id: z16.string().trim().min(3),
+    pipeline_id: z16.string().trim().min(3),
+    name: z16.string().trim().min(1).max(200),
+    status: z16.string().trim().default("open").describe("Status da oportunidade: open, won, lost, abandoned."),
+    pipeline_stage_id: z16.string().trim().optional(),
+    monetary_value: z16.number().optional(),
+    assigned_to: z16.string().trim().optional(),
+    opportunity_id: z16.string().trim().optional().describe("Se informado, atualiza esta oportunidade."),
+    simulate: z16.boolean().default(true).describe("Somente mostrar o que seria feito.")
+  },
+  annotations: { readOnlyHint: false, idempotentHint: true, destructiveHint: false, openWorldHint: true },
+  handler: async (input, ctx) => {
+    const guard = await requireAdmin(ctx);
+    if ("error" in guard) return guard.error;
+    const oppInput = {
+      contact_id: input.contact_id,
+      pipeline_id: input.pipeline_id,
+      name: input.name,
+      status: input.status,
+      pipeline_stage_id: input.pipeline_stage_id ?? null,
+      monetary_value: input.monetary_value ?? null,
+      assigned_to: input.assigned_to ?? null,
+      opportunity_id: input.opportunity_id ?? null
+    };
+    try {
+      requireGhlConfig();
+      if (input.simulate)
+        return toolJson({
+          simulated: true,
+          would_call: input.opportunity_id ? `PUT /opportunities/${input.opportunity_id}` : "POST /opportunities/ (ap\xF3s busca de duplicata)",
+          payload: buildOpportunityPayload(oppInput, ghlLocationId())
+        });
+      if (input.opportunity_id) {
+        const updated = await updateOpportunity(input.opportunity_id, oppInput);
+        return toolJson({ simulated: false, action: "updated", opportunity_id: updated?.id ?? input.opportunity_id });
+      }
+      const existing = await findOpportunity(input.contact_id, input.pipeline_id);
+      if (existing?.id) {
+        const updated = await updateOpportunity(existing.id, oppInput);
+        return toolJson({ simulated: false, action: "updated", opportunity_id: updated?.id ?? existing.id });
+      }
+      const created = await createOpportunity(oppInput);
+      return toolJson({ simulated: false, action: "created", opportunity_id: created?.id ?? null });
+    } catch (e) {
+      return toolError(e.message);
+    }
+  }
+});
+
+// src/lib/mcp/tools/ghl-sync-paid-order.ts
+import { defineTool as defineTool18 } from "npm:@lovable.dev/mcp-js@0.28.0";
+import { z as z17 } from "npm:zod@^3.25.76";
+var liveApi = {
+  upsertContact: (input) => upsertContact(input),
+  addContactTags: (contactId, tags) => addContactTags(contactId, tags),
+  enrollContactInWorkflow: (contactId, workflowId) => enrollContactInWorkflow(contactId, workflowId),
+  findOpportunity: (contactId, pipelineId) => findOpportunity(contactId, pipelineId),
+  createOpportunity: (input) => createOpportunity(input),
+  updateOpportunity: (id, input) => updateOpportunity(id, input)
+};
+var ghl_sync_paid_order_default = defineTool18({
+  name: "ghl_sync_paid_order",
+  title: "Sincronizar pedido pago com o HighLevel",
+  description: "Escrita orquestrada (simulate=true por padr\xE3o): a partir de um pedido PAGO da Yampi, faz upsert do contato, aplica tags seguras (lipovitta-comprador + SKUs), opcionalmente insere o contato num workflow e cria/atualiza a oportunidade com o valor pago. Pedido n\xE3o pago \xE9 sempre recusado.",
+  inputSchema: {
+    order_id: z17.string().trim().min(1).describe("ID do pedido na Yampi."),
+    workflow_id: z17.string().trim().optional(),
+    pipeline_id: z17.string().trim().optional(),
+    pipeline_stage_id: z17.string().trim().optional(),
+    opportunity_name: z17.string().trim().max(200).optional(),
+    simulate: z17.boolean().default(true).describe("Somente mostrar o que seria feito.")
+  },
+  annotations: { readOnlyHint: false, idempotentHint: true, destructiveHint: false, openWorldHint: true },
+  handler: async (input, ctx) => {
+    const guard = await requireAdmin(ctx);
+    if ("error" in guard) return guard.error;
+    const supabase = guard.supabase;
+    const { data: order, error: orderErr } = await supabase.from("yampi_orders").select("order_id,order_number,status,value_total,items,is_test").eq("order_id", input.order_id).maybeSingle();
+    if (orderErr) return toolError(`Falha ao ler o pedido: ${orderErr.message}`);
+    let paid;
+    try {
+      paid = assertPaidOrder(order);
+      requireGhlConfig();
+    } catch (e) {
+      return toolError(e.message);
+    }
+    const { data: outbox } = await supabase.from("ghl_outbox").select("payload,created_at").eq("event_type", "purchase").order("created_at", { ascending: false }).limit(200);
+    const match = (outbox ?? []).find(
+      (row) => row.payload?.order_id === paid.order_id
+    );
+    const payload = match?.payload ?? {};
+    const contact = {
+      first_name: payload.first_name ?? null,
+      last_name: payload.last_name ?? null,
+      email: payload.email ?? null,
+      phone: payload.phone ?? null,
+      source: "yampi"
+    };
+    if (!contact.email && !contact.phone)
+      return toolError(
+        `Sem contato recuper\xE1vel para o pedido ${paid.order_id} (nenhum payload purchase com e-mail/telefone na fila ghl_outbox).`
+      );
+    const items = Array.isArray(order?.items) ? order?.items : [];
+    const plan = {
+      order_id: paid.order_id,
+      status: paid.status,
+      contact,
+      tags: buildOrderTags(items),
+      workflow_id: input.workflow_id ?? null,
+      pipeline_id: input.pipeline_id ?? null,
+      pipeline_stage_id: input.pipeline_stage_id ?? null,
+      opportunity_name: input.opportunity_name ?? `Pedido ${order?.order_number ?? paid.order_id}`,
+      monetary_value: typeof order?.value_total === "number" ? order.value_total : Number(order?.value_total ?? 0) || null
+    };
+    try {
+      const result = await runPaidOrderSync(plan, liveApi, input.simulate);
+      return toolJson({
+        ...result,
+        order_number: order?.order_number ?? null,
+        is_test: order?.is_test ?? false,
+        tags: plan.tags,
+        monetary_value: plan.monetary_value
+      });
+    } catch (e) {
+      return toolError(e.message);
+    }
+  }
+});
+
 // src/lib/mcp/index.ts
 var projectRef = "ecgquvfoipmoqlhfkfol";
 var mcp_default = defineMcp({
   name: "lipovitta-transformation",
   title: "LipoVitta Transformation",
-  version: "0.4.0",
-  instructions: "Ferramentas operacionais da LipoVitta (loja Yampi + rastreamento Meta + GoHighLevel). Leitura: `sales_metrics` para faturamento, ticket m\xE9dio e convers\xE3o; `conversion_summary` para o panorama de eventos; `list_yampi_orders` para pedidos reais com status, itens e diverg\xEAncias de pre\xE7o; `list_abandoned_checkouts` para carrinhos abandonados com contato e link de recupera\xE7\xE3o; `list_conversions` para o log bruto de eventos; `list_applications` para candidaturas de afiliadas e parceiros; `tracking_health` para conferir se checkouts, pedidos pagos, Purchase interno e envio \xE0 Meta batem. GoHighLevel: `ghl_sync_status` mostra pendentes, enviados e erros da fila; `send_transactions_to_ghl` envia pedidos, mudan\xE7as de status, carrinhos abandonados e checkouts \u2014 comece sempre com simulate=true e s\xF3 depois simulate=false. Pedidos de teste (TEST...) s\xE3o exclu\xEDdos por padr\xE3o \u2014 use include_tests para v\xEA-los. Todos os dados respeitam as permiss\xF5es da conta conectada: apenas administradores enxergam registros e dados pessoais.",
+  version: "0.5.0",
+  instructions: "Ferramentas operacionais da LipoVitta (loja Yampi + rastreamento Meta + GoHighLevel). Leitura: `sales_metrics` para faturamento, ticket m\xE9dio e convers\xE3o; `conversion_summary` para o panorama de eventos; `list_yampi_orders` para pedidos reais com status, itens e diverg\xEAncias de pre\xE7o; `list_abandoned_checkouts` para carrinhos abandonados com contato e link de recupera\xE7\xE3o; `list_conversions` para o log bruto de eventos; `list_applications` para candidaturas de afiliadas e parceiros; `tracking_health` para conferir se checkouts, pedidos pagos, Purchase interno e envio \xE0 Meta batem. Fila do GoHighLevel (Inbound Webhook, fluxo atual): `ghl_sync_status` mostra pendentes, enviados e erros; `send_transactions_to_ghl` envia pedidos, mudan\xE7as de status, carrinhos abandonados e checkouts. API direta do HighLevel (V2 operacional): `ghl_config_status` diz se o token e o location est\xE3o configurados; `ghl_list_workflows` lista os workflows da subconta; `ghl_upsert_contact`, `ghl_add_tags`, `ghl_remove_tags`, `ghl_enroll_workflow`, `ghl_remove_from_workflow`, `ghl_create_or_update_opportunity` e `ghl_sync_paid_order` operam contatos, tags, workflows e oportunidades. TODA ferramenta de escrita exige papel admin e roda com simulate=true por padr\xE3o: execute primeiro em simula\xE7\xE3o, confira o que seria feito e s\xF3 depois repita com simulate=false. `ghl_sync_paid_order` s\xF3 aceita pedidos pagos (paid/approved) \u2014 status log\xEDsticos como invoiced, on_carriage ou delivered n\xE3o s\xE3o prova de pagamento. Pedidos de teste (TEST...) s\xE3o exclu\xEDdos por padr\xE3o \u2014 use include_tests para v\xEA-los. Todos os dados respeitam as permiss\xF5es da conta conectada: apenas administradores enxergam registros e dados pessoais.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated"
@@ -429,7 +1152,16 @@ var mcp_default = defineMcp({
     list_applications_default,
     tracking_health_default,
     ghl_sync_status_default,
-    send_transactions_to_ghl_default
+    send_transactions_to_ghl_default,
+    ghl_config_status_default,
+    ghl_list_workflows_default,
+    ghl_upsert_contact_default,
+    ghl_add_tags_default,
+    ghl_remove_tags_default,
+    ghl_enroll_workflow_default,
+    ghl_remove_from_workflow_default,
+    ghl_create_or_update_opportunity_default,
+    ghl_sync_paid_order_default
   ]
 });
 
