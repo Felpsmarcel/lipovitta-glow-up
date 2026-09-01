@@ -12,7 +12,7 @@
   "mcp": {
     "server": {
       "name": "lipovitta-transformation",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "title": "LipoVitta Transformation"
     },
     "tools": [
@@ -352,6 +352,363 @@
               "description": "Máximo de eventos por execução."
             }
           },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "ghl_config_status",
+        "title": "Diagnóstico da integração HighLevel",
+        "description": "Somente leitura: informa se o token da API direta e o location da subconta estão configurados e se o Inbound Webhook segue ativo. Retorna apenas booleanos — nunca o valor de token ou URL secreta.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "ghl_list_workflows",
+        "title": "Listar workflows do HighLevel",
+        "description": "Somente leitura: lista os workflows existentes na subconta LipoVitta do HighLevel (id, nome, status, versão e última atualização). Nunca retorna tokens.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "description": "Filtrar por status, ex.: published, draft."
+            },
+            "name_contains": {
+              "type": "string",
+              "description": "Filtrar por parte do nome do workflow."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "ghl_upsert_contact",
+        "title": "Criar/atualizar contato no HighLevel",
+        "description": "Escrita (simulate=true por padrão): cria ou atualiza um contato na subconta LipoVitta via /contacts/upsert e adiciona tags separadamente sem sobrescrever as existentes. Rode com simulate=true antes de executar de verdade.",
+        "annotations": {
+          "readOnlyHint": false,
+          "idempotentHint": true,
+          "destructiveHint": false,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "first_name": {
+              "type": "string",
+              "maxLength": 120
+            },
+            "last_name": {
+              "type": "string",
+              "maxLength": 120
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "phone": {
+              "type": "string",
+              "maxLength": 30
+            },
+            "source": {
+              "type": "string",
+              "maxLength": 80,
+              "description": "Origem do contato, ex.: yampi, site."
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Tags a adicionar depois do upsert, sem sobrescrever tags existentes."
+            },
+            "simulate": {
+              "type": "boolean",
+              "default": true,
+              "description": "Somente mostrar o que seria feito."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "ghl_add_tags",
+        "title": "Adicionar tags a um contato",
+        "description": "Escrita (simulate=true por padrão): adiciona tags a um contato do HighLevel. As tags são sanitizadas e deduplicadas antes do envio.",
+        "annotations": {
+          "readOnlyHint": false,
+          "idempotentHint": true,
+          "destructiveHint": false,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "contact_id": {
+              "type": "string",
+              "minLength": 3
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            "simulate": {
+              "type": "boolean",
+              "default": true,
+              "description": "Somente mostrar o que seria feito."
+            }
+          },
+          "required": [
+            "contact_id",
+            "tags"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "ghl_remove_tags",
+        "title": "Remover tags de um contato",
+        "description": "Escrita (simulate=true por padrão): remove tags de um contato do HighLevel. As tags são sanitizadas antes do envio.",
+        "annotations": {
+          "readOnlyHint": false,
+          "idempotentHint": true,
+          "destructiveHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "contact_id": {
+              "type": "string",
+              "minLength": 3
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            "simulate": {
+              "type": "boolean",
+              "default": true,
+              "description": "Somente mostrar o que seria feito."
+            }
+          },
+          "required": [
+            "contact_id",
+            "tags"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "ghl_enroll_workflow",
+        "title": "Inserir contato em um workflow",
+        "description": "Escrita (simulate=true por padrão): adiciona um contato a um workflow do HighLevel. Use ghl_list_workflows para descobrir o workflow_id.",
+        "annotations": {
+          "readOnlyHint": false,
+          "idempotentHint": true,
+          "destructiveHint": false,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "contact_id": {
+              "type": "string",
+              "minLength": 3
+            },
+            "workflow_id": {
+              "type": "string",
+              "minLength": 3
+            },
+            "event_start_time": {
+              "type": "string",
+              "description": "Data/hora ISO de início; padrão é agora."
+            },
+            "simulate": {
+              "type": "boolean",
+              "default": true,
+              "description": "Somente mostrar o que seria feito."
+            }
+          },
+          "required": [
+            "contact_id",
+            "workflow_id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "ghl_remove_from_workflow",
+        "title": "Remover contato de um workflow",
+        "description": "Escrita (simulate=true por padrão): remove um contato de um workflow do HighLevel.",
+        "annotations": {
+          "readOnlyHint": false,
+          "idempotentHint": true,
+          "destructiveHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "contact_id": {
+              "type": "string",
+              "minLength": 3
+            },
+            "workflow_id": {
+              "type": "string",
+              "minLength": 3
+            },
+            "event_start_time": {
+              "type": "string",
+              "description": "Data/hora ISO; padrão é agora."
+            },
+            "simulate": {
+              "type": "boolean",
+              "default": true,
+              "description": "Somente mostrar o que seria feito."
+            }
+          },
+          "required": [
+            "contact_id",
+            "workflow_id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "ghl_create_or_update_opportunity",
+        "title": "Criar/atualizar oportunidade",
+        "description": "Escrita (simulate=true por padrão): cria ou atualiza uma oportunidade no HighLevel. Com opportunity_id atualiza; sem ele procura uma oportunidade compatível do contato no pipeline antes de criar, evitando duplicata.",
+        "annotations": {
+          "readOnlyHint": false,
+          "idempotentHint": true,
+          "destructiveHint": false,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "contact_id": {
+              "type": "string",
+              "minLength": 3
+            },
+            "pipeline_id": {
+              "type": "string",
+              "minLength": 3
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "status": {
+              "type": "string",
+              "default": "open",
+              "description": "Status da oportunidade: open, won, lost, abandoned."
+            },
+            "pipeline_stage_id": {
+              "type": "string"
+            },
+            "monetary_value": {
+              "type": "number"
+            },
+            "assigned_to": {
+              "type": "string"
+            },
+            "opportunity_id": {
+              "type": "string",
+              "description": "Se informado, atualiza esta oportunidade."
+            },
+            "simulate": {
+              "type": "boolean",
+              "default": true,
+              "description": "Somente mostrar o que seria feito."
+            }
+          },
+          "required": [
+            "contact_id",
+            "pipeline_id",
+            "name"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "ghl_sync_paid_order",
+        "title": "Sincronizar pedido pago com o HighLevel",
+        "description": "Escrita orquestrada (simulate=true por padrão): a partir de um pedido PAGO da Yampi, faz upsert do contato, aplica tags seguras (lipovitta-comprador + SKUs), opcionalmente insere o contato num workflow e cria/atualiza a oportunidade com o valor pago. Pedido não pago é sempre recusado.",
+        "annotations": {
+          "readOnlyHint": false,
+          "idempotentHint": true,
+          "destructiveHint": false,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "order_id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "ID do pedido na Yampi."
+            },
+            "workflow_id": {
+              "type": "string"
+            },
+            "pipeline_id": {
+              "type": "string"
+            },
+            "pipeline_stage_id": {
+              "type": "string"
+            },
+            "opportunity_name": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "simulate": {
+              "type": "boolean",
+              "default": true,
+              "description": "Somente mostrar o que seria feito."
+            }
+          },
+          "required": [
+            "order_id"
+          ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
         },
