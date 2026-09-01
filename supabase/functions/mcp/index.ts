@@ -1084,6 +1084,8 @@ var ghl_sync_paid_order_default = defineTool18({
     const supabase = guard.supabase;
     const { data: order, error: orderErr } = await supabase.from("yampi_orders").select("order_id,order_number,status,value_total,items,is_test").eq("order_id", input.order_id).maybeSingle();
     if (orderErr) return toolError(`Falha ao ler o pedido: ${orderErr.message}`);
+    if (order?.is_test === true)
+      return toolError("Pedido marcado como teste n\xE3o pode ser sincronizado pelo orquestrador comercial.");
     let paid;
     try {
       paid = assertPaidOrder(order);

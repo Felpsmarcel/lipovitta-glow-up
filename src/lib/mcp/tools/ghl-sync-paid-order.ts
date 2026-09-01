@@ -58,6 +58,8 @@ export default defineTool({
       .eq("order_id", input.order_id)
       .maybeSingle();
     if (orderErr) return toolError(`Falha ao ler o pedido: ${orderErr.message}`);
+    if (order?.is_test === true)
+      return toolError("Pedido marcado como teste não pode ser sincronizado pelo orquestrador comercial.");
 
     let paid: { order_id: string; status: string };
     try {
