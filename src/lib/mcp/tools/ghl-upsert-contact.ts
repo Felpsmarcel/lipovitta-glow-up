@@ -1,9 +1,11 @@
 import { defineTool } from "@lovable.dev/mcp-js";
 import { z } from "zod";
 import {
+  addContactTags,
   buildUpsertContactPayload,
   ghlLocationId,
   maskContact,
+  normalizeTags,
   requireGhlConfig,
   upsertContact,
 } from "../../ghlApi";
