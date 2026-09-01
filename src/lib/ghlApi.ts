@@ -512,8 +512,8 @@ export async function runPaidOrderSync(
         simulated: true,
         detail: { pipeline_id: plan.pipeline_id, name: oppInput.name, monetary_value: oppInput.monetary_value },
       });
-    else {
-      const existing = await api.findOpportunity(contactId!, plan.pipeline_id);
+    else if (contactId) {
+      const existing = await api.findOpportunity(contactId, plan.pipeline_id);
       const result = existing?.id
         ? await api.updateOpportunity(existing.id, oppInput)
         : await api.createOpportunity(oppInput);
