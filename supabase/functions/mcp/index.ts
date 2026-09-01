@@ -702,7 +702,7 @@ async function runPaidOrderSync(plan, api, simulate) {
   if (plan.workflow_id) {
     if (simulate)
       steps.push({ step: "enroll_workflow", simulated: true, detail: { workflow_id: plan.workflow_id } });
-    else {
+    else if (contactId) {
       await api.enrollContactInWorkflow(contactId, plan.workflow_id);
       steps.push({ step: "enroll_workflow", simulated: false, detail: { workflow_id: plan.workflow_id } });
     }
