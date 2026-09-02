@@ -1,6 +1,8 @@
 import type { ComponentType } from 'npm:react@18.3.1'
 import { template as newAffiliateApplication } from './new-affiliate-application.tsx'
 import { template as newCommercialPartnerApplication } from './new-commercial-partner-application.tsx'
+import { template as fulfillmentOrderCheckTest } from './fulfillment-order-check-test.tsx'
+
 
 export interface TemplateEntry {
   component: ComponentType<any>
