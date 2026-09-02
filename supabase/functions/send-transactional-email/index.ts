@@ -100,6 +100,22 @@ Deno.serve(async (req) => {
     )
   }
 
+  // Template-specific validation must run before suppression checks, token
+  // creation, pending logs, or queue writes so incomplete operational emails
+  // can never be enqueued.
+  if (template.validate) {
+    const validationErrors = template.validate(templateData)
+    if (validationErrors.length > 0) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid templateData', fields: validationErrors }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      )
+    }
+  }
+
   // Resolve effective recipient: template-level `to` takes precedence over
   // the caller-provided recipientEmail. This allows notification templates
   // to always send to a fixed address (e.g., site owner from env var).

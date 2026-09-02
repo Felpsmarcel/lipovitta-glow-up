@@ -10,6 +10,7 @@ export interface TemplateEntry {
   displayName?: string
   previewData?: Record<string, any>
   to?: string | ((data: any) => string)
+  validate?: (data: Record<string, unknown>) => string[]
 }
 
 export const TEMPLATES: Record<string, TemplateEntry> = {

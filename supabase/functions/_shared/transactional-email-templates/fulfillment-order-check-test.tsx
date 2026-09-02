@@ -20,44 +20,44 @@ interface Item {
 }
 
 interface Props {
-  orderNumber?: string
-  orderId?: string
-  status?: string
-  statusDate?: string
-  createdDate?: string
-  buyerName?: string
-  buyerEmail?: string
-  buyerPhone?: string
-  items?: Item[]
-  gift?: string
-  subtotal?: string
-  discount?: string
-  subtotalAfterDiscount?: string
-  total?: string
-  difference?: string
-  unavailable?: string[]
+  orderNumber: string
+  orderId: string
+  status: string
+  statusDate: string
+  createdDate: string
+  buyerName: string
+  buyerEmail: string
+  buyerPhone: string
+  items: Item[]
+  gift: string
+  subtotal: string
+  discount: string
+  subtotalAfterDiscount: string
+  total: string
+  difference: string
+  unavailable: string[]
 }
 
 const WARNING =
   'TESTE DE CONFERÊNCIA — NÃO SEPARAR NOVAMENTE, NÃO EMITIR NOVA ETIQUETA E NÃO GERAR NOVA EXPEDIÇÃO. Pedido já em transporte.'
 
 const Email = ({
-  orderNumber = '-',
-  orderId = '-',
-  status = '-',
-  statusDate = '-',
-  createdDate = '-',
-  buyerName = '-',
-  buyerEmail = '-',
-  buyerPhone = '-',
-  items = [],
-  gift = '-',
-  subtotal = '-',
-  discount = '-',
-  subtotalAfterDiscount = '-',
-  total = '-',
-  difference = '-',
-  unavailable = [],
+  orderNumber,
+  orderId,
+  status,
+  statusDate,
+  createdDate,
+  buyerName,
+  buyerEmail,
+  buyerPhone,
+  items,
+  gift,
+  subtotal,
+  discount,
+  subtotalAfterDiscount,
+  total,
+  difference,
+  unavailable,
 }: Props) => (
   <Html lang="pt-BR" dir="ltr">
     <Head />
@@ -139,29 +139,80 @@ const Row = ({ label, value }: { label: string; value: string }) => (
 
 export const template = {
   component: Email,
-  subject: 'TESTE — LipoVitta Pedido 81 — Não gerar nova expedição',
+  subject: 'TESTE CORRIGIDO — Pedido 81 — Não gerar nova expedição',
   displayName: 'Teste de conferência de pedido (operacional)',
   previewData: {
-    orderNumber: '81',
-    orderId: '171546108',
+    orderNumber: '999',
+    orderId: 'TEST-999',
     status: 'on_carriage (em transporte)',
-    statusDate: '02/09/2026',
-    createdDate: '31/08/2026',
-    buyerName: 'Jamille Neiva',
-    buyerEmail: 'bilessa_@hotmail.com',
-    buyerPhone: '+55 71 99984-1512',
+    statusDate: '01/01/2026',
+    createdDate: '31/12/2025',
+    buyerName: 'Cliente Exemplo',
+    buyerEmail: 'cliente.exemplo@example.com',
+    buyerPhone: '+55 11 90000-0000',
     items: [
-      { name: 'Cápsulas Lipovitta', sku: 'LIP-CAPS-001', quantity: 1, price: 'R$ 357,00' },
+      { name: 'Produto Exemplo', sku: 'SKU-EXEMPLO', quantity: 1, price: 'R$ 100,00' },
     ],
-    gift: 'brinde_raspador (raspador)',
-    subtotal: 'R$ 527,00',
-    discount: 'R$ 158,10 (30%)',
-    subtotalAfterDiscount: 'R$ 368,90',
-    total: 'R$ 386,73',
-    difference: 'R$ 17,83',
+    gift: 'brinde_exemplo',
+    subtotal: 'R$ 100,00',
+    discount: 'R$ 10,00 (10%)',
+    subtotalAfterDiscount: 'R$ 90,00',
+    total: 'R$ 90,00',
+    difference: 'R$ 0,00 — rubrica não confirmada',
     unavailable: ['Endereço/CEP'],
   },
+  validate: validateFulfillmentOrderCheck,
 } satisfies TemplateEntry
+
+const REQUIRED_TEXT_FIELDS = [
+  'orderNumber',
+  'orderId',
+  'status',
+  'statusDate',
+  'createdDate',
+  'buyerName',
+  'buyerEmail',
+  'buyerPhone',
+  'gift',
+  'subtotal',
+  'discount',
+  'subtotalAfterDiscount',
+  'total',
+  'difference',
+] as const
+
+export function validateFulfillmentOrderCheck(data: Record<string, unknown>): string[] {
+  const errors = REQUIRED_TEXT_FIELDS.filter((field) =>
+    typeof data[field] !== 'string' || data[field].trim().length === 0
+  ).map((field) => `${field} is required`)
+
+  if (!Array.isArray(data.items) || data.items.length === 0) {
+    errors.push('items must contain at least one item')
+  } else {
+    data.items.forEach((item, index) => {
+      if (!item || typeof item !== 'object') {
+        errors.push(`items[${index}] must be an object`)
+        return
+      }
+      const candidate = item as Record<string, unknown>
+      for (const field of ['name', 'sku', 'price']) {
+        if (typeof candidate[field] !== 'string' || candidate[field].trim().length === 0) {
+          errors.push(`items[${index}].${field} is required`)
+        }
+      }
+      if (!Number.isInteger(candidate.quantity) || Number(candidate.quantity) < 1) {
+        errors.push(`items[${index}].quantity must be a positive integer`)
+      }
+    })
+  }
+
+  if (!Array.isArray(data.unavailable) || data.unavailable.length === 0 ||
+      data.unavailable.some((entry) => typeof entry !== 'string' || entry.trim().length === 0)) {
+    errors.push('unavailable must contain non-empty entries')
+  }
+
+  return errors
+}
 
 const main = {
   backgroundColor: '#ffffff',
