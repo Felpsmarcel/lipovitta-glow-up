@@ -1,16 +1,21 @@
-# Relatório de vendas LipoVitta — 01 a 31/08/2026
+# Definir GHL_LOCATION_ID explícito
 
-**Escopo:** somente leitura. Não serão alterados código, dados, integrações ou publicação.
+Hoje a integração com o HighLevel funciona, mas o identificador da subconta (location) não está configurado como segredo: o código usa um valor de reserva embutido (`fJzQmnIkw2U71SbtBDld`), e o diagnóstico reporta `location_source: fallback_lipovitta`. Esse valor veio do caminho da URL do Inbound Webhook e não foi confirmado como sendo o Location ID real da subconta.
 
-## Evidências verificadas
+## O que será feito
 
-- O banco contém 86 linhas em `yampi_orders`; a consulta por `event LIKE 'order%'` encontra 51 pedidos/eventos de pedido e confirma 35 eventos não-pedido misturados (`customer.*` e `transaction.payment.refused`).
-- Os 51 pedidos de pedido têm `created_at_yampi` entre 06/08 e 31/08, mas `first_seen_at` só começa em 27/08. Isso prova que a cobertura local é um backfill parcial recebido por atualizações tardias, não um espelho completo da Yampi.
-- Os segredos configurados incluem `YAMPI_WEBHOOK_SECRET` e dois nomes opacos (`yamp`, `yampatualizado`), mas não há credencial claramente identificável de API nem chamada GET paginada de pedidos no código. Os valores não serão exibidos nem usados especulativamente.
-- O código grava `created_at_yampi` com `new Date(resource.created_at.date)` e não armazena o payload original nem o timezone. Para o #74, `created_at_yampi=2026-08-31 09:11:57+00` e `first_seen_at=2026-08-31 12:12:19+00`, diferença observada de 3h; a origem literal (`date` local versus UTC) não pode ser provada retroativamente porque o payload não foi persistido.
-- A regra atual marca teste somente por prefixo `TEST` no ID/token. O #74 (`171482339`) ficou `is_test=false`. O histórico local mostra `order.updated`/`waiting_payment` e depois `cancelled`, mas não contém um marcador de teste; portanto não é possível confirmar, apenas pelo banco, que o #74 foi teste real ou excluir sua compra das métricas comerciais.
-- `invoiced`, `on_carriage` e `delivered` serão reportados como status logístico, não como prova de pagamento, recebimento de valor ou data de pagamento.
+1. Confirmar o Location ID correto da subconta LipoVitta (Settings > Business Profile no HighLevel, campo "Location ID" / "API Key location").
+2. Salvar esse valor como segredo `GHL_LOCATION_ID` no projeto.
+3. Reimplantar apenas a Edge Function `mcp` para que ela leia o novo segredo.
+4. Rodar `ghl_config_status` (somente leitura) e confirmar que retorna `location_source: "GHL_LOCATION_ID"` e `direct_api_ready: true`.
+5. Rodar `ghl_list_workflows` (somente leitura) para validar que a API direta responde com os workflows da subconta correta.
 
-## Resultado a entregar após aprovação
+## Detalhes técnicos
 
-Consolidar em resposta somente leitura os totais, status, valores e cobertura; os 11 `Purchase` reais e seus `error_404`; o histórico do #74; as fontes locais recuperáveis; e a lista explícita de campos ausentes. Como a API autenticada não está disponível, não haverá JSON completo de pedidos Yampi nem dados inventados de cliente, frete, cupom, pagamento, `paid_at`, endereço ou rastreio.
+- Nenhuma mudança de UI, nenhuma escrita no HighLevel. Todas as ferramentas de escrita continuam com `simulate=true` por padrão.
+- Sem mudança de código necessária: `supabase/functions/_shared/ghl-api.ts` já lê `GHL_LOCATION_ID` e só cai no fallback quando o segredo está ausente. O redeploy serve apenas para atualizar o ambiente da função.
+- Se o Location ID confirmado for diferente do fallback, avaliamos em seguida remover o valor embutido para evitar chamadas silenciosas à subconta errada.
+
+## O que preciso de você
+
+O Location ID da subconta LipoVitta (formato de ~20 caracteres alfanuméricos). Se for exatamente `fJzQmnIkw2U71SbtBDld`, basta confirmar e eu salvo esse mesmo valor como segredo explícito.
