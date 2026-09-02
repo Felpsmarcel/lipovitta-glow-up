@@ -15,4 +15,6 @@ export interface TemplateEntry {
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'new-affiliate-application': newAffiliateApplication,
   'new-commercial-partner-application': newCommercialPartnerApplication,
+  'fulfillment-order-check-test': fulfillmentOrderCheckTest,
 }
+
