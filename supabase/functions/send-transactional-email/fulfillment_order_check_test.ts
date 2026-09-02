@@ -31,6 +31,8 @@ Deno.test('renders every required value in HTML and text', async () => {
   const element = React.createElement(template.component, payload)
   const html = await renderAsync(element)
   const text = await renderAsync(element, { plainText: true })
+  const normalizedHtml = html.replace(/\s+/g, ' ')
+  const normalizedText = text.replace(/\s+/g, ' ')
   const required = [
     'Jamille Neiva', '81', '171546108', 'LIP-CAPS-001', 'Cápsulas Lipovitta',
     'G9JA3SMZR', 'Shot Matinal Lipovitta TANGERINA', 'R$ 386,73',
@@ -38,7 +40,7 @@ Deno.test('renders every required value in HTML and text', async () => {
     'NÃO GERAR NOVA EXPEDIÇÃO', 'Não disponível no registro recebido',
   ]
   for (const expected of required) {
-    if (!html.includes(expected)) throw new Error(`HTML missing: ${expected}`)
-    if (!text.includes(expected)) throw new Error(`Text missing: ${expected}`)
+    if (!normalizedHtml.includes(expected)) throw new Error(`HTML missing: ${expected}`)
+    if (!normalizedText.includes(expected)) throw new Error(`Text missing: ${expected}`)
   }
 })
