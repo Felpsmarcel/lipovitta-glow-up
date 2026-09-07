@@ -174,57 +174,209 @@ var sales_metrics_default = defineTool4({
 // src/lib/mcp/tools/tracking-health.ts
 import { defineTool as defineTool5 } from "npm:@lovable.dev/mcp-js@0.28.0";
 import { z as z5 } from "npm:zod@^3.25.76";
+
+// src/lib/mcp/errors.ts
+var SENSITIVE_PATTERNS = [
+  /https?:\/\/\S+/gi,
+  // URLs (podem conter tokens/refs)
+  /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.?[A-Za-z0-9_-]*/g,
+  // JWT
+  /\b(sb_[a-z]+_[A-Za-z0-9_-]{8,}|pit-[A-Za-z0-9-]{8,})\b/g,
+  // chaves Supabase / token GHL
+  /\b[\w.+-]+@[\w-]+\.[\w.-]+\b/g,
+  // e-mail
+  /\+?\d[\d\s().-]{8,}\d/g
+  // telefone
+];
+function sanitizeMessage(input) {
+  let text = input instanceof Error ? input.message : typeof input === "string" ? input : (() => {
+    try {
+      return JSON.stringify(input);
+    } catch {
+      return String(input);
+    }
+  })();
+  if (!text) text = "Erro sem descri\xE7\xE3o.";
+  for (const pattern of SENSITIVE_PATTERNS) text = text.replace(pattern, "[oculto]");
+  return text.slice(0, 400);
+}
+function classify(message) {
+  const m = message.toLowerCase();
+  if (m.includes("permission denied for function has_role")) return "authorization_unavailable";
+  if (m.includes("permission denied") || m.includes("row-level security")) return "forbidden";
+  if (m.includes("fetch failed") || m.includes("connection") || m.includes("timeout") || m.includes("econnrefused") || m.includes("paused") || m.includes("503") || m.includes("upstream"))
+    return "backend_unavailable";
+  return "unexpected_error";
+}
+function toolFailure(params) {
+  const payload = {
+    ok: false,
+    code: params.code,
+    tool: params.tool,
+    stage: params.stage,
+    message: sanitizeMessage(params.message)
+  };
+  return {
+    content: [{ type: "text", text: JSON.stringify(payload) }],
+    structuredContent: payload,
+    isError: true
+  };
+}
+function queryFailure(tool, stage, error) {
+  const message = sanitizeMessage(error);
+  const detected = classify(message);
+  return toolFailure({
+    code: detected === "unexpected_error" ? "query_failed" : detected,
+    tool,
+    stage,
+    message
+  });
+}
+async function runTool(tool, fn) {
+  let stage = "start";
+  try {
+    return await fn((next) => {
+      stage = next;
+    });
+  } catch (err) {
+    const message = sanitizeMessage(err);
+    return toolFailure({ code: classify(message), tool, stage, message });
+  }
+}
+
+// src/lib/mcp/admin.ts
+function toolError(message) {
+  return toolFailure({
+    code: "unexpected_error",
+    tool: "mcp",
+    stage: "unknown",
+    message
+  });
+}
+function toolJson(payload) {
+  return {
+    content: [{ type: "text", text: JSON.stringify(payload) }],
+    structuredContent: payload
+  };
+}
+async function requireAdmin(ctx, tool = "mcp") {
+  if (!ctx.isAuthenticated() || !ctx.getUserId())
+    return {
+      error: toolFailure({
+        code: "not_authenticated",
+        tool,
+        stage: "auth",
+        message: "Requisi\xE7\xE3o sem usu\xE1rio autenticado."
+      })
+    };
+  const userId = ctx.getUserId();
+  try {
+    const supabase = supabaseForUser(ctx);
+    const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", userId).eq("role", "admin").maybeSingle();
+    if (error) {
+      const message = sanitizeMessage(error.message);
+      const detected = classify(message);
+      return {
+        error: toolFailure({
+          code: detected === "unexpected_error" ? "authorization_unavailable" : detected,
+          tool,
+          stage: "authorization",
+          message: `Falha ao verificar permiss\xE3o: ${message}`
+        })
+      };
+    }
+    if (!data)
+      return {
+        error: toolFailure({
+          code: "forbidden",
+          tool,
+          stage: "authorization",
+          message: "Acesso negado: esta a\xE7\xE3o exige papel admin."
+        })
+      };
+    return { supabase };
+  } catch (err) {
+    const message = sanitizeMessage(err);
+    return {
+      error: toolFailure({
+        code: classify(message),
+        tool,
+        stage: "authorization",
+        message
+      })
+    };
+  }
+}
+
+// src/lib/mcp/tools/tracking-health.ts
+var TOOL = "tracking_health";
+function buildGaps(health) {
+  const num2 = (k) => Number(health[k] ?? 0) || 0;
+  const gaps = [];
+  if (num2("meta_error_404") > 0)
+    gaps.push(`${num2("meta_error_404")} compras com meta_status=error_404 (endpoint CAPI inv\xE1lido).`);
+  if (num2("meta_missing_status") > 0)
+    gaps.push(`${num2("meta_missing_status")} compras sem status de envio para a Meta.`);
+  if (num2("internal_purchases") > 0 && num2("meta_sent") < num2("internal_purchases"))
+    gaps.push(`Apenas ${num2("meta_sent")} de ${num2("internal_purchases")} compras chegaram \xE0 Meta.`);
+  if (num2("price_mismatches") > 0 || num2("yampi_price_mismatches") > 0)
+    gaps.push(
+      `${Math.max(num2("price_mismatches"), num2("yampi_price_mismatches"))} pedidos com diverg\xEAncia entre valor esperado e pago.`
+    );
+  if (num2("yampi_orders_paid") > num2("purchases_from_yampi"))
+    gaps.push(
+      `${num2("yampi_orders_paid")} pedidos pagos na Yampi, mas apenas ${num2("purchases_from_yampi")} Purchase interno registrado.`
+    );
+  if (num2("yampi_orders_waiting_payment") > 0)
+    gaps.push(
+      `${num2("yampi_orders_waiting_payment")} pedidos aguardando pagamento (n\xE3o contam como faturamento e n\xE3o disparam expedi\xE7\xE3o).`
+    );
+  if (num2("initiate_checkouts") > 0 && num2("yampi_orders_total") === 0)
+    gaps.push("Houve checkouts iniciados, mas nenhum pedido da Yampi chegou ao webhook no per\xEDodo.");
+  if (num2("initiate_checkouts") > 0 && num2("internal_purchases") === 0)
+    gaps.push("Houve checkouts iniciados, mas nenhuma compra registrada no per\xEDodo.");
+  return gaps;
+}
 var tracking_health_default = defineTool5({
-  name: "tracking_health",
+  name: TOOL,
   title: "Sa\xFAde do rastreamento",
-  description: "Compara checkouts iniciados, carrinhos abandonados, pedidos criados na Yampi (aguardando pagamento, pagos, cancelados), Purchase interno e envio para a Meta. Aponta inconsist\xEAncias, erros error_404 e diverg\xEAncias de pre\xE7o.",
+  description: "Compara checkouts iniciados, carrinhos abandonados, pedidos criados na Yampi (aguardando pagamento, pagos, cancelados), Purchase interno, receita, UTMs e envio para a Meta. Aponta inconsist\xEAncias, erros error_404 e diverg\xEAncias de pre\xE7o. Somente leitura, exige papel admin.",
   inputSchema: {
     days: z5.number().int().min(1).max(365).default(7).describe("Per\xEDodo em dias."),
     include_tests: z5.boolean().default(false).describe("Incluir pedidos de teste (TEST...) na an\xE1lise.")
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: async ({ days, include_tests }, ctx) => {
-    if (!ctx.isAuthenticated())
-      return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
-    const supabase = supabaseForUser(ctx);
-    const { data, error } = await supabase.rpc("mcp_tracking_health", {
+  handler: async (input, ctx) => runTool(TOOL, async (setStage) => {
+    const days = input.days ?? 7;
+    const includeTests = input.include_tests ?? false;
+    setStage("authorization");
+    const guard = await requireAdmin(ctx, TOOL);
+    if ("error" in guard) return guard.error;
+    setStage("rpc:mcp_tracking_health");
+    const { data, error } = await guard.supabase.rpc("mcp_tracking_health", {
       _days: days,
-      _include_tests: include_tests ?? false
+      _include_tests: includeTests
     });
-    if (error) return { content: [{ type: "text", text: error.message }], isError: true };
-    const health = data ?? {};
-    const gaps = [];
-    const num = (k) => Number(health[k] ?? 0);
-    if (num("meta_error_404") > 0)
-      gaps.push(`${num("meta_error_404")} compras com meta_status=error_404 (endpoint CAPI inv\xE1lido).`);
-    if (num("meta_missing_status") > 0)
-      gaps.push(`${num("meta_missing_status")} compras sem status de envio para a Meta.`);
-    if (num("internal_purchases") > 0 && num("meta_sent") < num("internal_purchases"))
-      gaps.push(
-        `Apenas ${num("meta_sent")} de ${num("internal_purchases")} compras chegaram \xE0 Meta.`
-      );
-    if (num("price_mismatches") > 0 || num("yampi_price_mismatches") > 0)
-      gaps.push(
-        `${Math.max(num("price_mismatches"), num("yampi_price_mismatches"))} pedidos com diverg\xEAncia entre valor esperado e pago.`
-      );
-    if (num("yampi_orders_paid") > num("purchases_from_yampi"))
-      gaps.push(
-        `${num("yampi_orders_paid")} pedidos pagos na Yampi, mas apenas ${num("purchases_from_yampi")} Purchase interno registrado.`
-      );
-    if (num("yampi_orders_waiting_payment") > 0)
-      gaps.push(
-        `${num("yampi_orders_waiting_payment")} pedidos aguardando pagamento (n\xE3o contam como faturamento).`
-      );
-    if (num("initiate_checkouts") > 0 && num("yampi_orders_total") === 0)
-      gaps.push("Houve checkouts iniciados, mas nenhum pedido da Yampi chegou ao webhook no per\xEDodo.");
-    if (num("initiate_checkouts") > 0 && num("internal_purchases") === 0)
-      gaps.push("Houve checkouts iniciados, mas nenhuma compra registrada no per\xEDodo.");
-    const result = { ...health, gaps };
-    return {
-      content: [{ type: "text", text: JSON.stringify(result) }],
-      structuredContent: result
+    if (error) return queryFailure(TOOL, "rpc:mcp_tracking_health", error.message);
+    setStage("shape");
+    const health = data && typeof data === "object" ? data : {};
+    const warnings = [];
+    if (Object.keys(health).length === 0)
+      warnings.push("Nenhum dado agregado retornado para o per\xEDodo informado.");
+    const payload = {
+      ok: true,
+      tool: TOOL,
+      days,
+      include_tests: includeTests,
+      ...health,
+      gaps: buildGaps(health),
+      warnings
     };
-  }
+    return {
+      content: [{ type: "text", text: JSON.stringify(payload) }],
+      structuredContent: payload
+    };
+  })
 });
 
 // src/lib/mcp/tools/list-abandoned-checkouts.ts
@@ -263,65 +415,93 @@ var list_abandoned_checkouts_default = defineTool6({
 // src/lib/mcp/tools/list-yampi-orders.ts
 import { defineTool as defineTool7 } from "npm:@lovable.dev/mcp-js@0.28.0";
 import { z as z7 } from "npm:zod@^3.25.76";
+var TOOL2 = "list_yampi_orders";
+var COLUMNS = "order_id,order_number,status,event,value_total,value_products,value_discount,payment_alias,items,utm_source,utm_medium,utm_campaign,utm_content,utm_term,event_id,gift,expected_value,price_diff,price_mismatch,is_test,created_at_yampi,updated_at_yampi,first_seen_at,last_seen_at";
+var num = (v) => v === null || v === void 0 || v === "" || Number.isNaN(Number(v)) ? null : Number(v);
 var list_yampi_orders_default = defineTool7({
-  name: "list_yampi_orders",
+  name: TOOL2,
   title: "Listar pedidos Yampi",
-  description: "Lista os pedidos registrados pelo webhook da Yampi (criados, aguardando pagamento, pagos, cancelados) com status, itens, valores, UTMs, brinde e diverg\xEAncias de pre\xE7o. Pedidos de teste (TEST...) ficam fora por padr\xE3o.",
+  description: "Lista os pedidos registrados pelo webhook da Yampi (criados, aguardando pagamento, pagos, cancelados) com status, itens, valores, UTMs, brinde e diverg\xEAncias de pre\xE7o. Pedidos de teste (TEST...) ficam fora por padr\xE3o. Somente leitura, exige papel admin.",
   inputSchema: {
     days: z7.number().int().min(1).max(365).default(30).describe("Per\xEDodo em dias."),
     limit: z7.number().int().min(1).max(200).default(50).describe("M\xE1ximo de linhas."),
+    offset: z7.number().int().min(0).max(1e4).default(0).describe("Deslocamento (pagina\xE7\xE3o)."),
     status: z7.string().optional().describe("Filtrar por status da Yampi, ex.: paid, waiting_payment, cancelled."),
     include_tests: z7.boolean().default(false).describe("Incluir pedidos de teste."),
     only_mismatches: z7.boolean().default(false).describe("Mostrar apenas pedidos com diverg\xEAncia de pre\xE7o.")
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: async ({ days, limit, status, include_tests, only_mismatches }, ctx) => {
-    if (!ctx.isAuthenticated())
-      return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
-    const supabase = supabaseForUser(ctx);
+  handler: async (input, ctx) => runTool(TOOL2, async (setStage) => {
+    const days = input.days ?? 30;
+    const limit = input.limit ?? 50;
+    const offset = input.offset ?? 0;
+    const includeTests = input.include_tests ?? false;
+    const onlyMismatches = input.only_mismatches ?? false;
+    const status = input.status?.trim().toLowerCase() || null;
+    setStage("authorization");
+    const guard = await requireAdmin(ctx, TOOL2);
+    if ("error" in guard) return guard.error;
+    setStage("query");
     const since = new Date(Date.now() - days * 864e5).toISOString();
-    let query = supabase.from("yampi_orders").select(
-      "order_id,order_number,status,event,value_total,value_products,value_discount,payment_alias,items,utm_source,utm_medium,utm_campaign,utm_content,utm_term,event_id,gift,expected_value,price_diff,price_mismatch,is_test,created_at_yampi,updated_at_yampi,first_seen_at,last_seen_at"
-    ).gte("last_seen_at", since).order("last_seen_at", { ascending: false }).limit(limit);
-    if (!include_tests) query = query.eq("is_test", false);
-    if (status?.trim()) query = query.eq("status", status.trim().toLowerCase());
-    if (only_mismatches) query = query.eq("price_mismatch", true);
-    const { data, error } = await query;
-    if (error) return { content: [{ type: "text", text: error.message }], isError: true };
-    const orders = (data ?? []).map((row) => ({
-      order_id: row.order_id,
-      order_number: row.order_number,
-      status: row.status,
-      last_event: row.event,
-      value_total: row.value_total,
-      value_products: row.value_products,
-      value_discount: row.value_discount,
-      payment: row.payment_alias,
-      items: row.items,
+    let query = guard.supabase.from("yampi_orders").select(COLUMNS, { count: "exact" }).gte("last_seen_at", since).order("last_seen_at", { ascending: false }).range(offset, offset + limit - 1);
+    if (!includeTests) query = query.eq("is_test", false);
+    if (status) query = query.eq("status", status);
+    if (onlyMismatches) query = query.eq("price_mismatch", true);
+    const { data, error, count } = await query;
+    if (error) return queryFailure(TOOL2, "query", error.message);
+    setStage("shape");
+    const rows = Array.isArray(data) ? data : [];
+    const orders = rows.map((row) => ({
+      order_id: row.order_id ?? null,
+      order_number: row.order_number ?? null,
+      status: row.status ?? null,
+      last_event: row.event ?? null,
+      /** Somente `paid`/`approved` comprovam pagamento — status logístico não. */
+      is_paid: ["paid", "approved"].includes(String(row.status ?? "").toLowerCase()),
+      value_total: num(row.value_total),
+      value_products: num(row.value_products),
+      value_discount: num(row.value_discount),
+      payment: row.payment_alias ?? null,
+      items: Array.isArray(row.items) ? row.items : [],
       utm: {
-        source: row.utm_source,
-        medium: row.utm_medium,
-        campaign: row.utm_campaign,
-        content: row.utm_content,
-        term: row.utm_term
+        source: row.utm_source ?? null,
+        medium: row.utm_medium ?? null,
+        campaign: row.utm_campaign ?? null,
+        content: row.utm_content ?? null,
+        term: row.utm_term ?? null
       },
-      event_id: row.event_id,
-      gift: row.gift,
-      expected_value: row.expected_value,
-      price_diff: row.price_diff,
-      price_mismatch: row.price_mismatch,
-      is_test: row.is_test,
-      created_at_yampi: row.created_at_yampi,
-      updated_at_yampi: row.updated_at_yampi,
-      first_seen_at: row.first_seen_at,
-      last_seen_at: row.last_seen_at
+      event_id: row.event_id ?? null,
+      gift: row.gift ?? null,
+      expected_value: num(row.expected_value),
+      price_diff: num(row.price_diff),
+      price_mismatch: Boolean(row.price_mismatch),
+      is_test: Boolean(row.is_test),
+      created_at_yampi: row.created_at_yampi ?? null,
+      updated_at_yampi: row.updated_at_yampi ?? null,
+      first_seen_at: row.first_seen_at ?? null,
+      last_seen_at: row.last_seen_at ?? null
     }));
-    const payload = { orders, count: orders.length, days, status: status ?? null, include_tests };
+    const warnings = [];
+    if (orders.length === 0) warnings.push("Nenhum pedido no per\xEDodo com os filtros informados.");
+    const payload = {
+      ok: true,
+      tool: TOOL2,
+      orders,
+      count: orders.length,
+      total_matching: typeof count === "number" ? count : null,
+      days,
+      limit,
+      offset,
+      status,
+      include_tests: includeTests,
+      only_mismatches: onlyMismatches,
+      warnings
+    };
     return {
       content: [{ type: "text", text: JSON.stringify(payload) }],
       structuredContent: payload
     };
-  }
+  })
 });
 
 // src/lib/mcp/tools/ghl-sync-status.ts
@@ -741,144 +921,21 @@ async function runPaidOrderSync(plan, api, simulate) {
   return { simulated: simulate, order_id: plan.order_id, contact_id: contactId, steps };
 }
 
-// src/lib/mcp/errors.ts
-var SENSITIVE_PATTERNS = [
-  /https?:\/\/\S+/gi,
-  // URLs (podem conter tokens/refs)
-  /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.?[A-Za-z0-9_-]*/g,
-  // JWT
-  /\b(sb_[a-z]+_[A-Za-z0-9_-]{8,}|pit-[A-Za-z0-9-]{8,})\b/g,
-  // chaves Supabase / token GHL
-  /\b[\w.+-]+@[\w-]+\.[\w.-]+\b/g,
-  // e-mail
-  /\+?\d[\d\s().-]{8,}\d/g
-  // telefone
-];
-function sanitizeMessage(input) {
-  let text = input instanceof Error ? input.message : typeof input === "string" ? input : (() => {
-    try {
-      return JSON.stringify(input);
-    } catch {
-      return String(input);
-    }
-  })();
-  if (!text) text = "Erro sem descri\xE7\xE3o.";
-  for (const pattern of SENSITIVE_PATTERNS) text = text.replace(pattern, "[oculto]");
-  return text.slice(0, 400);
-}
-function classify(message) {
-  const m = message.toLowerCase();
-  if (m.includes("permission denied for function has_role")) return "authorization_unavailable";
-  if (m.includes("permission denied") || m.includes("row-level security")) return "forbidden";
-  if (m.includes("fetch failed") || m.includes("connection") || m.includes("timeout") || m.includes("econnrefused") || m.includes("paused") || m.includes("503") || m.includes("upstream"))
-    return "backend_unavailable";
-  return "unexpected_error";
-}
-function toolFailure(params) {
-  const payload = {
-    ok: false,
-    code: params.code,
-    tool: params.tool,
-    stage: params.stage,
-    message: sanitizeMessage(params.message)
-  };
-  return {
-    content: [{ type: "text", text: JSON.stringify(payload) }],
-    structuredContent: payload,
-    isError: true
-  };
-}
-async function runTool(tool, fn) {
-  let stage = "start";
-  try {
-    return await fn((next) => {
-      stage = next;
-    });
-  } catch (err) {
-    const message = sanitizeMessage(err);
-    return toolFailure({ code: classify(message), tool, stage, message });
-  }
-}
-
-// src/lib/mcp/admin.ts
-function toolError(message) {
-  return toolFailure({
-    code: "unexpected_error",
-    tool: "mcp",
-    stage: "unknown",
-    message
-  });
-}
-function toolJson(payload) {
-  return {
-    content: [{ type: "text", text: JSON.stringify(payload) }],
-    structuredContent: payload
-  };
-}
-async function requireAdmin(ctx, tool = "mcp") {
-  if (!ctx.isAuthenticated() || !ctx.getUserId())
-    return {
-      error: toolFailure({
-        code: "not_authenticated",
-        tool,
-        stage: "auth",
-        message: "Requisi\xE7\xE3o sem usu\xE1rio autenticado."
-      })
-    };
-  const userId = ctx.getUserId();
-  try {
-    const supabase = supabaseForUser(ctx);
-    const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", userId).eq("role", "admin").maybeSingle();
-    if (error) {
-      const message = sanitizeMessage(error.message);
-      const detected = classify(message);
-      return {
-        error: toolFailure({
-          code: detected === "unexpected_error" ? "authorization_unavailable" : detected,
-          tool,
-          stage: "authorization",
-          message: `Falha ao verificar permiss\xE3o: ${message}`
-        })
-      };
-    }
-    if (!data)
-      return {
-        error: toolFailure({
-          code: "forbidden",
-          tool,
-          stage: "authorization",
-          message: "Acesso negado: esta a\xE7\xE3o exige papel admin."
-        })
-      };
-    return { supabase };
-  } catch (err) {
-    const message = sanitizeMessage(err);
-    return {
-      error: toolFailure({
-        code: classify(message),
-        tool,
-        stage: "authorization",
-        message
-      })
-    };
-  }
-}
-
 // src/lib/mcp/tools/ghl-config-status.ts
-var TOOL = "ghl_config_status";
+var TOOL3 = "ghl_config_status";
 var ghl_config_status_default = defineTool10({
-  name: TOOL,
+  name: TOOL3,
   title: "Diagn\xF3stico da integra\xE7\xE3o HighLevel",
   description: "Somente leitura: informa se o token da API direta e o location da subconta est\xE3o configurados, se o location bate com a subconta LipoVitta esperada e se o Inbound Webhook segue ativo. Retorna apenas booleanos \u2014 nunca token ou URL secreta.",
   inputSchema: {},
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: async (_input, ctx) => runTool(TOOL, async (setStage) => {
+  handler: async (_input, ctx) => runTool(TOOL3, async (setStage) => {
     setStage("authorization");
-    const guard = await requireAdmin(ctx, TOOL);
+    const guard = await requireAdmin(ctx, TOOL3);
     if ("error" in guard) return guard.error;
     setStage("read_config");
     const status = ghlConfigStatus();
-    return toolJson({ ok: true, tool: TOOL, ...status });
+    return toolJson({ ok: true, tool: TOOL3, ...status });
   })
 });
 

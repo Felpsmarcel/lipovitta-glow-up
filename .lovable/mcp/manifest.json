@@ -79,7 +79,7 @@
       {
         "name": "list_yampi_orders",
         "title": "Listar pedidos Yampi",
-        "description": "Lista os pedidos registrados pelo webhook da Yampi (criados, aguardando pagamento, pagos, cancelados) com status, itens, valores, UTMs, brinde e divergências de preço. Pedidos de teste (TEST...) ficam fora por padrão.",
+        "description": "Lista os pedidos registrados pelo webhook da Yampi (criados, aguardando pagamento, pagos, cancelados) com status, itens, valores, UTMs, brinde e divergências de preço. Pedidos de teste (TEST...) ficam fora por padrão. Somente leitura, exige papel admin.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -101,6 +101,13 @@
               "maximum": 200,
               "default": 50,
               "description": "Máximo de linhas."
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000,
+              "default": 0,
+              "description": "Deslocamento (paginação)."
             },
             "status": {
               "type": "string",
@@ -232,7 +239,7 @@
       {
         "name": "tracking_health",
         "title": "Saúde do rastreamento",
-        "description": "Compara checkouts iniciados, carrinhos abandonados, pedidos criados na Yampi (aguardando pagamento, pagos, cancelados), Purchase interno e envio para a Meta. Aponta inconsistências, erros error_404 e divergências de preço.",
+        "description": "Compara checkouts iniciados, carrinhos abandonados, pedidos criados na Yampi (aguardando pagamento, pagos, cancelados), Purchase interno, receita, UTMs e envio para a Meta. Aponta inconsistências, erros error_404 e divergências de preço. Somente leitura, exige papel admin.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
