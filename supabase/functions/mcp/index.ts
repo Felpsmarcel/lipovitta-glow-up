@@ -741,9 +741,73 @@ async function runPaidOrderSync(plan, api, simulate) {
   return { simulated: simulate, order_id: plan.order_id, contact_id: contactId, steps };
 }
 
+// src/lib/mcp/errors.ts
+var SENSITIVE_PATTERNS = [
+  /https?:\/\/\S+/gi,
+  // URLs (podem conter tokens/refs)
+  /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.?[A-Za-z0-9_-]*/g,
+  // JWT
+  /\b(sb_[a-z]+_[A-Za-z0-9_-]{8,}|pit-[A-Za-z0-9-]{8,})\b/g,
+  // chaves Supabase / token GHL
+  /\b[\w.+-]+@[\w-]+\.[\w.-]+\b/g,
+  // e-mail
+  /\+?\d[\d\s().-]{8,}\d/g
+  // telefone
+];
+function sanitizeMessage(input) {
+  let text = input instanceof Error ? input.message : typeof input === "string" ? input : (() => {
+    try {
+      return JSON.stringify(input);
+    } catch {
+      return String(input);
+    }
+  })();
+  if (!text) text = "Erro sem descri\xE7\xE3o.";
+  for (const pattern of SENSITIVE_PATTERNS) text = text.replace(pattern, "[oculto]");
+  return text.slice(0, 400);
+}
+function classify(message) {
+  const m = message.toLowerCase();
+  if (m.includes("permission denied for function has_role")) return "authorization_unavailable";
+  if (m.includes("permission denied") || m.includes("row-level security")) return "forbidden";
+  if (m.includes("fetch failed") || m.includes("connection") || m.includes("timeout") || m.includes("econnrefused") || m.includes("paused") || m.includes("503") || m.includes("upstream"))
+    return "backend_unavailable";
+  return "unexpected_error";
+}
+function toolFailure(params) {
+  const payload = {
+    ok: false,
+    code: params.code,
+    tool: params.tool,
+    stage: params.stage,
+    message: sanitizeMessage(params.message)
+  };
+  return {
+    content: [{ type: "text", text: JSON.stringify(payload) }],
+    structuredContent: payload,
+    isError: true
+  };
+}
+async function runTool(tool, fn) {
+  let stage = "start";
+  try {
+    return await fn((next) => {
+      stage = next;
+    });
+  } catch (err) {
+    const message = sanitizeMessage(err);
+    return toolFailure({ code: classify(message), tool, stage, message });
+  }
+}
+
 // src/lib/mcp/admin.ts
 function toolError(message) {
-  return { content: [{ type: "text", text: message }], isError: true };
+  return toolFailure({
+    code: "unexpected_error",
+    tool: "mcp",
+    stage: "unknown",
+    message
+  });
 }
 function toolJson(payload) {
   return {
@@ -751,29 +815,71 @@ function toolJson(payload) {
     structuredContent: payload
   };
 }
-async function requireAdmin(ctx) {
-  if (!ctx.isAuthenticated()) return { error: toolError("Not authenticated") };
+async function requireAdmin(ctx, tool = "mcp") {
+  if (!ctx.isAuthenticated() || !ctx.getUserId())
+    return {
+      error: toolFailure({
+        code: "not_authenticated",
+        tool,
+        stage: "auth",
+        message: "Requisi\xE7\xE3o sem usu\xE1rio autenticado."
+      })
+    };
   const userId = ctx.getUserId();
-  if (!userId) return { error: toolError("Not authenticated") };
-  const supabase = supabaseForUser(ctx);
-  const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", userId).eq("role", "admin").maybeSingle();
-  if (error) return { error: toolError(`Falha ao verificar permiss\xE3o: ${error.message}`) };
-  if (!data) return { error: toolError("Acesso negado: esta a\xE7\xE3o exige papel admin.") };
-  return { supabase };
+  try {
+    const supabase = supabaseForUser(ctx);
+    const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", userId).eq("role", "admin").maybeSingle();
+    if (error) {
+      const message = sanitizeMessage(error.message);
+      const detected = classify(message);
+      return {
+        error: toolFailure({
+          code: detected === "unexpected_error" ? "authorization_unavailable" : detected,
+          tool,
+          stage: "authorization",
+          message: `Falha ao verificar permiss\xE3o: ${message}`
+        })
+      };
+    }
+    if (!data)
+      return {
+        error: toolFailure({
+          code: "forbidden",
+          tool,
+          stage: "authorization",
+          message: "Acesso negado: esta a\xE7\xE3o exige papel admin."
+        })
+      };
+    return { supabase };
+  } catch (err) {
+    const message = sanitizeMessage(err);
+    return {
+      error: toolFailure({
+        code: classify(message),
+        tool,
+        stage: "authorization",
+        message
+      })
+    };
+  }
 }
 
 // src/lib/mcp/tools/ghl-config-status.ts
+var TOOL = "ghl_config_status";
 var ghl_config_status_default = defineTool10({
-  name: "ghl_config_status",
+  name: TOOL,
   title: "Diagn\xF3stico da integra\xE7\xE3o HighLevel",
-  description: "Somente leitura: informa se o token da API direta e o location da subconta est\xE3o configurados e se o Inbound Webhook segue ativo. Retorna apenas booleanos \u2014 nunca o valor de token ou URL secreta.",
+  description: "Somente leitura: informa se o token da API direta e o location da subconta est\xE3o configurados, se o location bate com a subconta LipoVitta esperada e se o Inbound Webhook segue ativo. Retorna apenas booleanos \u2014 nunca token ou URL secreta.",
   inputSchema: {},
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: async (_input, ctx) => {
-    const guard = await requireAdmin(ctx);
+  handler: async (_input, ctx) => runTool(TOOL, async (setStage) => {
+    setStage("authorization");
+    const guard = await requireAdmin(ctx, TOOL);
     if ("error" in guard) return guard.error;
-    return toolJson({ ...ghlConfigStatus() });
-  }
+    setStage("read_config");
+    const status = ghlConfigStatus();
+    return toolJson({ ok: true, tool: TOOL, ...status });
+  })
 });
 
 // src/lib/mcp/tools/ghl-list-workflows.ts

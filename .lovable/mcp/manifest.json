@@ -360,7 +360,7 @@
       {
         "name": "ghl_config_status",
         "title": "Diagnóstico da integração HighLevel",
-        "description": "Somente leitura: informa se o token da API direta e o location da subconta estão configurados e se o Inbound Webhook segue ativo. Retorna apenas booleanos — nunca o valor de token ou URL secreta.",
+        "description": "Somente leitura: informa se o token da API direta e o location da subconta estão configurados, se o location bate com a subconta LipoVitta esperada e se o Inbound Webhook segue ativo. Retorna apenas booleanos — nunca token ou URL secreta.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
