@@ -54,7 +54,7 @@ function makeSupabase(opts: {
         gte: () => chain,
         eq: () => chain,
         order: () => chain,
-        range: () => Promise.resolve(ordersResult),
+        range: () => chain,
         then: (res: any) => Promise.resolve(ordersResult).then(res),
       };
       return chain;
