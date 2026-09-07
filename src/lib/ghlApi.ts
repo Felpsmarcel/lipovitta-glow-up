@@ -61,6 +61,8 @@ export type GhlConfigStatus = {
   location_configured: boolean;
   location_source: "GHL_LOCATION_ID" | "fallback_lipovitta";
   location_id_suffix: string;
+  /** Confere se o location configurado é o da subconta LipoVitta esperada. */
+  location_matches_expected: boolean;
   direct_api_ready: boolean;
   webhook_configured: boolean;
 };
@@ -78,6 +80,7 @@ export function ghlConfigStatus(): GhlConfigStatus {
     location_configured: Boolean(location),
     location_source: explicitLocation ? "GHL_LOCATION_ID" : "fallback_lipovitta",
     location_id_suffix: location.slice(-4),
+    location_matches_expected: location === GHL_DEFAULT_LOCATION_ID,
     direct_api_ready: tokenConfigured && Boolean(location),
     webhook_configured: Boolean(runtimeEnv("GHL_WEBHOOK_URL")?.trim()),
   };
