@@ -36,15 +36,28 @@ Deno.serve(async (req) => {
   const supabaseUrl = Deno.env.get('SUPABASE_URL')
   const anonKey = Deno.env.get('SUPABASE_ANON_KEY')
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
-  const cronSecret = Deno.env.get('DAILY_REPORT_CRON_SECRET')
   if (!supabaseUrl || !anonKey || !serviceKey) {
     return json({ error: 'Server configuration error' }, 500)
   }
 
-  // --- Authorization: cron secret OR admin session ---
+  const admin = createClient(supabaseUrl, serviceKey)
+
+  // --- Authorization: internal job token (cron) OR admin session ---
   const providedSecret = req.headers.get('x-cron-secret') ?? ''
-  let authorized = !!cronSecret && !!providedSecret && timingSafeEqual(providedSecret, cronSecret)
-  let trigger = authorized ? 'cron' : 'manual'
+  let authorized = false
+  let trigger = 'manual'
+
+  if (providedSecret) {
+    const { data: tokenRow } = await admin
+      .from('internal_job_tokens')
+      .select('token')
+      .eq('job_name', 'daily-sales-report')
+      .maybeSingle()
+    if (tokenRow?.token && timingSafeEqual(providedSecret, tokenRow.token)) {
+      authorized = true
+      trigger = 'cron'
+    }
+  }
 
   if (!authorized) {
     const authHeader = req.headers.get('Authorization') ?? ''
@@ -68,7 +81,6 @@ Deno.serve(async (req) => {
     trigger = 'manual'
   }
 
-  const admin = createClient(supabaseUrl, serviceKey)
 
   // --- Build the report ---
   const reportDay = new Date(
