@@ -11,3 +11,5 @@ project_id = "ecgquvfoipmoqlhfkfol"
     verify_jwt = false
   [functions.send-fulfillment-test]
     verify_jwt = true
+  [functions.daily-sales-report]
+    verify_jwt = false

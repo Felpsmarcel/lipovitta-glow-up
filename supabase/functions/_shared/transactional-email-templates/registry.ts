@@ -2,6 +2,7 @@ import type { ComponentType } from 'npm:react@18.3.1'
 import { template as newAffiliateApplication } from './new-affiliate-application.tsx'
 import { template as newCommercialPartnerApplication } from './new-commercial-partner-application.tsx'
 import { template as fulfillmentOrderCheckTest } from './fulfillment-order-check-test.tsx'
+import { template as dailySalesReport } from './daily-sales-report.tsx'
 
 
 export interface TemplateEntry {
@@ -17,5 +18,6 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'new-affiliate-application': newAffiliateApplication,
   'new-commercial-partner-application': newCommercialPartnerApplication,
   'fulfillment-order-check-test': fulfillmentOrderCheckTest,
+  'daily-sales-report': dailySalesReport,
 }
 
