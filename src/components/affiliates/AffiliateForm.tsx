@@ -113,25 +113,13 @@ const AffiliateForm = () => {
     }
 
     try {
-      await supabase.functions.invoke("send-transactional-email", {
-        body: {
-          templateName: "new-affiliate-application",
-          recipientEmail: NOTIFY_EMAIL,
-          idempotencyKey: `affiliate-${inserted.id}`,
-          templateData: {
-            fullName: payload.full_name,
-            phone: payload.phone,
-            email: payload.email,
-            followersRange: payload.followers_range,
-            state: payload.state,
-            knowsProduct: payload.knows_product,
-            submittedAt: new Date(inserted.created_at).toLocaleString("pt-BR"),
-          },
-        },
+      await supabase.functions.invoke("notify-application", {
+        body: { type: "affiliate", applicationId: inserted.id },
       });
     } catch {
       /* silent */
     }
+
 
     const waLink = buildWhatsAppAffiliateDataLink({
       type: "afiliada",
