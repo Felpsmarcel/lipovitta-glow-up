@@ -27,6 +27,33 @@ const STATUS_LABEL: Record<string, string> = {
 const bahia = (iso: string) =>
   new Date(iso).toLocaleString("pt-BR", { timeZone: "America/Bahia" });
 
+// O disparo automático roda todo dia às 12:00 UTC = 09:00 na Bahia.
+const nextRun = () => {
+  const now = new Date();
+  const next = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12, 0, 0),
+  );
+  if (next.getTime() <= now.getTime()) next.setUTCDate(next.getUTCDate() + 1);
+  return next.toLocaleString("pt-BR", {
+    timeZone: "America/Bahia",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const triggerLabel = (metadata: Record<string, unknown> | null) =>
+  metadata?.trigger === "cron" ? "automático" : metadata?.trigger === "manual" ? "manual" : "—";
+
+const reportDateOf = (metadata: Record<string, unknown> | null) => {
+  const value = metadata?.report_date;
+  if (typeof value !== "string") return "—";
+  const [y, m, d] = value.split("-");
+  return y && m && d ? `${d}/${m}/${y}` : value;
+};
+
 const RelatoriosDiarios = () => {
   const [session, setSession] = useState<boolean | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
@@ -195,6 +222,13 @@ const RelatoriosDiarios = () => {
           </div>
         </header>
 
+        <div className="mb-4 rounded-2xl border border-border bg-background p-4">
+          <p className="text-sm font-semibold text-foreground">
+            Envio automático ativo — todo dia às 09:00 (horário da Bahia)
+          </p>
+          <p className="text-sm text-muted-foreground">Próximo envio: {nextRun()} (Bahia)</p>
+        </div>
+
         {feedback && (
           <p className="mb-4 rounded-2xl border border-border bg-background p-4 text-sm text-foreground">{feedback}</p>
         )}
@@ -207,6 +241,8 @@ const RelatoriosDiarios = () => {
                   <th className="px-4 py-2">Quando (Bahia)</th>
                   <th className="px-4 py-2">Destinatário</th>
                   <th className="px-4 py-2">Status</th>
+                  <th className="px-4 py-2">Origem</th>
+                  <th className="px-4 py-2">Dia do relatório</th>
                   <th className="px-4 py-2">Referência</th>
                   <th className="px-4 py-2">Observação</th>
                 </tr>
@@ -225,13 +261,17 @@ const RelatoriosDiarios = () => {
                         {STATUS_LABEL[r.status] ?? r.status}
                       </span>
                     </td>
+                    <td className="px-4 py-2 text-xs text-muted-foreground">{triggerLabel(r.metadata)}</td>
+                    <td className="px-4 py-2 text-xs text-muted-foreground whitespace-nowrap">
+                      {reportDateOf(r.metadata)}
+                    </td>
                     <td className="px-4 py-2 text-xs text-muted-foreground break-all">{r.message_id ?? "—"}</td>
                     <td className="px-4 py-2 text-xs text-muted-foreground">{r.error_message ?? "—"}</td>
                   </tr>
                 ))}
                 {rows.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="px-4 py-6 text-center text-muted-foreground">
+                    <td colSpan={7} className="px-4 py-6 text-center text-muted-foreground">
                       Nenhum envio registrado ainda.
                     </td>
                   </tr>

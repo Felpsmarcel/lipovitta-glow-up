@@ -16,7 +16,7 @@ const SENDER_DOMAIN = "notify.lipovitta.site"
 const FROM_DOMAIN = "lipovitta.site"
 
 export type SendTemplateEmailResult =
-  | { sent: true }
+  | { sent: true; messageId: string | null }
   | { sent: false; reason: 'recipient_suppressed' }
 
 export interface SendTemplateEmailOptions {
@@ -66,8 +66,9 @@ export async function sendTemplateEmail(
       ? template.subject(templateData)
       : template.subject
 
+  let messageId: string | null = null
   try {
-    await sendLovableEmail(
+    const response: any = await sendLovableEmail(
       {
         to: recipient,
         from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
@@ -82,6 +83,10 @@ export async function sendTemplateEmail(
       },
       { apiKey, sendUrl: Deno.env.get('LOVABLE_SEND_URL') }
     )
+    const raw =
+      response?.message_id ?? response?.messageId ?? response?.id ??
+      response?.data?.message_id ?? response?.data?.id ?? null
+    messageId = raw ? String(raw) : null
   } catch (error) {
     if (error instanceof EmailAPIError && error.code === 'recipient_suppressed') {
       return { sent: false, reason: 'recipient_suppressed' }
@@ -89,5 +94,5 @@ export async function sendTemplateEmail(
     throw error
   }
 
-  return { sent: true }
+  return { sent: true, messageId }
 }

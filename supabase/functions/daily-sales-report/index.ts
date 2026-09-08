@@ -142,18 +142,20 @@ Deno.serve(async (req) => {
         idempotencyKey,
       })
       const status = result.sent ? 'sent' : 'suppressed'
+      const messageId = result.sent ? result.messageId : null
       const { data: logged } = await admin
         .from('email_send_log')
         .insert({
           template_name: TEMPLATE_NAME,
           recipient_email: recipient,
           status,
+          message_id: messageId,
           metadata: { idempotency_key: idempotencyKey, report_date: reportDate, trigger },
         })
         .select('id, created_at')
         .maybeSingle()
 
-      results.push({ recipient, status, logged_at: logged?.created_at ?? null })
+      results.push({ recipient, status, message_id: messageId, logged_at: logged?.created_at ?? null })
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown send failure'
       console.error('Daily report send failed', { message })
