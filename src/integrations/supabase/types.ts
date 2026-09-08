@@ -380,6 +380,27 @@ export type Database = {
         }
         Relationships: []
       }
+      internal_job_tokens: {
+        Row: {
+          created_at: string
+          job_name: string
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          job_name: string
+          token: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          job_name?: string
+          token?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mcp_action_log: {
         Row: {
           action: string
