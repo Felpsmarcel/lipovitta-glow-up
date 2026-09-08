@@ -241,6 +241,8 @@ const RelatoriosDiarios = () => {
                   <th className="px-4 py-2">Quando (Bahia)</th>
                   <th className="px-4 py-2">Destinatário</th>
                   <th className="px-4 py-2">Status</th>
+                  <th className="px-4 py-2">Origem</th>
+                  <th className="px-4 py-2">Dia do relatório</th>
                   <th className="px-4 py-2">Referência</th>
                   <th className="px-4 py-2">Observação</th>
                 </tr>
@@ -259,13 +261,17 @@ const RelatoriosDiarios = () => {
                         {STATUS_LABEL[r.status] ?? r.status}
                       </span>
                     </td>
+                    <td className="px-4 py-2 text-xs text-muted-foreground">{triggerLabel(r.metadata)}</td>
+                    <td className="px-4 py-2 text-xs text-muted-foreground whitespace-nowrap">
+                      {reportDateOf(r.metadata)}
+                    </td>
                     <td className="px-4 py-2 text-xs text-muted-foreground break-all">{r.message_id ?? "—"}</td>
                     <td className="px-4 py-2 text-xs text-muted-foreground">{r.error_message ?? "—"}</td>
                   </tr>
                 ))}
                 {rows.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="px-4 py-6 text-center text-muted-foreground">
+                    <td colSpan={7} className="px-4 py-6 text-center text-muted-foreground">
                       Nenhum envio registrado ainda.
                     </td>
                   </tr>
