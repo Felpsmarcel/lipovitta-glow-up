@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS public.daily_report_schedule_status();
