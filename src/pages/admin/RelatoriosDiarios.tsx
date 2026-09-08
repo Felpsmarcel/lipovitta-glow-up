@@ -27,6 +27,33 @@ const STATUS_LABEL: Record<string, string> = {
 const bahia = (iso: string) =>
   new Date(iso).toLocaleString("pt-BR", { timeZone: "America/Bahia" });
 
+// O disparo automático roda todo dia às 12:00 UTC = 09:00 na Bahia.
+const nextRun = () => {
+  const now = new Date();
+  const next = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12, 0, 0),
+  );
+  if (next.getTime() <= now.getTime()) next.setUTCDate(next.getUTCDate() + 1);
+  return next.toLocaleString("pt-BR", {
+    timeZone: "America/Bahia",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const triggerLabel = (metadata: Record<string, unknown> | null) =>
+  metadata?.trigger === "cron" ? "automático" : metadata?.trigger === "manual" ? "manual" : "—";
+
+const reportDateOf = (metadata: Record<string, unknown> | null) => {
+  const value = metadata?.report_date;
+  if (typeof value !== "string") return "—";
+  const [y, m, d] = value.split("-");
+  return y && m && d ? `${d}/${m}/${y}` : value;
+};
+
 const RelatoriosDiarios = () => {
   const [session, setSession] = useState<boolean | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
@@ -194,6 +221,13 @@ const RelatoriosDiarios = () => {
             </button>
           </div>
         </header>
+
+        <div className="mb-4 rounded-2xl border border-border bg-background p-4">
+          <p className="text-sm font-semibold text-foreground">
+            Envio automático ativo — todo dia às 09:00 (horário da Bahia)
+          </p>
+          <p className="text-sm text-muted-foreground">Próximo envio: {nextRun()} (Bahia)</p>
+        </div>
 
         {feedback && (
           <p className="mb-4 rounded-2xl border border-border bg-background p-4 text-sm text-foreground">{feedback}</p>
