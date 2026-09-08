@@ -3,7 +3,7 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { trackLead, trackLeadStart } from "@/lib/tracking";
 import { buildWhatsAppAffiliateDataLink, buildWhatsAppAffiliateMessage } from "@/lib/whatsapp";
-import { STATES, NOTIFY_EMAIL, Field, inputCls, SuccessCard, WhatsAppPreview } from "@/components/affiliates/shared";
+import { STATES, Field, inputCls, SuccessCard, WhatsAppPreview } from "@/components/affiliates/shared";
 
 const FOLLOWERS = [
   { value: "ate_1k", label: "Até 1.000" },
@@ -113,25 +113,13 @@ const AffiliateForm = () => {
     }
 
     try {
-      await supabase.functions.invoke("send-transactional-email", {
-        body: {
-          templateName: "new-affiliate-application",
-          recipientEmail: NOTIFY_EMAIL,
-          idempotencyKey: `affiliate-${inserted.id}`,
-          templateData: {
-            fullName: payload.full_name,
-            phone: payload.phone,
-            email: payload.email,
-            followersRange: payload.followers_range,
-            state: payload.state,
-            knowsProduct: payload.knows_product,
-            submittedAt: new Date(inserted.created_at).toLocaleString("pt-BR"),
-          },
-        },
+      await supabase.functions.invoke("notify-application", {
+        body: { type: "affiliate", applicationId: inserted.id },
       });
     } catch {
       /* silent */
     }
+
 
     const waLink = buildWhatsAppAffiliateDataLink({
       type: "afiliada",

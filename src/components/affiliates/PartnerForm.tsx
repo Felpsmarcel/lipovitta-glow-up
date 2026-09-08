@@ -3,7 +3,7 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { trackLead, trackLeadStart } from "@/lib/tracking";
 import { buildWhatsAppAffiliateDataLink, buildWhatsAppAffiliateMessage } from "@/lib/whatsapp";
-import { STATES, NOTIFY_EMAIL, Field, inputCls, SuccessCard, WhatsAppPreview } from "@/components/affiliates/shared";
+import { STATES, Field, inputCls, SuccessCard, WhatsAppPreview } from "@/components/affiliates/shared";
 
 const BUSINESS_TYPES = [
   "Farmácia",
@@ -158,28 +158,13 @@ const PartnerForm = () => {
     }
 
     try {
-      await supabase.functions.invoke("send-transactional-email", {
-        body: {
-          templateName: "new-commercial-partner-application",
-          recipientEmail: NOTIFY_EMAIL,
-          idempotencyKey: `partner-${inserted.id}`,
-          templateData: {
-            responsibleName: payload.responsible_name,
-            phone: payload.phone,
-            email: payload.email,
-            cnpj: payload.cnpj,
-            companyName: payload.company_name,
-            businessType: payload.business_type,
-            city: payload.city,
-            state: payload.state,
-            volumeNotes: payload.volume_notes || "-",
-            submittedAt: new Date(inserted.created_at).toLocaleString("pt-BR"),
-          },
-        },
+      await supabase.functions.invoke("notify-application", {
+        body: { type: "partner", applicationId: inserted.id },
       });
     } catch {
       /* silent */
     }
+
 
     const waLink = buildWhatsAppAffiliateDataLink({
       type: "parceiro",
