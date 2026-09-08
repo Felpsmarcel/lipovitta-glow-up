@@ -9,3 +9,5 @@ project_id = "ecgquvfoipmoqlhfkfol"
     verify_jwt = false
   [functions.notify-application]
     verify_jwt = false
+  [functions.send-fulfillment-test]
+    verify_jwt = true
