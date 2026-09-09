@@ -243,7 +243,7 @@ const Webhooks = () => {
   const retryGhl = async () => {
     setGhlBusy(true);
     try {
-      const { data } = await supabase.functions.invoke("ghl-dispatch", { body: { action: "retry" } });
+      const { data } = await supabase.functions.invoke("ghl-dispatch", { body: { retry_failed: true } });
       if (data?.ok) await load();
     } finally {
       setGhlBusy(false);
