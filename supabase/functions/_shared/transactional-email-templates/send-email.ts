@@ -16,7 +16,17 @@ const SENDER_DOMAIN = "notify.lipovitta.site"
 const FROM_DOMAIN = "lipovitta.site"
 
 export type SendTemplateEmailResult =
-  | { sent: true; messageId: string | null }
+  | {
+      sent: true
+      /** Aceito pela API de e-mail — não é confirmação de entrega na caixa. */
+      deliveryState: 'accepted_by_provider'
+      messageId: string | null
+      workflowId: string | null
+      providerStatus: string | null
+      contentHash: string
+      htmlBytes: number
+      textBytes: number
+    }
   | { sent: false; reason: 'recipient_suppressed' }
 
 export interface SendTemplateEmailOptions {
@@ -24,6 +34,15 @@ export interface SendTemplateEmailOptions {
   /** Dedupes retries of the same logical send; defaults to a random UUID (no dedupe). */
   idempotencyKey?: string
   replyTo?: string
+  /** Substitui o assunto do template (usado em envios de conferência). */
+  subjectOverride?: string
+}
+
+async function sha256Hex(value: string): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value))
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('')
 }
 
 /**
@@ -62,11 +81,15 @@ export async function sendTemplateEmail(
   const html = await renderAsync(element)
   const text = await renderAsync(element, { plainText: true })
   const subject =
-    typeof template.subject === 'function'
+    options.subjectOverride ??
+    (typeof template.subject === 'function'
       ? template.subject(templateData)
-      : template.subject
+      : template.subject)
+  const contentHash = await sha256Hex(`${subject}\n${html}`)
 
   let messageId: string | null = null
+  let workflowId: string | null = null
+  let providerStatus: string | null = null
   try {
     const response: any = await sendLovableEmail(
       {
@@ -83,10 +106,11 @@ export async function sendTemplateEmail(
       },
       { apiKey, sendUrl: Deno.env.get('LOVABLE_SEND_URL') }
     )
-    const raw =
-      response?.message_id ?? response?.messageId ?? response?.id ??
-      response?.data?.message_id ?? response?.data?.id ?? null
+    // Contrato do SDK 0.1.0: { success, message_id?, workflow_id?, status? }
+    const raw = response?.message_id ?? null
     messageId = raw ? String(raw) : null
+    workflowId = response?.workflow_id ? String(response.workflow_id) : null
+    providerStatus = response?.status ? String(response.status) : null
   } catch (error) {
     if (error instanceof EmailAPIError && error.code === 'recipient_suppressed') {
       return { sent: false, reason: 'recipient_suppressed' }
@@ -94,5 +118,31 @@ export async function sendTemplateEmail(
     throw error
   }
 
-  return { sent: true, messageId }
+  return {
+    sent: true,
+    deliveryState: 'accepted_by_provider',
+    messageId,
+    workflowId,
+    providerStatus,
+    contentHash,
+    htmlBytes: html.length,
+    textBytes: text.length,
+  }
+}
+
+/** Renderiza um template registrado sem enviar (prévia somente leitura). */
+export async function renderTemplatePreview(
+  templateName: string,
+  templateData: Record<string, any>,
+  subjectOverride?: string,
+): Promise<{ subject: string; html: string; text: string; contentHash: string }> {
+  const template = TEMPLATES[templateName]
+  if (!template) throw new Error(`Template '${templateName}' not found`)
+  const element = React.createElement(template.component, templateData)
+  const html = await renderAsync(element)
+  const text = await renderAsync(element, { plainText: true })
+  const subject =
+    subjectOverride ??
+    (typeof template.subject === 'function' ? template.subject(templateData) : template.subject)
+  return { subject, html, text, contentHash: await sha256Hex(`${subject}\n${html}`) }
 }

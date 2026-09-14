@@ -546,9 +546,62 @@ Deno.serve(async (req: Request) => {
   }
 
 
+  // --- Evidência durável de pagamento — uma linha por pedido, imutável ---
+  if (isPaid) {
+    try {
+      const { error: payErr } = await serviceClient()
+        .from("order_payments")
+        .upsert(
+          {
+            order_id: orderId,
+            paid_at: new Date().toISOString(),
+            paid_at_provenance: "event_received_at",
+            source: `yampi-webhook:${event}`,
+            evidence: { event, status: statusAlias || null },
+            is_test: isTest,
+          },
+          { onConflict: "order_id", ignoreDuplicates: true },
+        );
+      if (payErr) console.error(`[yampi-webhook:${requestId}] evidência de pagamento falhou:`, payErr.message);
+    } catch (e) {
+      console.error(`[yampi-webhook:${requestId}] evidência de pagamento erro:`, (e as Error).message);
+    }
+  }
+
   // --- Registro do pedido (sem PII) — idempotente por order_id ---
   try {
     const nowIso = new Date().toISOString();
+    // Atualizações parciais (logística) não podem apagar itens nem o brinde já registrado.
+    const { data: existingOrder } = await serviceClient()
+      .from("yampi_orders")
+      .select("items, gift, gift_source, paid_at, event_id")
+      .eq("order_id", orderId)
+      .maybeSingle();
+
+    // deno-lint-ignore no-explicit-any
+    const incomingItems = items.map((i: any) => ({
+      sku: itemSku(i),
+      name: itemName(i),
+      quantity: Number(i?.quantity ?? 1),
+      price: numOrNull(i?.price ?? i?.unit_price ?? i?.total),
+    }));
+    const existingItems = Array.isArray(existingOrder?.items) ? existingOrder.items : [];
+    const mergedItems = incomingItems.length > 0 ? incomingItems : existingItems;
+
+    const incomingGift = utms.utm_content ?? null;
+    const mergedGift = incomingGift ?? (existingOrder?.gift || null);
+    const mergedGiftSource = incomingGift
+      ? "yampi_utm_content"
+      : existingOrder?.gift
+        ? existingOrder.gift_source ?? "yampi_utm_content"
+        : null;
+
+    const { data: paymentRow } = await serviceClient()
+      .from("order_payments")
+      .select("paid_at")
+      .eq("order_id", orderId)
+      .maybeSingle();
+
     const orderRow = {
       order_id: orderId,
       order_number: str(resource?.number ?? resource?.order_number, 40),
@@ -565,16 +618,12 @@ Deno.serve(async (req: Request) => {
           resource?.payment?.alias,
         60
       ),
-      // deno-lint-ignore no-explicit-any
-      items: items.map((i: any) => ({
-        sku: itemSku(i),
-        name: itemName(i),
-        quantity: Number(i?.quantity ?? 1),
-        price: numOrNull(i?.price ?? i?.unit_price ?? i?.total),
-      })),
+      items: mergedItems,
       ...utms,
       event_id: eventId,
-      gift: utms.utm_content ?? null,
+      gift: mergedGift,
+      gift_source: mergedGiftSource,
+      paid_at: paymentRow?.paid_at ?? existingOrder?.paid_at ?? null,
       expected_value: expectedValue,
       price_diff: priceDiff,
       price_mismatch: priceMismatch,
@@ -592,11 +641,14 @@ Deno.serve(async (req: Request) => {
         order_id: orderId,
         status: statusAlias || null,
         value_total: paidValue,
+        items_kept: mergedItems.length,
+        gift_present: Boolean(mergedGift),
         is_test: isTest,
       });
   } catch (e) {
     console.error(`[yampi-webhook:${requestId}] upsert pedido erro:`, (e as Error).message);
   }
+
 
   // Todos os eventos de pedido entram na fila; somente pedidos pagos geram Purchase.
   await enqueueGhl(

@@ -54,6 +54,34 @@ const reportDateOf = (metadata: Record<string, unknown> | null) => {
   return y && m && d ? `${d}/${m}/${y}` : value;
 };
 
+const RECIPIENTS = [
+  "ffmconsultoria@gmail.com",
+  "pedrogmneto@hotmail.com",
+  "Emersoncopywriter21@gmail.com",
+];
+
+type Preview = {
+  subject: string;
+  html: string;
+  text: string;
+  stats: {
+    orders_count: number;
+    items_count: number;
+    gifts_count: number;
+    gift_pending_count: number;
+  };
+};
+
+const todayBahia = () => {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Bahia",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+  return parts;
+};
+
 const RelatoriosDiarios = () => {
   const [session, setSession] = useState<boolean | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
@@ -64,6 +92,10 @@ const RelatoriosDiarios = () => {
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [previewDate, setPreviewDate] = useState(todayBahia());
+  const [conferenceTo, setConferenceTo] = useState(RECIPIENTS[0]);
+  const [preview, setPreview] = useState<Preview | null>(null);
+
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(!!s));
@@ -122,6 +154,60 @@ const RelatoriosDiarios = () => {
       setBusy(false);
     }
   };
+
+  const loadPreview = async () => {
+    setBusy(true);
+    setFeedback(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("daily-sales-report", {
+        body: { mode: "preview", report_date: previewDate || undefined },
+      });
+      if (error || !data?.html) {
+        setPreview(null);
+        setFeedback("Não foi possível gerar a prévia agora.");
+        return;
+      }
+      setPreview({
+        subject: String(data.subject ?? ""),
+        html: String(data.html ?? ""),
+        text: String(data.text ?? ""),
+        stats: {
+          orders_count: Number(data.content_stats?.orders_count ?? 0),
+          items_count: Number(data.content_stats?.items_count ?? 0),
+          gifts_count: Number(data.content_stats?.gifts_count ?? 0),
+          gift_pending_count: Number(data.content_stats?.gift_pending_count ?? 0),
+        },
+      });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const sendConference = async () => {
+    setBusy(true);
+    setFeedback(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("daily-sales-report", {
+        body: { mode: "conference", recipient: conferenceTo, report_date: previewDate || undefined },
+      });
+      const result = data?.results?.[0];
+      if (error || !result) {
+        setFeedback("Não foi possível enviar a conferência agora.");
+      } else if (result.status === "skipped") {
+        setFeedback(`Conferência já enviada hoje para ${conferenceTo}.`);
+      } else if (result.status === "sent") {
+        setFeedback(`Conferência aceita pelo serviço de e-mail para ${conferenceTo}.`);
+      } else if (result.status === "suppressed") {
+        setFeedback(`${conferenceTo} está na lista de bloqueio do serviço de e-mail.`);
+      } else {
+        setFeedback(`Falha ao enviar para ${conferenceTo}.`);
+      }
+      await load();
+    } finally {
+      setBusy(false);
+    }
+  };
+
 
   const signIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -229,9 +315,76 @@ const RelatoriosDiarios = () => {
           <p className="text-sm text-muted-foreground">Próximo envio: {nextRun()} (Bahia)</p>
         </div>
 
+        <section className="mb-4 rounded-2xl border border-border bg-background p-4 space-y-3">
+          <div>
+            <p className="text-sm font-semibold text-foreground">Prévia e conferência</p>
+            <p className="text-xs text-muted-foreground">
+              A prévia não envia nada. A conferência envia um e-mail por vez, apenas para os endereços
+              autorizados, com o aviso “CONFERÊNCIA - NÃO GERAR NOVA EXPEDIÇÃO”.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="text-xs text-muted-foreground">
+              Dia do relatório
+              <input
+                type="date"
+                value={previewDate}
+                onChange={(e) => setPreviewDate(e.target.value)}
+                className="ml-2 px-3 py-2 rounded-xl border border-border bg-background text-sm text-foreground"
+              />
+            </label>
+            <button
+              onClick={() => void loadPreview()}
+              disabled={busy}
+              className="px-4 py-2 rounded-xl border border-border text-sm font-semibold disabled:opacity-60"
+            >
+              {busy ? "Carregando…" : "Ver prévia"}
+            </button>
+            <select
+              value={conferenceTo}
+              onChange={(e) => setConferenceTo(e.target.value)}
+              className="px-3 py-2 rounded-xl border border-border bg-background text-sm text-foreground"
+            >
+              {RECIPIENTS.map((r) => (
+                <option key={r} value={r}>
+                  {r}
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={() => void sendConference()}
+              disabled={busy}
+              className="px-4 py-2 rounded-xl bg-secondary text-secondary-foreground text-sm font-bold disabled:opacity-60"
+            >
+              Enviar conferência
+            </button>
+          </div>
+          {preview && (
+            <div className="space-y-3">
+              <p className="text-xs text-muted-foreground">
+                Assunto: <span className="text-foreground">{preview.subject}</span> · {preview.stats.orders_count}{" "}
+                pedido(s), {preview.stats.items_count} item(ns), {preview.stats.gifts_count} brinde(s),{" "}
+                {preview.stats.gift_pending_count} pendência(s) de brinde
+              </p>
+              <iframe
+                title="Prévia do relatório"
+                srcDoc={preview.html}
+                className="w-full h-[520px] rounded-xl border border-border bg-background"
+              />
+              <details>
+                <summary className="text-xs text-muted-foreground cursor-pointer">Ver versão em texto</summary>
+                <pre className="mt-2 max-h-80 overflow-auto whitespace-pre-wrap rounded-xl bg-muted/60 p-3 text-xs text-foreground">
+                  {preview.text}
+                </pre>
+              </details>
+            </div>
+          )}
+        </section>
+
         {feedback && (
           <p className="mb-4 rounded-2xl border border-border bg-background p-4 text-sm text-foreground">{feedback}</p>
         )}
+
 
         <section className="bg-background border border-border rounded-2xl overflow-hidden">
           <div className="overflow-x-auto">
