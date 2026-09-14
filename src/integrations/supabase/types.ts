@@ -440,6 +440,39 @@ export type Database = {
         }
         Relationships: []
       }
+      order_payments: {
+        Row: {
+          created_at: string
+          evidence: Json
+          is_test: boolean
+          order_id: string
+          paid_at: string
+          paid_at_provenance: string
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          evidence?: Json
+          is_test?: boolean
+          order_id: string
+          paid_at: string
+          paid_at_provenance?: string
+          source: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          evidence?: Json
+          is_test?: boolean
+          order_id?: string
+          paid_at?: string
+          paid_at_provenance?: string
+          source?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       suppressed_emails: {
         Row: {
           created_at: string
@@ -493,12 +526,14 @@ export type Database = {
           expected_value: number | null
           first_seen_at: string
           gift: string | null
+          gift_source: string | null
           id: string
           is_test: boolean
           items: Json
           last_seen_at: string
           order_id: string
           order_number: string | null
+          paid_at: string | null
           payment_alias: string | null
           price_diff: number | null
           price_mismatch: boolean
@@ -520,12 +555,14 @@ export type Database = {
           expected_value?: number | null
           first_seen_at?: string
           gift?: string | null
+          gift_source?: string | null
           id?: string
           is_test?: boolean
           items?: Json
           last_seen_at?: string
           order_id: string
           order_number?: string | null
+          paid_at?: string | null
           payment_alias?: string | null
           price_diff?: number | null
           price_mismatch?: boolean
@@ -547,12 +584,14 @@ export type Database = {
           expected_value?: number | null
           first_seen_at?: string
           gift?: string | null
+          gift_source?: string | null
           id?: string
           is_test?: boolean
           items?: Json
           last_seen_at?: string
           order_id?: string
           order_number?: string | null
+          paid_at?: string | null
           payment_alias?: string | null
           price_diff?: number | null
           price_mismatch?: boolean
@@ -617,6 +656,7 @@ export type Database = {
     }
     Functions: {
       daily_sales_report: { Args: { _report_date?: string }; Returns: Json }
+      gift_display_name: { Args: { _code: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -634,6 +674,10 @@ export type Database = {
       }
       mcp_tracking_health: {
         Args: { _days?: number; _include_tests?: boolean }
+        Returns: Json
+      }
+      paid_orders_detail: {
+        Args: { _from: string; _to: string }
         Returns: Json
       }
     }
