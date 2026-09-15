@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.daily_report_schedule_status() FROM authenticated;
