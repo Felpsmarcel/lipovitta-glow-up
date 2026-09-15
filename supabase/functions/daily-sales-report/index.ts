@@ -97,7 +97,7 @@ Deno.serve(async (req) => {
   } catch {
     body = {}
   }
-  const mode = ['send', 'preview', 'conference'].includes(String(body?.mode))
+  const mode = ['send', 'preview', 'conference', 'schedule'].includes(String(body?.mode))
     ? String(body.mode)
     : 'send'
 
@@ -143,6 +143,18 @@ Deno.serve(async (req) => {
   if (mode !== 'send' && trigger !== 'manual') {
     return json({ error: 'Preview and conference require an admin session' }, 403)
   }
+
+  // --- Read-only: real state of the scheduled job ---
+  if (mode === 'schedule') {
+    const { data: schedule, error: scheduleError } = await admin.rpc('daily_report_schedule_status')
+    if (scheduleError) {
+      console.error('Failed to read schedule status', { code: scheduleError.code })
+      return json({ error: 'Failed to read schedule status' }, 500)
+    }
+    return json({ schedule })
+  }
+
+
 
   // --- Build the report ---
   const requestedDate = typeof body?.report_date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(body.report_date)

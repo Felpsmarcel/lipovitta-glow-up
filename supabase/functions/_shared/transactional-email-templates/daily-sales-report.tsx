@@ -290,9 +290,10 @@ function validateOrders(list: unknown, label: string, errors: string[]) {
     if (typeof o?.value_total !== 'number' || Number.isNaN(o.value_total)) {
       errors.push(`${at}.value_total must be a number`)
     }
-    if (!Array.isArray(o?.items) || (o.items as unknown[]).length === 0) {
-      errors.push(`${at}.items must be a non-empty array`)
+    if (!Array.isArray(o?.items)) {
+      errors.push(`${at}.items must be an array`)
     } else {
+      // Lista vazia é permitida: o e-mail mostra "ITENS NÃO DISPONÍVEIS - CONFERÊNCIA OBRIGATÓRIA".
       ;(o.items as Record<string, unknown>[]).forEach((it, i) => {
         if (typeof it?.name !== 'string' || !it.name.trim()) errors.push(`${at}.items[${i}].name is required`)
         if (typeof it?.sku !== 'string' || !it.sku.trim()) errors.push(`${at}.items[${i}].sku is required`)

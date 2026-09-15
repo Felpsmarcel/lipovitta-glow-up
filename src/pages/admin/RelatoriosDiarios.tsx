@@ -72,6 +72,13 @@ type Preview = {
   };
 };
 
+type ScheduleState = {
+  found: boolean;
+  active: boolean;
+  schedule?: string;
+  unknown?: boolean;
+};
+
 const todayBahia = () => {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "America/Bahia",
@@ -95,6 +102,8 @@ const RelatoriosDiarios = () => {
   const [previewDate, setPreviewDate] = useState(todayBahia());
   const [conferenceTo, setConferenceTo] = useState(RECIPIENTS[0]);
   const [preview, setPreview] = useState<Preview | null>(null);
+  const [schedule, setSchedule] = useState<ScheduleState | null>(null);
+
 
 
   useEffect(() => {
@@ -129,8 +138,23 @@ const RelatoriosDiarios = () => {
   }, []);
 
   useEffect(() => {
-    if (isAdmin) void load();
+    if (!isAdmin) return;
+    void load();
+    void supabase.functions
+      .invoke("daily-sales-report", { body: { mode: "schedule" } })
+      .then(({ data, error }) => {
+        if (error || !data?.schedule) {
+          setSchedule({ found: false, active: false, unknown: true });
+          return;
+        }
+        setSchedule({
+          found: !!data.schedule.found,
+          active: !!data.schedule.active,
+          schedule: data.schedule.schedule ?? undefined,
+        });
+      });
   }, [isAdmin, load]);
+
 
   const sendNow = async () => {
     setBusy(true);
@@ -309,11 +333,27 @@ const RelatoriosDiarios = () => {
         </header>
 
         <div className="mb-4 rounded-2xl border border-border bg-background p-4">
-          <p className="text-sm font-semibold text-foreground">
-            Envio automático ativo — todo dia às 09:00 (horário da Bahia)
-          </p>
-          <p className="text-sm text-muted-foreground">Próximo envio: {nextRun()} (Bahia)</p>
+          {schedule === null ? (
+            <p className="text-sm text-muted-foreground">Verificando o envio automático…</p>
+          ) : schedule.unknown ? (
+            <p className="text-sm font-semibold text-foreground">
+              Não foi possível verificar o envio automático agora.
+            </p>
+          ) : schedule.found && schedule.active ? (
+            <>
+              <p className="text-sm font-semibold text-foreground">
+                Envio automático ativo — todo dia às 09:00 (horário da Bahia)
+              </p>
+              <p className="text-sm text-muted-foreground">Próximo envio: {nextRun()} (Bahia)</p>
+            </>
+          ) : (
+            <p className="text-sm font-semibold text-destructive">
+              Envio automático {schedule.found ? "pausado" : "não configurado"} — nenhum relatório será
+              enviado sozinho. Use o botão de envio manual enquanto isso.
+            </p>
+          )}
         </div>
+
 
         <section className="mb-4 rounded-2xl border border-border bg-background p-4 space-y-3">
           <div>

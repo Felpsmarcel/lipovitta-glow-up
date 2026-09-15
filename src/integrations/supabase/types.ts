@@ -655,6 +655,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      daily_report_schedule_status: { Args: never; Returns: Json }
       daily_sales_report: { Args: { _report_date?: string }; Returns: Json }
       gift_display_name: { Args: { _code: string }; Returns: string }
       has_role: {
