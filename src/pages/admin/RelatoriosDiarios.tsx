@@ -72,6 +72,13 @@ type Preview = {
   };
 };
 
+type ScheduleState = {
+  found: boolean;
+  active: boolean;
+  schedule?: string;
+  unknown?: boolean;
+};
+
 const todayBahia = () => {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "America/Bahia",
