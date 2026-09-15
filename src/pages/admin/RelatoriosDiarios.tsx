@@ -129,8 +129,23 @@ const RelatoriosDiarios = () => {
   }, []);
 
   useEffect(() => {
-    if (isAdmin) void load();
+    if (!isAdmin) return;
+    void load();
+    void supabase.functions
+      .invoke("daily-sales-report", { body: { mode: "schedule" } })
+      .then(({ data, error }) => {
+        if (error || !data?.schedule) {
+          setSchedule({ found: false, active: false, unknown: true });
+          return;
+        }
+        setSchedule({
+          found: !!data.schedule.found,
+          active: !!data.schedule.active,
+          schedule: data.schedule.schedule ?? undefined,
+        });
+      });
   }, [isAdmin, load]);
+
 
   const sendNow = async () => {
     setBusy(true);
