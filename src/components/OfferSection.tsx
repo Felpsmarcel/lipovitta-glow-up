@@ -126,18 +126,33 @@ const PROMO_BASE: Record<string, number> = {
   protocolo: 357.00 + 170.00, // Cápsulas + Shot Matinal
 };
 
-type PromoKit = SelectedKit & { originalValue: number; discountPct: number };
+type PromoKit = SelectedKit & { originalValue: number; discountPct: number; hasDiscount: boolean };
+
+/** Desconto fixo de 10% nos kits, fora do período da promoção de aniversário. */
+const KIT_DISCOUNT_IDS = ["kit-completo", "kit-rush", "protocolo"] as const;
+const KIT_DISCOUNT_RATE = 0.1;
 
 /** Aplica o desconto promocional a um kit quando a promoção de aniversário está ativa. */
 const usePromoKit = (kit: SelectedKit): PromoKit => {
   const { isPromoActive, applyDiscount, getDiscountRate } = usePromo();
-  const discountPct = Math.round(getDiscountRate(kit.productCount) * 100);
-  if (!isPromoActive) return { ...kit, originalValue: kit.value, discountPct };
+  const promoPct = Math.round(getDiscountRate(kit.productCount) * 100);
+  if (!isPromoActive) {
+    const isKit = (KIT_DISCOUNT_IDS as readonly string[]).includes(kit.id);
+    if (!isKit) return { ...kit, originalValue: kit.value, discountPct: promoPct, hasDiscount: false };
+    return {
+      ...kit,
+      originalValue: kit.value,
+      discountPct: Math.round(KIT_DISCOUNT_RATE * 100),
+      hasDiscount: true,
+      value: Math.round(kit.value * (1 - KIT_DISCOUNT_RATE) * 100) / 100,
+    };
+  }
   const base = PROMO_BASE[kit.id] ?? kit.value;
   return {
     ...kit,
     originalValue: base,
-    discountPct,
+    discountPct: promoPct,
+    hasDiscount: true,
     value: applyDiscount(base, kit.productCount),
   };
 };
@@ -229,7 +244,7 @@ const OfferSection = () => {
             <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
               <span className="inline-flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
-                Aniversário LipoVitta · Até 40% OFF automático
+                {isPromoActive ? "Aniversário LipoVitta · Até 40% OFF automático" : "Kit com 10% OFF"}
               </span>
             </div>
 
@@ -303,20 +318,20 @@ const OfferSection = () => {
 
               <div className="mt-auto pt-4 border-t border-[#EEF2FA] flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
-                  {isPromoActive && (
+                  {promoCompleto.hasDiscount && (
                     <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
                       <Sparkles className="w-3 h-3" />
-                      {promoCompleto.discountPct}% OFF automático
+                      {promoCompleto.discountPct}% OFF{isPromoActive ? " automático" : ""}
                     </span>
                   )}
                   <div className="flex items-center gap-3 flex-wrap">
-                    {isPromoActive && (
+                    {promoCompleto.hasDiscount && (
                       <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R${formatMoney(promoCompleto.originalValue)}</span>
                     )}
                     <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
                       R${formatMoney(promoCompleto.value)}
                     </p>
-                    {isPromoActive && (
+                    {promoCompleto.hasDiscount && (
                       <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
                         Economize {formatMoney(promoCompleto.originalValue - promoCompleto.value)}
                       </span>
@@ -354,7 +369,7 @@ const OfferSection = () => {
             <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
               <span className="inline-flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
-                Aniversário LipoVitta · Até 40% OFF automático
+                {isPromoActive ? "Aniversário LipoVitta · Até 40% OFF automático" : "Kit com 10% OFF"}
               </span>
             </div>
 
@@ -421,20 +436,20 @@ const OfferSection = () => {
 
               <div className="mt-auto pt-4 border-t border-[#EEF2FA] flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
-                  {isPromoActive && (
+                  {promoRush.hasDiscount && (
                     <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
                       <Sparkles className="w-3 h-3" />
-                      {promoRush.discountPct}% OFF automático
+                      {promoRush.discountPct}% OFF{isPromoActive ? " automático" : ""}
                     </span>
                   )}
                   <div className="flex items-center gap-3 flex-wrap">
-                    {isPromoActive && (
+                    {promoRush.hasDiscount && (
                       <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R${formatMoney(promoRush.originalValue)}</span>
                     )}
                     <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
                       R${formatMoney(promoRush.value)}
                     </p>
-                    {isPromoActive && (
+                    {promoRush.hasDiscount && (
                       <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
                         Economize {formatMoney(promoRush.originalValue - promoRush.value)}
                       </span>
@@ -549,10 +564,11 @@ const OfferSection = () => {
               <span className="bg-[#9BAE52] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
                 MAIS ESCOLHIDO
               </span>
-              {isPromoActive ? (
+              {promoProtocolo.hasDiscount ? (
                 <span className="bg-[#E63946] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
-                  {promoProtocolo.discountPct}% OFF automático
+                  {promoProtocolo.discountPct}% OFF{isPromoActive ? " automático" : ""}
                 </span>
+
 
               ) : (
                 <span className="bg-[#4667B4] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
@@ -603,14 +619,14 @@ const OfferSection = () => {
 
             <div className="mt-auto">
               <div className="mb-4">
-                {isPromoActive && (
+                {promoProtocolo.hasDiscount && (
                   <span className="inline-flex items-center gap-1.5 text-white text-[11px] sm:text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2 shadow-sm bg-[#E63946]">
                     <Tag className="w-3.5 h-3.5" />
-                    {promoProtocolo.discountPct}% OFF automático
+                    {promoProtocolo.discountPct}% OFF{isPromoActive ? " automático" : ""}
                   </span>
                 )}
                 <div className="flex items-center gap-3 flex-wrap">
-                  {isPromoActive && (
+                  {promoProtocolo.hasDiscount && (
                     <span className="text-[#5F5F5F] line-through text-sm">
                       R${formatMoney(promoProtocolo.originalValue)}
                     </span>
@@ -618,7 +634,7 @@ const OfferSection = () => {
                   <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
                     R${formatMoney(promoProtocolo.value)}
                   </p>
-                  {isPromoActive && (
+                  {promoProtocolo.hasDiscount && (
                     <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
                       Economize {formatMoney(promoProtocolo.originalValue - promoProtocolo.value)}
                     </span>
