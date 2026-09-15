@@ -318,20 +318,20 @@ const OfferSection = () => {
 
               <div className="mt-auto pt-4 border-t border-[#EEF2FA] flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
-                  {isPromoActive && (
+                  {promoCompleto.hasDiscount && (
                     <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
                       <Sparkles className="w-3 h-3" />
-                      {promoCompleto.discountPct}% OFF automático
+                      {promoCompleto.discountPct}% OFF{isPromoActive ? " automático" : ""}
                     </span>
                   )}
                   <div className="flex items-center gap-3 flex-wrap">
-                    {isPromoActive && (
+                    {promoCompleto.hasDiscount && (
                       <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R${formatMoney(promoCompleto.originalValue)}</span>
                     )}
                     <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
                       R${formatMoney(promoCompleto.value)}
                     </p>
-                    {isPromoActive && (
+                    {promoCompleto.hasDiscount && (
                       <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
                         Economize {formatMoney(promoCompleto.originalValue - promoCompleto.value)}
                       </span>
