@@ -333,11 +333,27 @@ const RelatoriosDiarios = () => {
         </header>
 
         <div className="mb-4 rounded-2xl border border-border bg-background p-4">
-          <p className="text-sm font-semibold text-foreground">
-            Envio automático ativo — todo dia às 09:00 (horário da Bahia)
-          </p>
-          <p className="text-sm text-muted-foreground">Próximo envio: {nextRun()} (Bahia)</p>
+          {schedule === null ? (
+            <p className="text-sm text-muted-foreground">Verificando o envio automático…</p>
+          ) : schedule.unknown ? (
+            <p className="text-sm font-semibold text-foreground">
+              Não foi possível verificar o envio automático agora.
+            </p>
+          ) : schedule.found && schedule.active ? (
+            <>
+              <p className="text-sm font-semibold text-foreground">
+                Envio automático ativo — todo dia às 09:00 (horário da Bahia)
+              </p>
+              <p className="text-sm text-muted-foreground">Próximo envio: {nextRun()} (Bahia)</p>
+            </>
+          ) : (
+            <p className="text-sm font-semibold text-destructive">
+              Envio automático {schedule.found ? "pausado" : "não configurado"} — nenhum relatório será
+              enviado sozinho. Use o botão de envio manual enquanto isso.
+            </p>
+          )}
         </div>
+
 
         <section className="mb-4 rounded-2xl border border-border bg-background p-4 space-y-3">
           <div>
