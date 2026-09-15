@@ -244,7 +244,7 @@ const OfferSection = () => {
             <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
               <span className="inline-flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
-                Aniversário LipoVitta · Até 40% OFF automático
+                {isPromoActive ? "Aniversário LipoVitta · Até 40% OFF automático" : "Kit com 10% OFF"}
               </span>
             </div>
 
