@@ -564,10 +564,11 @@ const OfferSection = () => {
               <span className="bg-[#9BAE52] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
                 MAIS ESCOLHIDO
               </span>
-              {isPromoActive ? (
+              {promoProtocolo.hasDiscount ? (
                 <span className="bg-[#E63946] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
-                  {promoProtocolo.discountPct}% OFF automático
+                  {promoProtocolo.discountPct}% OFF{isPromoActive ? " automático" : ""}
                 </span>
+
 
               ) : (
                 <span className="bg-[#4667B4] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
