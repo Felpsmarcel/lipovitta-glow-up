@@ -97,7 +97,7 @@ Deno.serve(async (req) => {
   } catch {
     body = {}
   }
-  const mode = ['send', 'preview', 'conference'].includes(String(body?.mode))
+  const mode = ['send', 'preview', 'conference', 'schedule'].includes(String(body?.mode))
     ? String(body.mode)
     : 'send'
 
