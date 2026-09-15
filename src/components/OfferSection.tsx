@@ -126,18 +126,33 @@ const PROMO_BASE: Record<string, number> = {
   protocolo: 357.00 + 170.00, // Cápsulas + Shot Matinal
 };
 
-type PromoKit = SelectedKit & { originalValue: number; discountPct: number };
+type PromoKit = SelectedKit & { originalValue: number; discountPct: number; hasDiscount: boolean };
+
+/** Desconto fixo de 10% nos kits, fora do período da promoção de aniversário. */
+const KIT_DISCOUNT_IDS = ["kit-completo", "kit-rush", "protocolo"] as const;
+const KIT_DISCOUNT_RATE = 0.1;
 
 /** Aplica o desconto promocional a um kit quando a promoção de aniversário está ativa. */
 const usePromoKit = (kit: SelectedKit): PromoKit => {
   const { isPromoActive, applyDiscount, getDiscountRate } = usePromo();
-  const discountPct = Math.round(getDiscountRate(kit.productCount) * 100);
-  if (!isPromoActive) return { ...kit, originalValue: kit.value, discountPct };
+  const promoPct = Math.round(getDiscountRate(kit.productCount) * 100);
+  if (!isPromoActive) {
+    const isKit = (KIT_DISCOUNT_IDS as readonly string[]).includes(kit.id);
+    if (!isKit) return { ...kit, originalValue: kit.value, discountPct: promoPct, hasDiscount: false };
+    return {
+      ...kit,
+      originalValue: kit.value,
+      discountPct: Math.round(KIT_DISCOUNT_RATE * 100),
+      hasDiscount: true,
+      value: Math.round(kit.value * (1 - KIT_DISCOUNT_RATE) * 100) / 100,
+    };
+  }
   const base = PROMO_BASE[kit.id] ?? kit.value;
   return {
     ...kit,
     originalValue: base,
-    discountPct,
+    discountPct: promoPct,
+    hasDiscount: true,
     value: applyDiscount(base, kit.productCount),
   };
 };
