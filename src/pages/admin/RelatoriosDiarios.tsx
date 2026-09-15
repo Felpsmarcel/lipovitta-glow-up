@@ -95,6 +95,8 @@ const RelatoriosDiarios = () => {
   const [previewDate, setPreviewDate] = useState(todayBahia());
   const [conferenceTo, setConferenceTo] = useState(RECIPIENTS[0]);
   const [preview, setPreview] = useState<Preview | null>(null);
+  const [schedule, setSchedule] = useState<ScheduleState | null>(null);
+
 
 
   useEffect(() => {
