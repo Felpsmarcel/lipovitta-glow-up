@@ -13,7 +13,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`sticky top-[44px] sm:top-[40px] z-40 backdrop-blur-sm border-b transition-colors duration-300 ${
+      className={`sticky top-0 z-40 backdrop-blur-sm border-b transition-colors duration-300 ${
         scrolled ? "border-transparent" : "border-border"
       }`}
       style={{ backgroundColor: scrolled ? "#4667B4" : "rgba(255,255,255,0.95)" }}

@@ -15,26 +15,20 @@ import SectionSwoosh from "@/components/SectionSwoosh";
 import TrustBar from "@/components/TrustBar";
 import GiftSelectionSection from "@/components/GiftSelectionSection";
 import { GiftFlowProvider } from "@/context/GiftFlowContext";
-import { PromoProvider } from "@/context/PromoContext";
 
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import AffiliateFloatingButton from "@/components/AffiliateFloatingButton";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 
-const isAugust2026 = () => {
-  const now = new Date();
-  return now >= new Date("2026-08-01T00:00:00-03:00") && now <= new Date("2026-08-31T23:59:59-03:00");
-};
 
 const Index = () => (
   <GiftFlowProvider>
-    <PromoProvider>
-      <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background">
         <SEOHead
-          title={isAugust2026() ? "Aniversário LipoVitta - Até 40% OFF" : "Comprar LipoVitta - Oferta Exclusiva"}
-          description={isAugust2026() ? "Aniversário LipoVitta em agosto: desconto progressivo automático de até 40% OFF + PAC grátis acima de R$400. Sem cupom, válido só este mês!" : "Adquira LipoVitta com desconto exclusivo. Frete grátis, garantia de 30 dias e resultados comprovados. Aproveite a promoção limitada!"}
-          keywords={isAugust2026() ? "LipoVitta aniversário, desconto LipoVitta, promoção LipoVitta agosto" : "comprar LipoVitta, LipoVitta preço, LipoVitta onde comprar"}
+          title="Comprar LipoVitta - Oferta Exclusiva"
+          description="Adquira LipoVitta com desconto exclusivo. Frete grátis, garantia de 30 dias e resultados comprovados. Aproveite a promoção limitada!"
+          keywords="comprar LipoVitta, LipoVitta preço, LipoVitta onde comprar"
           ogType="product"
           canonicalUrl="https://lipovitta.site/"
         />
@@ -101,7 +95,6 @@ const Index = () => (
 
       <ExitIntentPopup />
     </div>
-  </PromoProvider>
   </GiftFlowProvider>
 );
 

@@ -1,12 +1,9 @@
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import claraVideo from "@/assets/clara-hero.mp4.asset.json";
 import { trackCtaClick } from "@/lib/tracking";
-import { usePromo } from "@/context/PromoContext";
-import { Cake, Gift, Sparkles, ArrowDown } from "lucide-react";
 
 const HeroSection = () => {
   const sectionRef = useScrollAnimation();
-  const { isPromoActive } = usePromo();
   return (
     <section
       ref={sectionRef}
@@ -67,55 +64,6 @@ const HeroSection = () => {
               "Lipedema não tem cura, mas tem controle."
             </p>
 
-            {isPromoActive && (
-              <div className="mb-6 max-w-xl mx-auto lg:mx-0">
-                <div className="relative overflow-hidden rounded-2xl border border-[#E8ECF1] bg-white p-4 sm:p-5 shadow-sm">
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4667B4] to-[#9BAE52]" />
-                  <div className="flex items-start gap-3">
-                    <div className="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-[#4667B4] to-[#9BAE52] flex items-center justify-center text-white">
-                      <Cake className="w-5 h-5" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-sans font-semibold text-sm sm:text-base text-[#4667B4] leading-snug mb-1">
-                        Aniversário LipoVitta em agosto
-                      </p>
-                      <p className="font-sans text-xs sm:text-sm text-[#555] leading-relaxed mb-3">
-                        Desconto automático de até{" "}
-                        <span className="font-bold text-[#E63946]">40% OFF</span>{" "}
-                        + PAC grátis acima de R$400. Sem cupom.
-                      </p>
-                      <div className="flex flex-wrap items-center gap-2 mb-3">
-                        {[
-                          { qty: "1", off: "20%" },
-                          { qty: "2", off: "30%" },
-                          { qty: "3+", off: "40%" },
-                        ].map((tier) => (
-                          <span
-                            key={tier.qty}
-                            className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-[#4667B4] bg-[#F5F7FA] border border-[#E8ECF1] px-2 py-1 rounded-full"
-                          >
-                            <Sparkles className="w-3 h-3 text-[#9BAE52]" />
-                            {tier.qty} prod. = {tier.off}
-                          </span>
-                        ))}
-                      </div>
-                      <a
-                        href="#precos"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          trackCtaClick({ location: "hero_promo", label: "Ver ofertas de aniversário" });
-                          document.getElementById("precos")?.scrollIntoView({ behavior: "smooth" });
-                        }}
-                        className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#9BAE52] hover:text-[#8A9D45] transition-colors"
-                      >
-                        Ver ofertas de aniversário
-                        <ArrowDown className="w-3.5 h-3.5" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
 
             <div id="cta" className="mb-4">
               <a
@@ -168,14 +116,6 @@ const HeroSection = () => {
                 LIPO<br />VITTA
               </div>
 
-              {isPromoActive && (
-                <div className="absolute -bottom-3 -left-3 sm:-left-4 bg-white rounded-xl border border-[#E8ECF1] shadow-md px-3 py-2 flex items-center gap-2 max-w-[180px]">
-                  <Gift className="w-4 h-4 text-[#E63946] shrink-0" />
-                  <span className="text-[10px] font-bold text-[#4667B4] leading-tight">
-                    Aniversário · Até 40% OFF
-                  </span>
-                </div>
-              )}
             </div>
 
             <p className="text-sm mt-4 text-foreground/60">

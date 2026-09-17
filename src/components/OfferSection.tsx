@@ -10,8 +10,6 @@ import comboImg from "@/assets/combo-lipovitta.png.asset.json";
 import kitShotRushImg from "@/assets/kit-shot-rush-capsulas.png.asset.json";
 import kitCompletoImg from "@/assets/kit-completo-lipovitta.png.asset.json";
 import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
-import { usePromo } from "@/context/PromoContext";
-import PromoDiscountRuler from "@/components/PromoDiscountRuler";
 import { trackEvent } from "@/lib/metaPixel";
 import { trackCtaClick } from "@/lib/tracking";
 
@@ -119,54 +117,38 @@ const KIT_RUSH: SelectedKit = { id: "kit-rush", name: "Kit Shot Rush + Cápsulas
 const KIT_PROTOCOLO: SelectedKit = { id: "protocolo", name: "Protocolo Completo LipoVitta", productCount: 2, checkoutUrl: LINK_PROTOCOLO, value: 527.00, sku: "RPQ0CD6N6Q8C" };
 const KIT_COMPLETO: SelectedKit = { id: "kit-completo", name: "Kit Completo LipoVitta", productCount: 3, checkoutUrl: LINK_KIT_COMPLETO, value: 752.00, sku: "CLF9IC4LPI8K" };
 
-/** Durante a promoção, o desconto incide sobre a soma real dos produtos do kit. */
-const PROMO_BASE: Record<string, number> = {
-  "kit-completo": 357.00 + 170.00 + 225.00, // Cápsulas + Shot Matinal + Shot Rush
-  "kit-rush": 357.00 + 225.00, // Cápsulas + Shot Rush
-  protocolo: 357.00 + 170.00, // Cápsulas + Shot Matinal
-};
-
 type PromoKit = SelectedKit & { originalValue: number; discountPct: number; hasDiscount: boolean };
 
-/** Desconto fixo de 10% nos kits, fora do período da promoção de aniversário. */
 const KIT_DISCOUNT_IDS = ["kit-completo", "kit-rush", "protocolo"] as const;
 const KIT_DISCOUNT_RATE = 0.1;
 
-/** Aplica o desconto promocional a um kit quando a promoção de aniversário está ativa. */
-const usePromoKit = (kit: SelectedKit): PromoKit => {
-  const { isPromoActive, applyDiscount, getDiscountRate } = usePromo();
-  const promoPct = Math.round(getDiscountRate(kit.productCount) * 100);
-  if (!isPromoActive) {
-    const isKit = (KIT_DISCOUNT_IDS as readonly string[]).includes(kit.id);
-    if (!isKit) return { ...kit, originalValue: kit.value, discountPct: promoPct, hasDiscount: false };
-    return {
-      ...kit,
-      originalValue: kit.value,
-      discountPct: Math.round(KIT_DISCOUNT_RATE * 100),
-      hasDiscount: true,
-      value: Math.round(kit.value * (1 - KIT_DISCOUNT_RATE) * 100) / 100,
-    };
-  }
-  const base = PROMO_BASE[kit.id] ?? kit.value;
+const formatMoney = (value: number) =>
+  value.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+const getKitPrice = (kit: SelectedKit): PromoKit => {
+  const hasDiscount = (KIT_DISCOUNT_IDS as readonly string[]).includes(kit.id);
+  if (!hasDiscount) return { ...kit, originalValue: kit.value, discountPct: 0, hasDiscount: false };
+
   return {
     ...kit,
-    originalValue: base,
-    discountPct: promoPct,
+    originalValue: kit.value,
+    discountPct: Math.round(KIT_DISCOUNT_RATE * 100),
     hasDiscount: true,
-    value: applyDiscount(base, kit.productCount),
+    value: Math.round(kit.value * (1 - KIT_DISCOUNT_RATE) * 100) / 100,
   };
 };
 
 const OfferSection = () => {
   const sectionRef = useScrollAnimation();
   const { selectKit } = useGiftFlow();
-  const { isPromoActive, formatMoney } = usePromo();
-
-  const promoCapsulas = usePromoKit(KIT_CAPSULAS);
-  const promoShot = usePromoKit(KIT_SHOT);
-  const promoRush = usePromoKit(KIT_RUSH);
-  const promoProtocolo = usePromoKit(KIT_PROTOCOLO);
-  const promoCompleto = usePromoKit(KIT_COMPLETO);
+  const promoCapsulas = getKitPrice(KIT_CAPSULAS);
+  const promoShot = getKitPrice(KIT_SHOT);
+  const promoRush = getKitPrice(KIT_RUSH);
+  const promoProtocolo = getKitPrice(KIT_PROTOCOLO);
+  const promoCompleto = getKitPrice(KIT_COMPLETO);
 
   const [flavorCompleto, setFlavorCompleto] = useState<FlavorId | null>(null);
   const [flavorProtocolo, setFlavorProtocolo] = useState<FlavorId | null>(null);
@@ -226,16 +208,12 @@ const OfferSection = () => {
             Escolha como quer começar. Você pode adicionar complementos depois.
           </p>
           <p className="font-sans font-normal text-sm text-[#5F5F5F] mt-2">
-            {isPromoActive
-              ? "PAC grátis em compras acima de R$400. Desconto automático no checkout."
-              : "Frete grátis em compras a partir de R$323,00."}
+            Frete grátis em compras a partir de R$323,00.
           </p>
           <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-gradient-to-r from-[#4667B4] to-[#9BAE52]" />
         </div>
 
-        <PromoDiscountRuler activeCount={3} />
-
-        {/* CARD 0 — Kit Completo LipoVitta (todos os produtos, 40% OFF) */}
+        {/* CARD 0 — Kit Completo LipoVitta */}
         <div className="max-w-6xl mx-auto mb-10 scroll-mt-32" id="kit-completo-anchor">
           <article
             id="card-kit-completo-top"
@@ -244,7 +222,7 @@ const OfferSection = () => {
             <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
               <span className="inline-flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
-                {isPromoActive ? "Aniversário LipoVitta · Até 40% OFF automático" : "Kit com 10% OFF"}
+                Kit com 10% OFF
               </span>
             </div>
 
@@ -321,7 +299,7 @@ const OfferSection = () => {
                   {promoCompleto.hasDiscount && (
                     <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
                       <Sparkles className="w-3 h-3" />
-                      {promoCompleto.discountPct}% OFF{isPromoActive ? " automático" : ""}
+                      {promoCompleto.discountPct}% OFF
                     </span>
                   )}
                   <div className="flex items-center gap-3 flex-wrap">
@@ -354,7 +332,7 @@ const OfferSection = () => {
                 </button>
               </div>
               <p className="text-xs text-[#5F5F5F] mt-3">
-                {isPromoActive ? "PAC grátis acima de R$400 · Garantia de 30 dias" : "Frete grátis · Garantia de 30 dias"}
+                Frete grátis · Garantia de 30 dias
               </p>
             </div>
           </article>
@@ -369,7 +347,7 @@ const OfferSection = () => {
             <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
               <span className="inline-flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
-                {isPromoActive ? "Aniversário LipoVitta · Até 40% OFF automático" : "Kit com 10% OFF"}
+                Kit com 10% OFF
               </span>
             </div>
 
@@ -439,7 +417,7 @@ const OfferSection = () => {
                   {promoRush.hasDiscount && (
                     <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
                       <Sparkles className="w-3 h-3" />
-                      {promoRush.discountPct}% OFF{isPromoActive ? " automático" : ""}
+                      {promoRush.discountPct}% OFF
                     </span>
                   )}
                   <div className="flex items-center gap-3 flex-wrap">
@@ -469,7 +447,7 @@ const OfferSection = () => {
                 </button>
               </div>
               <p className="text-xs text-[#5F5F5F] mt-3">
-                {isPromoActive ? "PAC grátis acima de R$400 · Garantia de 30 dias" : "Frete grátis · Garantia de 30 dias"}
+                Frete grátis · Garantia de 30 dias
               </p>
             </div>
           </article>
@@ -506,24 +484,10 @@ const OfferSection = () => {
 
             <div className="mt-auto">
               <div className="mb-4">
-                {isPromoActive && (
-                  <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
-                    <Sparkles className="w-3 h-3" />
-                    20% OFF automático
-                  </span>
-                )}
                 <div className="flex items-center gap-3 flex-wrap">
-                  {isPromoActive && (
-                    <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R$357,00</span>
-                  )}
                   <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
                     R${formatMoney(promoCapsulas.value)}
                   </p>
-                  {isPromoActive && (
-                    <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
-                      Economize {formatMoney(KIT_CAPSULAS.value - promoCapsulas.value)}
-                    </span>
-                  )}
                 </div>
                 <p className="text-sm text-[#666] mt-1">ou 3x de R${formatMoney(promoCapsulas.value / 3)} sem juros</p>
               </div>
@@ -566,7 +530,7 @@ const OfferSection = () => {
               </span>
               {promoProtocolo.hasDiscount ? (
                 <span className="bg-[#E63946] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
-                  {promoProtocolo.discountPct}% OFF{isPromoActive ? " automático" : ""}
+                  {promoProtocolo.discountPct}% OFF
                 </span>
 
 
@@ -622,7 +586,7 @@ const OfferSection = () => {
                 {promoProtocolo.hasDiscount && (
                   <span className="inline-flex items-center gap-1.5 text-white text-[11px] sm:text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2 shadow-sm bg-[#E63946]">
                     <Tag className="w-3.5 h-3.5" />
-                    {promoProtocolo.discountPct}% OFF{isPromoActive ? " automático" : ""}
+                    {promoProtocolo.discountPct}% OFF
                   </span>
                 )}
                 <div className="flex items-center gap-3 flex-wrap">
@@ -697,24 +661,10 @@ const OfferSection = () => {
 
             <div className="mt-auto">
               <div className="mb-4">
-                {isPromoActive && (
-                  <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
-                    <Sparkles className="w-3 h-3" />
-                    20% OFF automático
-                  </span>
-                )}
                 <div className="flex items-center gap-2 flex-wrap">
-                  {isPromoActive && (
-                    <span className="text-[#5F5F5F] line-through text-sm">R$170,00</span>
-                  )}
                   <p className="text-[#4667B4] font-bold text-2xl sm:text-3xl leading-none">
                     R${formatMoney(promoShot.value)}
                   </p>
-                  {isPromoActive && (
-                    <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2 py-1 rounded-full">
-                      Economize {formatMoney(KIT_SHOT.value - promoShot.value)}
-                    </span>
-                  )}
                 </div>
                 <p className="text-xs sm:text-sm text-[#666] mt-1">ou 3x de R${formatMoney(promoShot.value / 3)} sem juros</p>
               </div>
@@ -731,9 +681,7 @@ const OfferSection = () => {
                 COMPRAR SHOT MATINAL
               </button>
               <p className="text-xs text-[#5F5F5F] text-center mt-3">
-                {isPromoActive
-                  ? "Combine com a Cápsula para chegar a 30% OFF + PAC grátis."
-                  : "Combine com a Cápsula para liberar frete grátis escolhendo o Protocolo Completo."}
+                Combine com a Cápsula para liberar frete grátis escolhendo o Protocolo Completo.
               </p>
               <a
                 href="#card-protocolo"
