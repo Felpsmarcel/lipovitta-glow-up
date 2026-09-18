@@ -566,6 +566,24 @@ Deno.serve(async (req: Request) => {
     } catch (e) {
       console.error(`[yampi-webhook:${requestId}] evidência de pagamento erro:`, (e as Error).message);
     }
+
+    // Libera a confirmação de entrega Lipolovers somente com pagamento aprovado.
+    if (eidMatch) {
+      try {
+        const { error: leadError } = await serviceClient()
+          .from("lipolovers_leads")
+          .update({
+            payment_status: "approved",
+            paid_order_id: orderId,
+            paid_at: new Date().toISOString(),
+          })
+          .eq("event_id", eventId)
+          .eq("payment_status", "pending");
+        if (leadError) console.error(`[yampi-webhook:${requestId}] vínculo Lipolovers falhou:`, leadError.message);
+      } catch (e) {
+        console.error(`[yampi-webhook:${requestId}] vínculo Lipolovers erro:`, (e as Error).message);
+      }
+    }
   }
 
   // --- Registro do pedido (sem PII) — idempotente por order_id ---

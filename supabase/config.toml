@@ -13,3 +13,7 @@ project_id = "ecgquvfoipmoqlhfkfol"
     verify_jwt = true
   [functions.daily-sales-report]
     verify_jwt = false
+  [functions.lipolovers-lead]
+    verify_jwt = false
+  [functions.lipolovers-delivery]
+    verify_jwt = false
