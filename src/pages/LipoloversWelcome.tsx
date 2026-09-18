@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CheckCircle2, Clock3, Loader2 } from "lucide-react";
+import { CheckCircle2, Clock3, Heart, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -86,7 +86,7 @@ export default function LipoloversWelcome() {
     <main className="container max-w-3xl px-4 py-12 md:py-20">
       <div className="mb-9 text-center">
         <p className="text-sm font-bold uppercase text-accent">Clube de assinatura</p>
-        <h1 className="mt-3 text-4xl font-extrabold text-primary sm:text-5xl">Bem-vinda ao Lipolovers <span aria-hidden="true">💙</span></h1>
+        <h1 className="mt-3 flex flex-wrap items-center justify-center gap-2 text-4xl font-extrabold text-primary sm:text-5xl">Bem-vinda ao Lipolovers <Heart className="h-9 w-9 fill-primary" aria-label="coração azul" /></h1>
         <p className="mx-auto mt-5 max-w-2xl leading-relaxed text-muted-foreground">Sua assinatura foi iniciada. Agora precisamos confirmar seus dados para preparar sua entrega.</p>
       </div>
 

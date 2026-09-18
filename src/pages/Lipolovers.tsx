@@ -9,13 +9,24 @@ import LipoloversLeadDialog from "@/components/lipolovers/LipoloversLeadDialog";
 import { LIPOLOVERS_CONFIG, type LipoloversFlavorId, type LipoloversPlanId } from "@/config/lipolovers";
 import { trackViewContent } from "@/lib/tracking";
 import logo from "@/assets/logo-lipovitta.png";
-import combo from "@/assets/combo-lipovitta.png.asset.json";
-import master from "@/assets/kit-completo-lipovitta.png.asset.json";
+import combo from "@/assets/combo-lipovitta.jpg";
+import capsulas from "@/assets/capsulas-lipovitta.png";
+import rush from "@/assets/shot-rush.jpg";
 import tangerina from "@/assets/shot-matinal-tangerina.jpg";
 import limao from "@/assets/shot-matinal-limao.jpg";
 import abacaxi from "@/assets/shot-matinal-abacaxi.jpg";
 
 const flavorImages: Record<LipoloversFlavorId, string> = { tangerina, limao, abacaxi };
+
+function ProductGroup({ master = false, compact = false }: { master?: boolean; compact?: boolean }) {
+  const imageClass = compact ? "h-48 sm:h-56" : "h-64 sm:h-80 md:h-96";
+  if (!master) return <img src={combo} alt="Cápsulas LipoVitta e Shot Matinal" className={`${imageClass} w-full rounded-md object-cover`} />;
+  return <div className={`grid ${imageClass} w-full grid-cols-3 gap-2`}>
+    <img src={capsulas} alt="Cápsulas LipoVitta" className="h-full min-w-0 rounded-md object-cover" />
+    <img src={tangerina} alt="Shot Matinal sabor Tangerina" className="h-full min-w-0 rounded-md object-cover" />
+    <img src={rush} alt="Shot Rush LipoVitta" className="h-full min-w-0 rounded-md object-cover" />
+  </div>;
+}
 
 const faq = [
   ["Tem fidelidade?", "Não. A assinatura não tem fidelidade mínima e pode ser cancelada para as próximas cobranças."],
@@ -78,7 +89,7 @@ export default function Lipolovers() {
               </Button>
             </div>
             <div className="relative mx-auto w-full max-w-xl md:col-span-6 md:translate-x-6 lg:col-span-7">
-              <img src={master.url} alt="Produtos do clube de assinatura Lipolovers" className="relative mx-auto aspect-square w-full object-contain" fetchPriority="high" />
+              <ProductGroup master />
             </div>
           </div>
         </section>
@@ -113,7 +124,7 @@ export default function Lipolovers() {
                 return <article key={id} className={`relative flex flex-col overflow-hidden rounded-lg border bg-card ${isMaster ? "border-primary shadow-lg" : "border-border shadow-sm"}`}>
                   {isMaster && <div className="bg-primary px-4 py-2 text-center text-xs font-bold uppercase text-primary-foreground">Mais completo</div>}
                   <div className="flex min-h-64 items-center justify-center bg-muted/40 p-6">
-                    <img src={isMaster ? master.url : combo.url} alt={`Produtos do plano ${plan.name}`} className="h-56 w-full object-contain" loading="lazy" />
+                    <ProductGroup master={isMaster} compact />
                   </div>
                   <div className="flex flex-1 flex-col p-6 sm:p-8">
                     <h3 className="text-2xl font-extrabold text-primary">{plan.name}</h3>
