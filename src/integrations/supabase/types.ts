@@ -401,6 +401,122 @@ export type Database = {
         }
         Relationships: []
       }
+      lipolovers_delivery_details: {
+        Row: {
+          address_number: string
+          city: string
+          complement: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          lead_id: string
+          neighborhood: string
+          phone: string
+          postal_code: string
+          state: string
+          street_address: string
+          updated_at: string
+        }
+        Insert: {
+          address_number: string
+          city: string
+          complement?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          lead_id: string
+          neighborhood: string
+          phone: string
+          postal_code: string
+          state: string
+          street_address: string
+          updated_at?: string
+        }
+        Update: {
+          address_number?: string
+          city?: string
+          complement?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          lead_id?: string
+          neighborhood?: string
+          phone?: string
+          postal_code?: string
+          state?: string
+          street_address?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lipolovers_delivery_details_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: true
+            referencedRelation: "lipolovers_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lipolovers_leads: {
+        Row: {
+          claim_token_hash: string | null
+          created_at: string
+          email: string
+          event_id: string
+          flavor: string
+          full_name: string
+          ghl_error: string | null
+          ghl_status: string
+          id: string
+          origin: string
+          paid_at: string | null
+          paid_order_id: string | null
+          payment_status: string
+          phone: string
+          plan: string
+          updated_at: string
+        }
+        Insert: {
+          claim_token_hash?: string | null
+          created_at?: string
+          email: string
+          event_id: string
+          flavor: string
+          full_name: string
+          ghl_error?: string | null
+          ghl_status?: string
+          id?: string
+          origin?: string
+          paid_at?: string | null
+          paid_order_id?: string | null
+          payment_status?: string
+          phone: string
+          plan: string
+          updated_at?: string
+        }
+        Update: {
+          claim_token_hash?: string | null
+          created_at?: string
+          email?: string
+          event_id?: string
+          flavor?: string
+          full_name?: string
+          ghl_error?: string | null
+          ghl_status?: string
+          id?: string
+          origin?: string
+          paid_at?: string | null
+          paid_order_id?: string | null
+          payment_status?: string
+          phone?: string
+          plan?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mcp_action_log: {
         Row: {
           action: string

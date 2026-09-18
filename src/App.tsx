@@ -12,6 +12,8 @@ import Webhooks from "./pages/admin/Webhooks.tsx";
 import RelatoriosDiarios from "./pages/admin/RelatoriosDiarios.tsx";
 import OAuthConsent from "./pages/OAuthConsent.tsx";
 import MetaPixelRouteTracker from "./components/MetaPixelRouteTracker";
+import Lipolovers from "./pages/Lipolovers.tsx";
+import LipoloversWelcome from "./pages/LipoloversWelcome.tsx";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/afiliados" element={<Afiliados />} />
           <Route path="/unsubscribe" element={<Unsubscribe />} />
+          <Route path="/lipolovers" element={<Lipolovers />} />
+          <Route path="/lipolovers/boas-vindas" element={<LipoloversWelcome />} />
           <Route path="/admin/conversoes" element={<Conversoes />} />
           <Route path="/admin/webhooks" element={<Webhooks />} />
           <Route path="/admin/relatorios-diarios" element={<RelatoriosDiarios />} />

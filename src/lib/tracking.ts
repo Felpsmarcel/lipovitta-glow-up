@@ -167,6 +167,55 @@ export function trackLead(input: {
   return eventId;
 }
 
+/** Visualização da página oficial do clube, sem inferir compra. */
+export function trackViewContent(input: {
+  contentName: string;
+  contentCategory?: string;
+}): string {
+  const eventId = generateEventId();
+  trackEvent(
+    "ViewContent",
+    { content_name: input.contentName, content_category: input.contentCategory },
+    { eventID: eventId }
+  );
+  logConversion({
+    event_name: "ViewContent",
+    event_id: eventId,
+    product_name: input.contentName,
+    cta_location: input.contentCategory,
+  });
+  return eventId;
+}
+
+/** Início de checkout com ID fornecido pelo backend para conciliação do pagamento. */
+export function trackInitiateCheckout(input: {
+  eventId: string;
+  location: string;
+  productName: string;
+  value: number;
+  flavor: string;
+}): void {
+  trackEvent(
+    "InitiateCheckout",
+    {
+      content_name: input.productName,
+      content_category: "assinatura",
+      currency: "BRL",
+      value: input.value,
+      cta_location: input.location,
+      flavor: input.flavor,
+    },
+    { eventID: input.eventId }
+  );
+  logConversion({
+    event_name: "InitiateCheckout",
+    event_id: input.eventId,
+    cta_location: input.location,
+    product_name: `${input.productName} — Sabor ${input.flavor}`,
+    value: input.value,
+  });
+}
+
 /** Início de preenchimento de formulário (para medir abandono). */
 export function trackLeadStart(formName: string): void {
   const eventId = generateEventId();
