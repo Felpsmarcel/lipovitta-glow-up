@@ -40,11 +40,11 @@ export default function LipoloversWelcome() {
   const [saved, setSaved] = useState(false);
   const [selection, setSelection] = useState<{ plan: LipoloversPlanId; flavor: LipoloversFlavorId } | null>(null);
 
-  const checkPayment = async (claimToken: string) => {
-    setPaymentStatus("checking");
+  const checkPayment = async (claimToken: string, silent = false) => {
+    if (!silent) setPaymentStatus("checking");
     const { data, error } = await supabase.functions.invoke("lipolovers-delivery", { body: { action: "status", token: claimToken } });
-    if (error || data?.error) setPaymentStatus("invalid");
-    else if (data?.payment_status === "approved") {
+    if (error || data?.error) { if (!silent) setPaymentStatus("invalid"); return; }
+    if (data?.payment_status === "approved") {
       setSelection({ plan: data.plan as LipoloversPlanId, flavor: data.flavor as LipoloversFlavorId });
       setPaymentStatus("approved");
     } else setPaymentStatus("pending");
@@ -57,6 +57,12 @@ export default function LipoloversWelcome() {
     if (!claimToken) setPaymentStatus("invalid");
     else void checkPayment(claimToken);
   }, []);
+
+  useEffect(() => {
+    if (!token || paymentStatus !== "pending" || saved) return;
+    const timer = window.setInterval(() => { void checkPayment(token, true); }, 10000);
+    return () => window.clearInterval(timer);
+  }, [token, paymentStatus, saved]);
 
   const update = (field: keyof typeof form) => (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm((current) => ({ ...current, [field]: event.target.value }));
