@@ -33,6 +33,7 @@ export default function LipoloversLeadDialog({ open, initialFlavor, onOpenChange
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [checkoutUrl, setCheckoutUrl] = useState("");
   const fieldRefs = useRef<Record<string, HTMLInputElement | HTMLSelectElement | null>>({});
 
   useEffect(() => {
@@ -40,6 +41,7 @@ export default function LipoloversLeadDialog({ open, initialFlavor, onOpenChange
     setForm((current) => ({ ...current, flavor: initialFlavor ?? "" }));
     setErrors({});
     setServerError("");
+    setCheckoutUrl("");
   }, [open, initialFlavor]);
 
   const update = (field: keyof typeof form) => (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -86,7 +88,17 @@ export default function LipoloversLeadDialog({ open, initialFlavor, onOpenChange
     checkoutUrl.searchParams.set("utm_content", `sabor-${parsed.data.flavor}`);
     checkoutUrl.searchParams.set("utm_term", `eid_${data.event_id}`);
     checkoutUrl.searchParams.set("lipolovers_token", String(data.claim_token));
-    window.location.assign(checkoutUrl.toString());
+    const url = checkoutUrl.toString();
+    setCheckoutUrl(url);
+    setSubmitting(false);
+    const opened = window.open(url, "_blank", "noopener,noreferrer");
+    if (!opened) {
+      try {
+        (window.top ?? window).location.href = url;
+      } catch {
+        /* popup bloqueado e navegação do topo negada: o link manual abaixo resolve */
+      }
+    }
   };
 
   return (
