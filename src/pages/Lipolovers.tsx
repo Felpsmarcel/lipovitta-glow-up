@@ -20,7 +20,7 @@ const flavorImages: Record<LipoloversFlavorId, string> = { tangerina, limao, aba
 function ProductTile({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
   return (
     <div className={`relative overflow-hidden rounded-md border border-border bg-muted/30 ${className}`}>
-      <img src={src} alt={alt} className="absolute inset-0 h-full w-full object-cover object-top" />
+      <img src={src} alt={alt} className="absolute inset-0 h-full w-full scale-[1.14] object-cover object-center" />
     </div>
   );
 }
@@ -28,11 +28,11 @@ function ProductTile({ src, alt, className = "" }: { src: string; alt: string; c
 function ProductStage({ master, flavor, hero = false }: { master: boolean; flavor: LipoloversFlavorId; hero?: boolean }) {
   if (hero) {
     return (
-      <div className="relative mx-auto aspect-[1.08/1] w-full max-w-[590px]" aria-label="Produtos dos planos Lipolovers">
-        <ProductTile src={capsulas} alt="Cápsulas LipoVitta" className="absolute bottom-[8%] left-[2%] h-[74%] w-[38%] shadow-md" />
-        <ProductTile src={flavorImages[flavor]} alt={`Shot Matinal sabor ${LIPOLOVERS_CONFIG.flavors.find((item) => item.id === flavor)?.label}`} className="absolute bottom-[3%] left-[32%] z-10 h-[88%] w-[39%] shadow-lg" />
-        <ProductTile src={rush} alt="Shot Rush LipoVitta" className="absolute bottom-[12%] right-[1%] h-[65%] w-[31%] shadow-md" />
-        <span className="absolute bottom-0 right-[2%] z-20 rounded-md bg-primary px-3 py-2 text-xs font-bold text-primary-foreground shadow-sm">No plano Master</span>
+      <div className="relative mx-auto h-[310px] w-full max-w-[520px] sm:h-[380px] md:h-[460px]" aria-label="Produtos dos planos Lipolovers">
+        <ProductTile src={capsulas} alt="Cápsulas LipoVitta" className="absolute bottom-[8%] left-[3%] h-[70%] w-[36%] shadow-md" />
+        <ProductTile src={flavorImages[flavor]} alt={`Shot Matinal sabor ${LIPOLOVERS_CONFIG.flavors.find((item) => item.id === flavor)?.label}`} className="absolute bottom-[3%] left-[31%] z-10 h-[88%] w-[40%] shadow-lg" />
+        <ProductTile src={rush} alt="Shot Rush LipoVitta" className="absolute bottom-[11%] right-[2%] h-[66%] w-[33%] shadow-md" />
+        <span className="absolute bottom-0 right-[1%] z-20 rounded-md bg-primary px-3 py-2 text-xs font-bold text-primary-foreground shadow-sm">Exclusivo no Master</span>
       </div>
     );
   }
@@ -91,7 +91,7 @@ export default function Lipolovers() {
               <h2 className="mt-4 max-w-lg text-2xl font-bold leading-tight text-foreground sm:text-3xl">Seu ritual LipoVitta, todo mês.</h2>
               <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">Escolha seu plano e seu sabor. Sua assinatura é mensal, sem fidelidade, e você não precisa refazer seu pedido todos os meses.</p>
               <div className="mt-6 flex items-baseline gap-3"><span className="text-sm font-semibold text-muted-foreground">A partir de</span><strong className="text-3xl text-primary">R$ 399/mês</strong></div>
-              <Button asChild size="lg" className="mt-5 h-13 w-full bg-primary px-7 font-bold hover:bg-primary/90 sm:w-auto"><a href="#planos">QUERO SER LIPOLOVER <ArrowDown /></a></Button>
+              <Button asChild size="lg" className="mt-5 h-[3.25rem] w-full bg-primary px-7 font-bold hover:bg-primary/90 sm:w-auto"><a href="#planos">QUERO SER LIPOLOVER <ArrowDown /></a></Button>
               <p className="mt-2 text-sm text-muted-foreground">Frete calculado à parte.</p>
             </div>
             <div className="relative mx-auto w-full md:col-span-6 lg:col-span-7"><ProductStage master flavor="tangerina" hero /></div>
