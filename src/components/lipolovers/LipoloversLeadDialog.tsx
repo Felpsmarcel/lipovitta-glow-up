@@ -33,6 +33,7 @@ export default function LipoloversLeadDialog({ open, initialFlavor, onOpenChange
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [checkoutUrl, setCheckoutUrl] = useState("");
   const fieldRefs = useRef<Record<string, HTMLInputElement | HTMLSelectElement | null>>({});
 
   useEffect(() => {
@@ -40,6 +41,7 @@ export default function LipoloversLeadDialog({ open, initialFlavor, onOpenChange
     setForm((current) => ({ ...current, flavor: initialFlavor ?? "" }));
     setErrors({});
     setServerError("");
+    setCheckoutUrl("");
   }, [open, initialFlavor]);
 
   const update = (field: keyof typeof form) => (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -79,14 +81,18 @@ export default function LipoloversLeadDialog({ open, initialFlavor, onOpenChange
       value: plan.price,
       flavor: flavorLabel,
     });
-    const checkoutUrl = new URL(plan.checkoutUrl);
-    checkoutUrl.searchParams.set("utm_source", "site-lipolovers");
-    checkoutUrl.searchParams.set("utm_medium", "assinatura");
-    checkoutUrl.searchParams.set("utm_campaign", `lipolovers-${plan.id}`);
-    checkoutUrl.searchParams.set("utm_content", `sabor-${parsed.data.flavor}`);
-    checkoutUrl.searchParams.set("utm_term", `eid_${data.event_id}`);
-    checkoutUrl.searchParams.set("lipolovers_token", String(data.claim_token));
-    window.location.assign(checkoutUrl.toString());
+    // O link curto do Mercado Pago descarta query params; a atribuição fica no lead salvo.
+    const url = plan.checkoutUrl;
+    setCheckoutUrl(url);
+    setSubmitting(false);
+    const opened = window.open(url, "_blank");
+    if (!opened) {
+      try {
+        (window.top ?? window).location.href = url;
+      } catch {
+        /* popup bloqueado e navegação do topo negada: o link manual abaixo resolve */
+      }
+    }
   };
 
   return (
@@ -123,10 +129,20 @@ export default function LipoloversLeadDialog({ open, initialFlavor, onOpenChange
             </select>
           </Field>
           {serverError && <p role="alert" className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{serverError}</p>}
-          <Button type="submit" size="lg" disabled={submitting} className="w-full bg-accent font-bold hover:bg-accent/90">
-            {submitting && <Loader2 className="animate-spin" />}
-            {submitting ? "Salvando..." : `CONTINUAR PARA O PAGAMENTO — R$ ${plan.price}/MÊS`}
-          </Button>
+          {checkoutUrl ? (
+            <div className="space-y-2 rounded-md border border-accent/40 bg-accent/10 p-4 text-sm">
+              <p className="font-semibold text-primary">Abrimos o pagamento em uma nova aba.</p>
+              <p className="text-muted-foreground">Se ela não abrir, toque no botão abaixo.</p>
+              <Button asChild size="lg" className="w-full bg-accent font-bold hover:bg-accent/90">
+                <a href={checkoutUrl} target="_blank" rel="noopener noreferrer">ABRIR PAGAMENTO — R$ {plan.price}/MÊS</a>
+              </Button>
+            </div>
+          ) : (
+            <Button type="submit" size="lg" disabled={submitting} className="w-full bg-accent font-bold hover:bg-accent/90">
+              {submitting && <Loader2 className="animate-spin" />}
+              {submitting ? "Salvando..." : `CONTINUAR PARA O PAGAMENTO — R$ ${plan.price}/MÊS`}
+            </Button>
+          )}
           <p className="text-center text-xs leading-relaxed text-muted-foreground">O pagamento acontece na próxima etapa, em ambiente seguro. Frete calculado à parte. Após {LIPOLOVERS_CONFIG.commitmentMonths} meses você pode cancelar para as próximas cobranças.</p>
         </form>
       </DialogContent>
