@@ -2,7 +2,7 @@ import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { deliverySchema, leadSchema, tagsFor } from "../_shared/lipolovers.ts";
 
 Deno.test("accepts an allowed Lipolovers lead", () => {
-  const result = leadSchema.safeParse({ full_name: "Maria Silva", phone: "71999999999", email: "MARIA@example.com", plan: "master", flavor: "limao" });
+  const result = leadSchema.safeParse({ full_name: "Maria Silva", phone: "71999999999", email: "MARIA@example.com", plan: "essencial", flavor: "limao" });
   assertEquals(result.success, true);
   if (result.success) assertEquals(result.data.email, "maria@example.com");
 });

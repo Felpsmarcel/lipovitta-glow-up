@@ -1,6 +1,8 @@
 import { z } from "npm:zod@^3.25.76";
 
-export const planSchema = z.enum(["essencial", "master"]);
+// Apenas Essencial é vendido atualmente; Master fica como legado no banco.
+export const planSchema = z.enum(["essencial"]);
+
 export const flavorSchema = z.enum(["tangerina", "limao", "abacaxi"]);
 
 export const leadSchema = z.object({
