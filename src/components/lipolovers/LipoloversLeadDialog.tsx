@@ -104,8 +104,9 @@ export default function LipoloversLeadDialog({ open, initialFlavor, onOpenChange
           <DialogDescription>Revise sua escolha e informe seus dados para seguir ao pagamento.</DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-2 gap-x-4 gap-y-2 rounded-md border border-border bg-muted/35 p-4 text-sm">
+          <span className="text-muted-foreground">Valor avulso</span><strong className="text-right text-muted-foreground line-through">R$ 527</strong>
           <span className="text-muted-foreground">Mensalidade</span><strong className="text-right text-primary">R$ {plan.price}/mês</strong>
-          <span className="text-muted-foreground">Tipo</span><strong className="text-right">Assinatura mensal</strong>
+          <span className="text-muted-foreground">Sua economia</span><strong className="text-right text-accent">R$ 128/mês</strong>
           <span className="text-muted-foreground">Inclui</span><strong className="text-right">{plan.includes.length} produtos + {LIPOLOVERS_GIFTS.length} brindes</strong>
           <span className="text-muted-foreground">Sabor</span><strong className="text-right">{LIPOLOVERS_CONFIG.flavors.find((flavor) => flavor.id === initialFlavor)?.label ?? "Escolha abaixo"}</strong>
         </div>

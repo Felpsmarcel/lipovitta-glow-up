@@ -7,3 +7,4 @@
 - [x] Testar backend, desktop e mobile; mostrar preview sem publicar
 - [x] Refinar experiência, imagens e comparação dos planos Lipolovers
 - [x] Restaurar as fotografias originais inteiras dos kits Lipolovers
+- [x] Reposicionar a página do Essencial com foco em economia mensal
