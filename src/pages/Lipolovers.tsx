@@ -9,38 +9,22 @@ import LipoloversLeadDialog from "@/components/lipolovers/LipoloversLeadDialog";
 import { LIPOLOVERS_CONFIG, type LipoloversFlavorId, type LipoloversPlanId } from "@/config/lipolovers";
 import { trackViewContent } from "@/lib/tracking";
 import logo from "@/assets/logo-lipovitta.png";
-import capsulas from "@/assets/capsulas-lipovitta.png";
-import rush from "@/assets/shot-rush.jpg";
+import comboOriginal from "@/assets/combo-lipovitta.png.asset.json";
+import kitCompletoOriginal from "@/assets/kit-completo-lipovitta.png.asset.json";
 import tangerina from "@/assets/shot-matinal-tangerina.jpg";
 import limao from "@/assets/shot-matinal-limao.jpg";
 import abacaxi from "@/assets/shot-matinal-abacaxi.jpg";
 
 const flavorImages: Record<LipoloversFlavorId, string> = { tangerina, limao, abacaxi };
 
-function ProductTile({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
-  return (
-    <div className={`relative overflow-hidden rounded-md border border-border bg-muted/30 ${className}`}>
-      <img src={src} alt={alt} className="absolute inset-0 h-full w-full scale-[1.14] object-cover object-center" />
-    </div>
-  );
-}
+function ProductStage({ master, hero = false }: { master: boolean; hero?: boolean }) {
+  const assetPath = master ? kitCompletoOriginal.url : comboOriginal.url;
+  const image = `https://lipovitta.site${assetPath}`;
+  const alt = master ? "Kit Completo LipoVitta original" : "Combo LipoVitta original";
 
-function ProductStage({ master, flavor, hero = false }: { master: boolean; flavor: LipoloversFlavorId; hero?: boolean }) {
-  if (hero) {
-    return (
-      <div className="relative mx-auto h-[310px] w-full max-w-[520px] sm:h-[380px] md:h-[460px]" aria-label="Produtos dos planos Lipolovers">
-        <ProductTile src={capsulas} alt="Cápsulas LipoVitta" className="absolute bottom-[8%] left-[3%] h-[70%] w-[36%] shadow-md" />
-        <ProductTile src={flavorImages[flavor]} alt={`Shot Matinal sabor ${LIPOLOVERS_CONFIG.flavors.find((item) => item.id === flavor)?.label}`} className="absolute bottom-[3%] left-[31%] z-10 h-[88%] w-[40%] shadow-lg" />
-        <ProductTile src={rush} alt="Shot Rush LipoVitta" className="absolute bottom-[11%] right-[2%] h-[66%] w-[33%] shadow-md" />
-        <span className="absolute bottom-0 right-[1%] z-20 rounded-md bg-primary px-3 py-2 text-xs font-bold text-primary-foreground shadow-sm">Exclusivo no Master</span>
-      </div>
-    );
-  }
   return (
-    <div className={`grid h-52 w-full gap-3 sm:h-60 ${master ? "grid-cols-3" : "grid-cols-2"}`}>
-      <ProductTile src={capsulas} alt="Cápsulas LipoVitta" />
-      <ProductTile src={flavorImages[flavor]} alt={`Shot Matinal sabor ${LIPOLOVERS_CONFIG.flavors.find((item) => item.id === flavor)?.label}`} />
-      {master && <ProductTile src={rush} alt="Shot Rush LipoVitta" />}
+    <div className={`mx-auto w-full overflow-hidden rounded-md bg-muted/25 ${hero ? "max-w-[720px]" : ""}`}>
+      <img src={image} alt={alt} className="aspect-video h-auto w-full object-contain" />
     </div>
   );
 }
@@ -94,7 +78,7 @@ export default function Lipolovers() {
               <Button asChild size="lg" className="mt-5 h-[3.25rem] w-full bg-primary px-7 font-bold hover:bg-primary/90 sm:w-auto"><a href="#planos">QUERO SER LIPOLOVER <ArrowDown /></a></Button>
               <p className="mt-2 text-sm text-muted-foreground">Frete calculado à parte.</p>
             </div>
-            <div className="relative mx-auto w-full md:col-span-6 lg:col-span-7"><ProductStage master flavor="tangerina" hero /></div>
+            <div className="relative mx-auto w-full md:col-span-6 lg:col-span-7"><ProductStage master hero /></div>
           </div>
         </section>
 
@@ -117,7 +101,7 @@ export default function Lipolovers() {
                 const flavor = flavors[id];
                 return <article key={id} className={`relative flex flex-col overflow-hidden rounded-lg border bg-card ${isMaster ? "border-primary shadow-md" : "border-border shadow-sm"}`}>
                   {isMaster && <div className="bg-primary px-4 py-2 text-center text-xs font-bold uppercase text-primary-foreground">Mais completo</div>}
-                  <div className="bg-muted/25 p-4 sm:p-5"><ProductStage master={isMaster} flavor={flavor} /></div>
+                  <div className="bg-muted/25 p-4 sm:p-5"><ProductStage master={isMaster} /></div>
                   <div className="flex flex-1 flex-col p-6 sm:p-7">
                     <h3 className="text-2xl font-extrabold text-primary">{plan.name}</h3>
                     <p className="mt-2 text-3xl font-extrabold text-foreground">R$ {plan.price}<span className="text-base font-medium text-muted-foreground">/mês</span></p>
