@@ -1,6 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
-import { z } from "npm:zod@^3.25.76";
 import { sha256 } from "../_shared/lipolovers.ts";
 import { digitsOnly, paymentWebhookSchema } from "./schema.ts";
 
@@ -105,4 +104,3 @@ Deno.serve(async (req) => {
   return json({ ok: true, lead_id: lead.id, payment_status: "pending" });
 });
 
-export { z };
