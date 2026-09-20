@@ -97,54 +97,58 @@ export default function LipoloversLeadDialog({ open, initialFlavor, onOpenChange
 
   return (
     <Dialog open={open} onOpenChange={submitting ? undefined : onOpenChange}>
-      <DialogContent className="max-h-[92vh] w-[calc(100%-2rem)] max-w-md overflow-y-auto rounded-lg border-border p-5 sm:p-7">
-        <DialogHeader className="pr-6 text-left">
+      <DialogContent className="flex max-h-[calc(100dvh-1rem)] w-[calc(100vw-1rem)] max-w-md flex-col gap-0 overflow-hidden rounded-lg border-border p-0 sm:max-h-[92vh]">
+        <DialogHeader className="shrink-0 border-b border-border px-5 pb-4 pt-5 pr-12 text-left sm:px-6 sm:pb-5 sm:pt-6">
           <p className="text-xs font-bold uppercase text-accent">Resumo da assinatura</p>
-          <DialogTitle className="text-2xl text-primary">{plan.name}</DialogTitle>
-          <DialogDescription>Revise sua escolha e informe seus dados para seguir ao pagamento.</DialogDescription>
+          <DialogTitle className="text-[1.65rem] leading-tight text-primary sm:text-2xl">{plan.name}</DialogTitle>
+          <DialogDescription className="text-sm leading-snug">Revise sua escolha e informe seus dados para seguir ao pagamento.</DialogDescription>
         </DialogHeader>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-2 rounded-md border border-border bg-muted/35 p-4 text-sm">
-          <span className="text-muted-foreground">Valor avulso</span><strong className="text-right text-muted-foreground line-through">R$ 527</strong>
-          <span className="text-muted-foreground">Mensalidade</span><strong className="text-right text-primary">R$ {plan.price}/mês</strong>
-          <span className="text-muted-foreground">Sua economia</span><strong className="text-right text-accent">R$ 128/mês</strong>
-          <span className="text-muted-foreground">Inclui</span><strong className="text-right">{plan.includes.length} produtos + {LIPOLOVERS_GIFTS.length} brindes</strong>
-          <span className="text-muted-foreground">Sabor</span><strong className="text-right">{LIPOLOVERS_CONFIG.flavors.find((flavor) => flavor.id === initialFlavor)?.label ?? "Escolha abaixo"}</strong>
-        </div>
-        <form onSubmit={submit} className="space-y-4" noValidate>
-          <Field label="Nome" error={errors.full_name}>
-            <input ref={(element) => { fieldRefs.current.full_name = element; }} value={form.full_name} onChange={update("full_name")} className={inputCls(errors.full_name)} autoComplete="name" placeholder="Seu nome completo" />
-          </Field>
-          <Field label="WhatsApp" error={errors.phone}>
-            <input ref={(element) => { fieldRefs.current.phone = element; }} value={form.phone} onChange={update("phone")} className={inputCls(errors.phone)} type="tel" inputMode="tel" autoComplete="tel" placeholder="(00) 00000-0000" />
-          </Field>
-          <Field label="E-mail" error={errors.email}>
-            <input ref={(element) => { fieldRefs.current.email = element; }} value={form.email} onChange={update("email")} className={inputCls(errors.email)} type="email" autoComplete="email" placeholder="voce@email.com" />
-          </Field>
-          <Field label="Plano escolhido">
-            <input value={`${plan.name} — R$${plan.price}/mês`} className={inputCls()} readOnly aria-readonly="true" />
-          </Field>
-          <Field label="Sabor do Shot Matinal" error={errors.flavor}>
-            <select ref={(element) => { fieldRefs.current.flavor = element; }} value={form.flavor} onChange={update("flavor")} className={inputCls(errors.flavor)}>
-              <option value="">Escolha o sabor</option>
-              {LIPOLOVERS_CONFIG.flavors.map((flavor) => <option value={flavor.id} key={flavor.id}>{flavor.label}</option>)}
-            </select>
-          </Field>
-          {serverError && <p role="alert" className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{serverError}</p>}
-          {checkoutUrl ? (
-            <div className="space-y-2 rounded-md border border-accent/40 bg-accent/10 p-4 text-sm">
-              <p className="font-semibold text-primary">Abrimos o pagamento em uma nova aba.</p>
-              <p className="text-muted-foreground">Se ela não abrir, toque no botão abaixo.</p>
-              <Button asChild size="lg" className="w-full bg-accent font-bold hover:bg-accent/90">
-                <a href={checkoutUrl} target="_blank" rel="noopener noreferrer">ABRIR PAGAMENTO — R$ {plan.price}/MÊS</a>
-              </Button>
+        <form onSubmit={submit} className="flex min-h-0 flex-1 flex-col" noValidate>
+          <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-4 sm:px-6">
+            <div className="space-y-2 rounded-md border border-border bg-muted/35 p-4 text-sm">
+              <div className="flex items-center justify-between gap-4"><span className="text-muted-foreground">Valor avulso</span><strong className="shrink-0 text-muted-foreground line-through">R$ 527</strong></div>
+              <div className="flex items-center justify-between gap-4"><span className="text-muted-foreground">Mensalidade</span><strong className="shrink-0 text-primary">R$ {plan.price}/mês</strong></div>
+              <div className="flex items-center justify-between gap-4"><span className="text-muted-foreground">Sua economia</span><strong className="shrink-0 text-accent">R$ 128/mês</strong></div>
+              <div className="mt-2 space-y-1.5 border-t border-border pt-2 text-xs">
+                <div className="flex items-start justify-between gap-3"><span className="text-muted-foreground">Inclui</span><strong className="text-right">{plan.includes.length} produtos + {LIPOLOVERS_GIFTS.length} brindes</strong></div>
+                <div className="flex items-start justify-between gap-3"><span className="text-muted-foreground">Sabor</span><strong className="text-right">{LIPOLOVERS_CONFIG.flavors.find((flavor) => flavor.id === form.flavor)?.label ?? "Escolha abaixo"}</strong></div>
+              </div>
             </div>
-          ) : (
-            <Button type="submit" size="lg" disabled={submitting} className="w-full bg-accent font-bold hover:bg-accent/90">
-              {submitting && <Loader2 className="animate-spin" />}
-              {submitting ? "Salvando..." : `CONTINUAR PARA O PAGAMENTO — R$ ${plan.price}/MÊS`}
-            </Button>
-          )}
-          <p className="text-center text-xs leading-relaxed text-muted-foreground">O pagamento acontece na próxima etapa, em ambiente seguro. Frete calculado à parte.</p>
+            <div className="space-y-4">
+              <Field label="Nome" error={errors.full_name}>
+                <input ref={(element) => { fieldRefs.current.full_name = element; }} value={form.full_name} onChange={update("full_name")} className={`${inputCls(errors.full_name)} min-h-12 text-base`} autoComplete="name" placeholder="Seu nome completo" />
+              </Field>
+              <Field label="WhatsApp" error={errors.phone}>
+                <input ref={(element) => { fieldRefs.current.phone = element; }} value={form.phone} onChange={update("phone")} className={`${inputCls(errors.phone)} min-h-12 text-base`} type="tel" inputMode="tel" autoComplete="tel" placeholder="(00) 00000-0000" />
+              </Field>
+              <Field label="E-mail" error={errors.email}>
+                <input ref={(element) => { fieldRefs.current.email = element; }} value={form.email} onChange={update("email")} className={`${inputCls(errors.email)} min-h-12 text-base`} type="email" autoComplete="email" placeholder="voce@email.com" />
+              </Field>
+              <Field label="Sabor do Shot Matinal" error={errors.flavor}>
+                <select ref={(element) => { fieldRefs.current.flavor = element; }} value={form.flavor} onChange={update("flavor")} className={`${inputCls(errors.flavor)} min-h-12 text-base`}>
+                  <option value="">Escolha o sabor</option>
+                  {LIPOLOVERS_CONFIG.flavors.map((flavor) => <option value={flavor.id} key={flavor.id}>{flavor.label}</option>)}
+                </select>
+              </Field>
+              {serverError && <p role="alert" className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{serverError}</p>}
+            </div>
+          </div>
+          <div className="shrink-0 border-t border-border bg-background px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4">
+            {checkoutUrl ? (
+              <div className="space-y-2 text-sm">
+                <p className="text-center font-semibold text-primary">Pagamento aberto em uma nova aba.</p>
+                <Button asChild size="lg" className="h-auto min-h-12 w-full whitespace-normal bg-accent px-3 py-3 text-center text-sm font-bold leading-tight hover:bg-accent/90">
+                  <a href={checkoutUrl} target="_blank" rel="noopener noreferrer">ABRIR PAGAMENTO — R$ {plan.price}/MÊS</a>
+                </Button>
+              </div>
+            ) : (
+              <Button type="submit" size="lg" disabled={submitting} className="h-auto min-h-12 w-full whitespace-normal bg-accent px-3 py-3 text-center text-sm font-bold leading-tight hover:bg-accent/90">
+                {submitting && <Loader2 className="animate-spin" />}
+                {submitting ? "Salvando..." : `CONTINUAR — R$ ${plan.price}/MÊS`}
+              </Button>
+            )}
+            <p className="mt-2 text-center text-xs leading-relaxed text-muted-foreground">Pagamento seguro • Frete calculado à parte</p>
+          </div>
         </form>
       </DialogContent>
     </Dialog>
