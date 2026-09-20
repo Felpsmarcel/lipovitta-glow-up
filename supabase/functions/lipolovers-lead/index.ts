@@ -3,10 +3,8 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { addContactTags, upsertContact } from "../_shared/ghl-api.ts";
 import { leadSchema, sha256, tagsFor } from "../_shared/lipolovers.ts";
 
-const checkoutUrls = {
-  essencial: "https://seguro.lipovitta.site/b/ERLVJYQMJDSK",
-  master: "https://seguro.lipovitta.site/b/CS0TSDGA96O0",
-} as const;
+const ESSENCIAL_CHECKOUT_URL = "https://mpago.la/16SyCN8";
+
 
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
   status,
@@ -58,7 +56,7 @@ Deno.serve(async (req) => {
   }
   await admin.from("lipolovers_leads").update({ ghl_status: ghlStatus, ghl_error: ghlError }).eq("id", lead.id);
 
-  const checkout = new URL(checkoutUrls[parsed.data.plan]);
+  const checkout = new URL(ESSENCIAL_CHECKOUT_URL);
   checkout.searchParams.set("utm_source", "site-lipolovers");
   checkout.searchParams.set("utm_medium", "assinatura");
   checkout.searchParams.set("utm_campaign", `lipolovers-${parsed.data.plan}`);

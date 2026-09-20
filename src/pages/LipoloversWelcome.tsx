@@ -7,7 +7,7 @@ import { Field, inputCls, STATES } from "@/components/affiliates/shared";
 import { SEOHead } from "@/components/SEOHead";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
-import { LIPOLOVERS_CONFIG, type LipoloversFlavorId, type LipoloversPlanId } from "@/config/lipolovers";
+import { LIPOLOVERS_CONFIG, LIPOLOVERS_GIFTS, type LipoloversFlavorId, type LipoloversPlanId } from "@/config/lipolovers";
 import logo from "@/assets/logo-lipovitta.png";
 
 const schema = z.object({
@@ -24,6 +24,11 @@ const schema = z.object({
 });
 
 const emptyForm = { full_name: "", email: "", phone: "", postal_code: "", street_address: "", address_number: "", complement: "", neighborhood: "", city: "", state: "" };
+
+function planName(plan: LipoloversPlanId): string {
+  return LIPOLOVERS_CONFIG.plans[plan]?.name ?? "Lipolovers";
+}
+
 
 export default function LipoloversWelcome() {
   const [token, setToken] = useState("");
@@ -87,7 +92,8 @@ export default function LipoloversWelcome() {
       <div className="mb-9 text-center">
         <p className="text-sm font-bold uppercase text-accent">Clube de assinatura</p>
         <h1 className="mt-3 flex flex-wrap items-center justify-center gap-2 text-4xl font-extrabold text-primary sm:text-5xl">Bem-vinda ao Lipolovers <Heart className="h-9 w-9 fill-primary" aria-label="coração azul" /></h1>
-        <p className="mx-auto mt-5 max-w-2xl leading-relaxed text-muted-foreground">Sua assinatura foi iniciada. Agora precisamos confirmar seus dados para preparar sua entrega.</p>
+        <p className="mx-auto mt-5 max-w-2xl leading-relaxed text-muted-foreground">Sua assinatura foi iniciada. Agora precisamos confirmar seus dados para preparar sua entrega, produtos e brindes.</p>
+
       </div>
 
       {saved ? <div className="rounded-lg border border-accent/40 bg-background p-8 text-center shadow-sm"><CheckCircle2 className="mx-auto h-12 w-12 text-accent" /><h2 className="mt-4 text-2xl font-bold text-primary">Dados confirmados</h2><p className="mt-2 text-muted-foreground">Recebemos seus dados de entrega. Nossa equipe seguirá com a preparação do seu pedido.</p></div>
@@ -99,9 +105,13 @@ export default function LipoloversWelcome() {
         </div>
       : <form onSubmit={submit} className="space-y-5 rounded-lg border border-border bg-background p-5 shadow-sm sm:p-8" noValidate>
           {selection && <div className="grid gap-5 rounded-md bg-muted/50 p-4 sm:grid-cols-2">
-            <div><p className="text-xs font-bold uppercase text-muted-foreground">Plano</p><p className="mt-1 font-semibold text-primary">{LIPOLOVERS_CONFIG.plans[selection.plan]?.name}</p></div>
+            <div><p className="text-xs font-bold uppercase text-muted-foreground">Plano</p><p className="mt-1 font-semibold text-primary">{planName(selection.plan)}</p></div>
             <div><p className="text-xs font-bold uppercase text-muted-foreground">Sabor escolhido</p><p className="mt-1 font-semibold text-primary">{LIPOLOVERS_CONFIG.flavors.find((flavor) => flavor.id === selection.flavor)?.label}</p></div>
+            {selection.plan === "essencial" && (
+              <div className="sm:col-span-2"><p className="text-xs font-bold uppercase text-muted-foreground">Brindes inclusos</p><p className="mt-1 text-sm text-foreground">{LIPOLOVERS_GIFTS.map((gift) => gift.nome).join(", ")}</p></div>
+            )}
           </div>}
+
           <div className="grid gap-5 sm:grid-cols-2"><Field label="Nome" error={errors.full_name}><input value={form.full_name} onChange={update("full_name")} className={inputCls(errors.full_name)} autoComplete="name" /></Field><Field label="E-mail usado na assinatura" error={errors.email}><input value={form.email} onChange={update("email")} className={inputCls(errors.email)} type="email" autoComplete="email" /></Field></div>
           <div className="grid gap-5 sm:grid-cols-2"><Field label="WhatsApp" error={errors.phone}><input value={form.phone} onChange={update("phone")} className={inputCls(errors.phone)} type="tel" autoComplete="tel" /></Field><Field label="CEP" error={errors.postal_code}><input value={form.postal_code} onChange={update("postal_code")} className={inputCls(errors.postal_code)} inputMode="numeric" autoComplete="postal-code" /></Field></div>
           <div className="grid gap-5 sm:grid-cols-[1fr_140px]"><Field label="Endereço" error={errors.street_address}><input value={form.street_address} onChange={update("street_address")} className={inputCls(errors.street_address)} autoComplete="street-address" /></Field><Field label="Número" error={errors.address_number}><input value={form.address_number} onChange={update("address_number")} className={inputCls(errors.address_number)} /></Field></div>

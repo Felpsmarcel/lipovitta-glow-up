@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Field, inputCls } from "@/components/affiliates/shared";
 import { supabase } from "@/integrations/supabase/client";
-import { LIPOLOVERS_CONFIG, type LipoloversFlavorId, type LipoloversPlanId } from "@/config/lipolovers";
+import { LIPOLOVERS_CONFIG, LIPOLOVERS_GIFTS, type LipoloversFlavorId } from "@/config/lipolovers";
 import { trackInitiateCheckout, trackLead } from "@/lib/tracking";
 
 const schema = z.object({
@@ -23,13 +23,12 @@ const schema = z.object({
 
 type Props = {
   open: boolean;
-  planId: LipoloversPlanId;
   initialFlavor?: LipoloversFlavorId;
   onOpenChange: (open: boolean) => void;
 };
 
-export default function LipoloversLeadDialog({ open, planId, initialFlavor, onOpenChange }: Props) {
-  const plan = LIPOLOVERS_CONFIG.plans[planId];
+export default function LipoloversLeadDialog({ open, initialFlavor, onOpenChange }: Props) {
+  const plan = LIPOLOVERS_CONFIG.plans.essencial;
   const [form, setForm] = useState({ full_name: "", phone: "", email: "", flavor: initialFlavor ?? "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState("");
@@ -41,7 +40,7 @@ export default function LipoloversLeadDialog({ open, planId, initialFlavor, onOp
     setForm((current) => ({ ...current, flavor: initialFlavor ?? "" }));
     setErrors({});
     setServerError("");
-  }, [open, initialFlavor, planId]);
+  }, [open, initialFlavor]);
 
   const update = (field: keyof typeof form) => (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm((current) => ({ ...current, [field]: event.target.value }));
@@ -63,9 +62,9 @@ export default function LipoloversLeadDialog({ open, planId, initialFlavor, onOp
     setSubmitting(true);
     setServerError("");
     const { data, error } = await supabase.functions.invoke("lipolovers-lead", {
-      body: { ...parsed.data, plan: planId },
+      body: { ...parsed.data, plan: "essencial" },
     });
-    if (error || !data?.checkout_url || !data?.event_id || !data?.claim_token) {
+    if (error || !data?.event_id || !data?.claim_token) {
       setSubmitting(false);
       setServerError("Não foi possível continuar agora. Tente novamente em instantes.");
       return;
@@ -75,12 +74,19 @@ export default function LipoloversLeadDialog({ open, planId, initialFlavor, onOp
     const flavorLabel = LIPOLOVERS_CONFIG.flavors.find((flavor) => flavor.id === parsed.data.flavor)?.label ?? parsed.data.flavor;
     trackInitiateCheckout({
       eventId: data.event_id,
-      location: `lipolovers-${planId}`,
+      location: "lipolovers-essencial",
       productName: plan.name,
       value: plan.price,
       flavor: flavorLabel,
     });
-    window.location.assign(data.checkout_url);
+    const checkoutUrl = new URL(plan.checkoutUrl);
+    checkoutUrl.searchParams.set("utm_source", "site-lipolovers");
+    checkoutUrl.searchParams.set("utm_medium", "assinatura");
+    checkoutUrl.searchParams.set("utm_campaign", `lipolovers-${plan.id}`);
+    checkoutUrl.searchParams.set("utm_content", `sabor-${parsed.data.flavor}`);
+    checkoutUrl.searchParams.set("utm_term", `eid_${data.event_id}`);
+    checkoutUrl.searchParams.set("lipolovers_token", String(data.claim_token));
+    window.location.assign(checkoutUrl.toString());
   };
 
   return (
@@ -93,7 +99,8 @@ export default function LipoloversLeadDialog({ open, planId, initialFlavor, onOp
         </DialogHeader>
         <div className="grid grid-cols-2 gap-x-4 gap-y-2 rounded-md border border-border bg-muted/35 p-4 text-sm">
           <span className="text-muted-foreground">Mensalidade</span><strong className="text-right text-primary">R$ {plan.price}/mês</strong>
-          <span className="text-muted-foreground">Inclui</span><strong className="text-right">{plan.includes.length} produtos</strong>
+          <span className="text-muted-foreground">Compromisso</span><strong className="text-right">{LIPOLOVERS_CONFIG.commitmentMonths} meses</strong>
+          <span className="text-muted-foreground">Inclui</span><strong className="text-right">{plan.includes.length} produtos + {LIPOLOVERS_GIFTS.length} brindes</strong>
           <span className="text-muted-foreground">Sabor</span><strong className="text-right">{LIPOLOVERS_CONFIG.flavors.find((flavor) => flavor.id === initialFlavor)?.label ?? "Escolha abaixo"}</strong>
         </div>
         <form onSubmit={submit} className="space-y-4" noValidate>
@@ -118,9 +125,9 @@ export default function LipoloversLeadDialog({ open, planId, initialFlavor, onOp
           {serverError && <p role="alert" className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{serverError}</p>}
           <Button type="submit" size="lg" disabled={submitting} className="w-full bg-accent font-bold hover:bg-accent/90">
             {submitting && <Loader2 className="animate-spin" />}
-            {submitting ? "Salvando..." : "CONTINUAR PARA O PAGAMENTO"}
+            {submitting ? "Salvando..." : `CONTINUAR PARA O PAGAMENTO — R$ ${plan.price}/MÊS`}
           </Button>
-          <p className="text-center text-xs leading-relaxed text-muted-foreground">O pagamento acontece na próxima etapa, em ambiente seguro. Frete calculado à parte.</p>
+          <p className="text-center text-xs leading-relaxed text-muted-foreground">O pagamento acontece na próxima etapa, em ambiente seguro. Frete calculado à parte. Após {LIPOLOVERS_CONFIG.commitmentMonths} meses você pode cancelar para as próximas cobranças.</p>
         </form>
       </DialogContent>
     </Dialog>

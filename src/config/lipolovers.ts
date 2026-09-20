@@ -1,22 +1,20 @@
+import { GIFTS, type Gift } from "@/data/gifts";
+
+export const LIPOLOVERS_GIFT_IDS = ["raspador", "portacapsulas", "mixer"] as const;
+
 export const LIPOLOVERS_CONFIG = {
   source: "site-lipolovers",
   returnPath: "/lipolovers/boas-vindas",
+  commitmentMonths: 6,
   plans: {
     essencial: {
       id: "essencial",
       name: "Lipolovers Essencial",
       price: 399,
-      checkoutUrl: "https://seguro.lipovitta.site/b/ERLVJYQMJDSK",
+      checkoutUrl: "https://mpago.la/16SyCN8",
       tag: "lipolovers-essencial",
       includes: ["1 frasco de Cápsulas LipoVitta", "1 Shot Matinal"],
-    },
-    master: {
-      id: "master",
-      name: "Lipolovers Master",
-      price: 449,
-      checkoutUrl: "https://seguro.lipovitta.site/b/CS0TSDGA96O0",
-      tag: "lipolovers-master",
-      includes: ["1 frasco de Cápsulas LipoVitta", "1 Shot Matinal", "1 Shot Rush"],
+      giftIds: LIPOLOVERS_GIFT_IDS,
     },
   },
   flavors: [
@@ -26,5 +24,10 @@ export const LIPOLOVERS_CONFIG = {
   ],
 } as const;
 
-export type LipoloversPlanId = keyof typeof LIPOLOVERS_CONFIG.plans;
+export const LIPOLOVERS_GIFTS: Gift[] = GIFTS.filter((gift) =>
+  (LIPOLOVERS_GIFT_IDS as readonly string[]).includes(gift.id)
+);
+
+/** Aceita 'master' apenas para compatibilidade com leads antigos. */
+export type LipoloversPlanId = "essencial" | "master";
 export type LipoloversFlavorId = (typeof LIPOLOVERS_CONFIG.flavors)[number]["id"];
