@@ -81,17 +81,11 @@ export default function LipoloversLeadDialog({ open, initialFlavor, onOpenChange
       value: plan.price,
       flavor: flavorLabel,
     });
-    const checkoutUrl = new URL(plan.checkoutUrl);
-    checkoutUrl.searchParams.set("utm_source", "site-lipolovers");
-    checkoutUrl.searchParams.set("utm_medium", "assinatura");
-    checkoutUrl.searchParams.set("utm_campaign", `lipolovers-${plan.id}`);
-    checkoutUrl.searchParams.set("utm_content", `sabor-${parsed.data.flavor}`);
-    checkoutUrl.searchParams.set("utm_term", `eid_${data.event_id}`);
-    checkoutUrl.searchParams.set("lipolovers_token", String(data.claim_token));
-    const url = checkoutUrl.toString();
+    // O link curto do Mercado Pago descarta query params; a atribuição fica no lead salvo.
+    const url = plan.checkoutUrl;
     setCheckoutUrl(url);
     setSubmitting(false);
-    const opened = window.open(url, "_blank", "noopener,noreferrer");
+    const opened = window.open(url, "_blank");
     if (!opened) {
       try {
         (window.top ?? window).location.href = url;
