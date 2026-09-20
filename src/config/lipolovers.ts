@@ -8,7 +8,7 @@ export const LIPOLOVERS_CONFIG = {
       price: 399,
       checkoutUrl: "https://seguro.lipovitta.site/b/ERLVJYQMJDSK",
       tag: "lipolovers-essencial",
-      includes: ["1 Cápsulas LipoVitta", "1 Shot Matinal"],
+      includes: ["1 frasco de Cápsulas LipoVitta", "1 Shot Matinal"],
     },
     master: {
       id: "master",
@@ -16,7 +16,7 @@ export const LIPOLOVERS_CONFIG = {
       price: 449,
       checkoutUrl: "https://seguro.lipovitta.site/b/CS0TSDGA96O0",
       tag: "lipolovers-master",
-      includes: ["1 Cápsulas LipoVitta", "1 Shot Matinal", "1 Shot Rush"],
+      includes: ["1 frasco de Cápsulas LipoVitta", "1 Shot Matinal", "1 Shot Rush"],
     },
   },
   flavors: [

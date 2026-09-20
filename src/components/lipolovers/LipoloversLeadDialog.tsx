@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,7 @@ export default function LipoloversLeadDialog({ open, planId, initialFlavor, onOp
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const fieldRefs = useRef<Record<string, HTMLInputElement | HTMLSelectElement | null>>({});
 
   useEffect(() => {
     if (!open) return;
@@ -55,6 +56,8 @@ export default function LipoloversLeadDialog({ open, planId, initialFlavor, onOp
       const next: Record<string, string> = {};
       parsed.error.issues.forEach((issue) => { next[String(issue.path[0])] = issue.message; });
       setErrors(next);
+      const firstInvalidField = String(parsed.error.issues[0]?.path[0] ?? "");
+      window.setTimeout(() => fieldRefs.current[firstInvalidField]?.focus(), 0);
       return;
     }
     setSubmitting(true);
@@ -84,25 +87,30 @@ export default function LipoloversLeadDialog({ open, planId, initialFlavor, onOp
     <Dialog open={open} onOpenChange={submitting ? undefined : onOpenChange}>
       <DialogContent className="max-h-[92vh] w-[calc(100%-2rem)] max-w-md overflow-y-auto rounded-lg border-border p-5 sm:p-7">
         <DialogHeader className="pr-6 text-left">
-          <p className="text-xs font-bold uppercase text-accent">Seu plano</p>
+          <p className="text-xs font-bold uppercase text-accent">Resumo da assinatura</p>
           <DialogTitle className="text-2xl text-primary">{plan.name}</DialogTitle>
-          <DialogDescription>Conte como podemos falar com você e escolha seu sabor antes de seguir.</DialogDescription>
+          <DialogDescription>Revise sua escolha e informe seus dados para seguir ao pagamento.</DialogDescription>
         </DialogHeader>
+        <div className="grid grid-cols-2 gap-x-4 gap-y-2 rounded-md border border-border bg-muted/35 p-4 text-sm">
+          <span className="text-muted-foreground">Mensalidade</span><strong className="text-right text-primary">R$ {plan.price}/mês</strong>
+          <span className="text-muted-foreground">Inclui</span><strong className="text-right">{plan.includes.length} produtos</strong>
+          <span className="text-muted-foreground">Sabor</span><strong className="text-right">{LIPOLOVERS_CONFIG.flavors.find((flavor) => flavor.id === initialFlavor)?.label ?? "Escolha abaixo"}</strong>
+        </div>
         <form onSubmit={submit} className="space-y-4" noValidate>
           <Field label="Nome" error={errors.full_name}>
-            <input value={form.full_name} onChange={update("full_name")} className={inputCls(errors.full_name)} autoComplete="name" placeholder="Seu nome completo" />
+            <input ref={(element) => { fieldRefs.current.full_name = element; }} value={form.full_name} onChange={update("full_name")} className={inputCls(errors.full_name)} autoComplete="name" placeholder="Seu nome completo" />
           </Field>
           <Field label="WhatsApp" error={errors.phone}>
-            <input value={form.phone} onChange={update("phone")} className={inputCls(errors.phone)} type="tel" inputMode="tel" autoComplete="tel" placeholder="(00) 00000-0000" />
+            <input ref={(element) => { fieldRefs.current.phone = element; }} value={form.phone} onChange={update("phone")} className={inputCls(errors.phone)} type="tel" inputMode="tel" autoComplete="tel" placeholder="(00) 00000-0000" />
           </Field>
           <Field label="E-mail" error={errors.email}>
-            <input value={form.email} onChange={update("email")} className={inputCls(errors.email)} type="email" autoComplete="email" placeholder="voce@email.com" />
+            <input ref={(element) => { fieldRefs.current.email = element; }} value={form.email} onChange={update("email")} className={inputCls(errors.email)} type="email" autoComplete="email" placeholder="voce@email.com" />
           </Field>
           <Field label="Plano escolhido">
             <input value={`${plan.name} — R$${plan.price}/mês`} className={inputCls()} readOnly aria-readonly="true" />
           </Field>
           <Field label="Sabor do Shot Matinal" error={errors.flavor}>
-            <select value={form.flavor} onChange={update("flavor")} className={inputCls(errors.flavor)}>
+            <select ref={(element) => { fieldRefs.current.flavor = element; }} value={form.flavor} onChange={update("flavor")} className={inputCls(errors.flavor)}>
               <option value="">Escolha o sabor</option>
               {LIPOLOVERS_CONFIG.flavors.map((flavor) => <option value={flavor.id} key={flavor.id}>{flavor.label}</option>)}
             </select>
@@ -112,7 +120,7 @@ export default function LipoloversLeadDialog({ open, planId, initialFlavor, onOp
             {submitting && <Loader2 className="animate-spin" />}
             {submitting ? "Salvando..." : "CONTINUAR PARA O PAGAMENTO"}
           </Button>
-          <p className="text-center text-xs text-muted-foreground">Você seguirá para o checkout seguro. Frete calculado à parte.</p>
+          <p className="text-center text-xs leading-relaxed text-muted-foreground">O pagamento acontece na próxima etapa, em ambiente seguro. Frete calculado à parte.</p>
         </form>
       </DialogContent>
     </Dialog>
