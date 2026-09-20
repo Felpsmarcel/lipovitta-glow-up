@@ -9,8 +9,8 @@ import LipoloversLeadDialog from "@/components/lipolovers/LipoloversLeadDialog";
 import { LIPOLOVERS_CONFIG, type LipoloversFlavorId, type LipoloversPlanId } from "@/config/lipolovers";
 import { trackViewContent } from "@/lib/tracking";
 import logo from "@/assets/logo-lipovitta.png";
-import comboOriginal from "@/assets/lipolovers-combo-original.png.asset.json";
-import kitCompletoOriginal from "@/assets/lipolovers-kit-completo-original.png.asset.json";
+import comboOriginal from "@/assets/combo-lipovitta.png.asset.json";
+import kitCompletoOriginal from "@/assets/kit-completo-lipovitta.png.asset.json";
 import tangerina from "@/assets/shot-matinal-tangerina.jpg";
 import limao from "@/assets/shot-matinal-limao.jpg";
 import abacaxi from "@/assets/shot-matinal-abacaxi.jpg";
@@ -18,7 +18,8 @@ import abacaxi from "@/assets/shot-matinal-abacaxi.jpg";
 const flavorImages: Record<LipoloversFlavorId, string> = { tangerina, limao, abacaxi };
 
 function ProductStage({ master, hero = false }: { master: boolean; hero?: boolean }) {
-  const image = master ? kitCompletoOriginal.url : comboOriginal.url;
+  const assetPath = master ? kitCompletoOriginal.url : comboOriginal.url;
+  const image = `https://lipovitta.site${assetPath}`;
   const alt = master ? "Kit Completo LipoVitta original" : "Combo LipoVitta original";
 
   return (
