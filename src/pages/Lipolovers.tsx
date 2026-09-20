@@ -20,12 +20,12 @@ const flavorImages: Record<LipoloversFlavorId, string> = { tangerina, limao, aba
 const COMBO_IMAGE = `https://lipovitta.site${comboOriginal.url}`;
 
 const faq = [
-  ["Tem fidelidade?", `Os primeiros ${LIPOLOVERS_CONFIG.commitmentMonths} meses são de compromisso. Após esse período, você pode cancelar para as próximas cobranças.`],
+  ["Posso cancelar minha assinatura?", `O Lipolovers Essencial possui um período inicial de permanência de ${LIPOLOVERS_CONFIG.commitmentMonths} meses. Durante esse período, a assinatura permanece ativa com cobranças mensais. Após os ${LIPOLOVERS_CONFIG.commitmentMonths} meses iniciais, você pode solicitar o cancelamento para as próximas cobranças.`],
+  ["A cobrança dos 6 meses é feita de uma vez?", "Não. A cobrança é mensal, no valor de R$ 399 por mês. O compromisso inicial da assinatura é de 6 meses."],
+  ["O que acontece depois dos 6 meses?", "Após o período inicial de 6 meses, sua assinatura continua normalmente de forma mensal. A partir daí, você pode solicitar o cancelamento para as próximas cobranças."],
   ["O frete está incluído?", "Não. O frete é calculado à parte no momento da assinatura."],
   ["Posso escolher o sabor?", "Sim. Antes do pagamento, você escolhe Tangerina, Limão ou Abacaxi para o seu Shot Matinal."],
   ["Quais brindes vêm na assinatura?", "O plano Essencial inclui Raspador de língua, Porta cápsulas e Mixer Dosador — brindes reais da LipoVitta."],
-  ["Como funciona a cobrança?", `A cobrança é mensal de R$ ${LIPOLOVERS_CONFIG.plans.essencial.price} pelo plano escolhido. Os primeiros ${LIPOLOVERS_CONFIG.commitmentMonths} meses são de compromisso, conforme as condições apresentadas no checkout seguro.`],
-  ["Posso cancelar?", `Sim. Após os primeiros ${LIPOLOVERS_CONFIG.commitmentMonths} meses de compromisso, você pode solicitar o cancelamento antes da próxima cobrança pelos canais de atendimento LipoVitta.`],
   ["Quando meu pedido é enviado?", "Após a confirmação do pagamento e dos dados de entrega, o pedido segue para preparação e envio."],
 ] as const;
 
@@ -59,9 +59,9 @@ export default function Lipolovers() {
               <p className="mb-3 text-xs font-bold uppercase text-accent sm:text-sm">Clube de assinatura LipoVitta</p>
               <h1 className="text-5xl font-extrabold leading-none text-primary sm:text-6xl lg:text-7xl">Lipolovers</h1>
               <h2 className="mt-4 max-w-lg text-2xl font-bold leading-tight text-foreground sm:text-3xl">Seu ritual LipoVitta, todo mês.</h2>
-              <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">Assine o plano Essencial e receba Cápsulas + Shot Matinal mensalmente, com brindes inclusos. Depois de {LIPOLOVERS_CONFIG.commitmentMonths} meses, você pode cancelar quando quiser.</p>
+              <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">Assine o plano Essencial e receba Cápsulas + Shot Matinal mensalmente, com brindes inclusos.</p>
               <div className="mt-6 flex items-baseline gap-3"><span className="text-sm font-semibold text-muted-foreground">A partir de</span><strong className="text-3xl text-primary">R$ {plan.price}/mês</strong></div>
-              <p className="mt-2 text-sm font-semibold text-accent">{LIPOLOVERS_CONFIG.commitmentMonths} meses de compromisso • Brindes inclusos</p>
+              <p className="mt-2 text-sm font-semibold text-accent">Assinatura mensal • Brindes inclusos</p>
               <Button size="lg" onClick={() => setDialogOpen(true)} className="mt-5 h-[3.25rem] w-full bg-primary px-7 font-bold hover:bg-primary/90 sm:w-auto">QUERO SER LIPOLOVER <ArrowDown /></Button>
               <p className="mt-2 text-sm text-muted-foreground">Frete calculado à parte.</p>
             </div>
@@ -75,7 +75,7 @@ export default function Lipolovers() {
 
         <section className="border-b border-border bg-background py-8 md:py-12">
           <div className="container grid gap-1 px-4 md:grid-cols-3 md:gap-5">
-            {[[RefreshCw, "Todo mês", "Seu ritual chega sem precisar refazer o pedido."], [PackageCheck, `${LIPOLOVERS_CONFIG.commitmentMonths} meses de compromisso`, `Você mantém a assinatura pelos primeiros ${LIPOLOVERS_CONFIG.commitmentMonths} meses. Depois, pode cancelar para as próximas cobranças.`], [Gift, "Brindes inclusos", "Raspador, Porta cápsulas e Mixer Dosador acompanham sua assinatura."]].map(([Icon, title, text]) => {
+            {[[RefreshCw, "Todo mês", "Seu ritual chega sem precisar refazer o pedido."], [PackageCheck, "Assinatura mensal", "Cobrança mensal de R$ 399, com os benefícios do clube."], [Gift, "Brindes inclusos", "Raspador, Porta cápsulas e Mixer Dosador acompanham sua assinatura."]].map(([Icon, title, text]) => {
               const FeatureIcon = Icon as typeof RefreshCw;
               return <div key={String(title)} className="flex gap-4 border-b border-border py-5 last:border-b-0 md:border-b-0 md:border-r md:px-6 md:last:border-r-0"><FeatureIcon className="mt-1 h-6 w-6 shrink-0 text-accent" /><div><h3 className="text-lg font-bold text-primary">{String(title)}</h3><p className="mt-1 text-sm leading-relaxed text-muted-foreground">{String(text)}</p></div></div>;
             })}
@@ -84,7 +84,7 @@ export default function Lipolovers() {
 
         <section id="plano" className="scroll-mt-6 bg-background py-14 md:py-20">
           <div className="container px-4">
-            <div className="mx-auto mb-10 max-w-2xl text-center"><p className="text-sm font-bold uppercase text-accent">Plano Essencial</p><h2 className="mt-3 text-3xl font-extrabold text-primary sm:text-4xl">Seu ritual completo, todo mês</h2><p className="mt-4 text-muted-foreground">Cápsulas + Shot Matinal + 3 brindes. Cobrança mensal de R$ {plan.price}, com {LIPOLOVERS_CONFIG.commitmentMonths} meses iniciais de compromisso.</p></div>
+            <div className="mx-auto mb-10 max-w-2xl text-center"><p className="text-sm font-bold uppercase text-accent">Plano Essencial</p><h2 className="mt-3 text-3xl font-extrabold text-primary sm:text-4xl">Seu ritual completo, todo mês</h2><p className="mt-4 text-muted-foreground">Cápsulas + Shot Matinal + 3 brindes. Assinatura mensal de R$ {plan.price}.</p></div>
             <div className="mx-auto max-w-3xl">
               <article className="relative flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm">
                 <div className="bg-muted/25 p-4 sm:p-5">
@@ -95,7 +95,7 @@ export default function Lipolovers() {
                 <div className="flex flex-1 flex-col p-6 sm:p-7">
                   <h3 className="text-2xl font-extrabold text-primary">{plan.name}</h3>
                   <p className="mt-2 text-3xl font-extrabold text-foreground">R$ {plan.price}<span className="text-base font-medium text-muted-foreground">/mês</span></p>
-                  <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold text-muted-foreground"><span>Cobrança mensal</span><span aria-hidden="true">•</span><span>{LIPOLOVERS_CONFIG.commitmentMonths} meses de compromisso</span><span aria-hidden="true">•</span><span>Frete à parte</span></div>
+                  <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold text-muted-foreground"><span>Cobrança mensal</span><span aria-hidden="true">•</span><span>Frete à parte</span></div>
                   <p className="mt-6 text-xs font-bold uppercase text-muted-foreground">Inclui</p>
                   <ul className="mt-3 space-y-3">
                     {plan.includes.map((item) => <li key={item} className="flex gap-3 text-sm"><Check className="h-5 w-5 shrink-0 text-accent" /><span>{item}</span></li>)}
@@ -135,7 +135,7 @@ export default function Lipolovers() {
           </div>
         </section>
 
-        <section className="bg-primary py-14 text-primary-foreground"><div className="container grid gap-8 px-4 md:grid-cols-3 md:items-center"><div><p className="text-sm font-bold uppercase text-accent-light">Simples e transparente</p><h2 className="mt-3 text-3xl font-extrabold">Seu plano, no seu ritmo.</h2></div><div className="grid gap-5 sm:grid-cols-3 md:col-span-2">{[`${LIPOLOVERS_CONFIG.commitmentMonths} meses iniciais de compromisso`, "Cobrança mensal", "Frete calculado à parte"].map((item) => <div key={item} className="border-l-2 border-accent-light pl-4 text-sm font-semibold">{item}</div>)}</div></div></section>
+        <section className="bg-primary py-14 text-primary-foreground"><div className="container grid gap-8 px-4 md:grid-cols-3 md:items-center"><div><p className="text-sm font-bold uppercase text-accent-light">Simples e transparente</p><h2 className="mt-3 text-3xl font-extrabold">Seu plano, no seu ritmo.</h2></div><div className="grid gap-5 sm:grid-cols-2 md:col-span-2">{["Cobrança mensal", "Frete calculado à parte"].map((item) => <div key={item} className="border-l-2 border-accent-light pl-4 text-sm font-semibold">{item}</div>)}</div></div></section>
         <section className="bg-background py-16 md:py-24"><div className="container max-w-3xl px-4"><p className="text-center text-sm font-bold uppercase text-accent">Dúvidas frequentes</p><h2 className="mt-3 text-center text-3xl font-extrabold text-primary sm:text-4xl">Tudo sobre o Lipolovers</h2><Accordion type="single" collapsible className="mt-10 divide-y divide-border border-y border-border">{faq.map(([question, answer], index) => <AccordionItem key={question} value={`faq-${index}`} className="border-0"><AccordionTrigger className="text-left text-base font-bold text-primary hover:no-underline">{question}</AccordionTrigger><AccordionContent className="text-sm leading-relaxed text-muted-foreground">{answer}</AccordionContent></AccordionItem>)}</Accordion></div></section>
       </main>
 
