@@ -72,7 +72,8 @@ export default function LipoloversLeadDialog({ open, initialFlavor, onOpenChange
       return;
     }
     sessionStorage.setItem("lipolovers_claim_token", String(data.claim_token));
-    trackLead({ formName: "site-lipolovers", eventId: `lead-${data.event_id}`, value: plan.price });
+    const userData = { email: parsed.data.email, phone: parsed.data.phone, name: parsed.data.full_name };
+    trackLead({ formName: "site-lipolovers", eventId: `lead-${data.event_id}`, value: plan.price, ...userData });
     const flavorLabel = LIPOLOVERS_CONFIG.flavors.find((flavor) => flavor.id === parsed.data.flavor)?.label ?? parsed.data.flavor;
     trackInitiateCheckout({
       eventId: data.event_id,
@@ -80,6 +81,7 @@ export default function LipoloversLeadDialog({ open, initialFlavor, onOpenChange
       productName: plan.name,
       value: plan.price,
       flavor: flavorLabel,
+      ...userData,
     });
     // O link curto do Mercado Pago descarta query params; a atribuição fica no lead salvo.
     const url = plan.checkoutUrl;
