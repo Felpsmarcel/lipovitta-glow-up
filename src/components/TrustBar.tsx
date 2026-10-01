@@ -10,7 +10,7 @@ const seals = [
   {
     icon: Truck,
     title: "Frete Grátis",
-    subtitle: "Em compras acima de R$323,00 para todo o Brasil.",
+    subtitle: "Em compras acima de R$400,00 para todo o Brasil.",
   },
   {
     icon: BadgeCheck,

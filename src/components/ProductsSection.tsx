@@ -136,7 +136,7 @@ const ProductsSection = () => {
             Produtos que combinam com a Cápsula LipoVitta para quem quer ir além.
           </p>
           <p className="font-sans font-normal text-sm text-[#666]">
-            Frete grátis em compras a partir de R$323,00.
+            Frete grátis em compras a partir de R$400,00.
           </p>
           <div className="mx-auto mt-5 h-1 w-20 rounded-full bg-gradient-to-r from-[#4667B4] to-[#9BAE52]" />
         </div>
