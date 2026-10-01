@@ -150,12 +150,15 @@ export function trackLead(input: {
   formName: string;
   eventId?: string;
   value?: number;
+  email?: string;
+  phone?: string;
+  name?: string;
 }): string {
   const eventId = input.eventId ?? generateEventId();
   trackEvent(
     "Lead",
     { content_name: input.formName, content_category: "afiliados", currency: "BRL", value: input.value },
-    { eventID: eventId }
+    { eventID: eventId, userData: { email: input.email, phone: input.phone, name: input.name } }
   );
   logConversion({
     event_name: "Lead",
@@ -194,6 +197,9 @@ export function trackInitiateCheckout(input: {
   productName: string;
   value: number;
   flavor: string;
+  email?: string;
+  phone?: string;
+  name?: string;
 }): void {
   trackEvent(
     "InitiateCheckout",
@@ -205,7 +211,7 @@ export function trackInitiateCheckout(input: {
       cta_location: input.location,
       flavor: input.flavor,
     },
-    { eventID: input.eventId }
+    { eventID: input.eventId, userData: { email: input.email, phone: input.phone, name: input.name } }
   );
   logConversion({
     event_name: "InitiateCheckout",
