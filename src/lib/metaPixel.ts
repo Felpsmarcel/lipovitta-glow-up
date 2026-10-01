@@ -106,7 +106,7 @@ async function capiUserData(
 ): Promise<Record<string, string[]> | undefined> {
   const raw = pixelUserData(user);
   const entries = await Promise.all(
-    (Object.entries(raw) as [string, string][]).map(async ([k, v]) => [k, [await sha256Hex(v)]] as const)
+    (Object.entries(raw) as [string, string][]).map(async ([k, v]): Promise<[string, string[]]> => [k, [await sha256Hex(v)]])
   );
   return entries.length > 0 ? Object.fromEntries(entries) : undefined;
 }
