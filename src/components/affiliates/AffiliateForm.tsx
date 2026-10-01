@@ -135,7 +135,13 @@ const AffiliateForm = () => {
 
 
 
-    trackLead({ formName: "afiliada", eventId: `affiliate-${inserted.id}` });
+    trackLead({
+      formName: "afiliada",
+      eventId: `affiliate-${inserted.id}`,
+      email: payload.email,
+      phone: payload.phone,
+      name: payload.full_name,
+    });
 
     setSubmitting(false);
     setSuccess(true);

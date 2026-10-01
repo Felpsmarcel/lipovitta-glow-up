@@ -181,7 +181,13 @@ const PartnerForm = () => {
     setWhatsappHref(waLink);
 
 
-    trackLead({ formName: "parceiro_comercial", eventId: `partner-${inserted.id}` });
+    trackLead({
+      formName: "parceiro_comercial",
+      eventId: `partner-${inserted.id}`,
+      email: payload.email,
+      phone: payload.phone,
+      name: payload.responsible_name,
+    });
 
     setSubmitting(false);
     setSuccess(true);
