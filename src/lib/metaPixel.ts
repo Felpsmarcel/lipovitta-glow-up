@@ -80,7 +80,7 @@ function normalizePhoneBR(value: string): string {
 }
 
 /** Parâmetros em/ph/fn/ln para o Pixel (o fbq aplica SHA-256 automaticamente). */
-function pixelUserData(user: AdvancedMatchingData): Record<string, string> {
+export function pixelUserData(user: AdvancedMatchingData): Record<string, string> {
   const out: Record<string, string> = {};
   const email = user.email?.trim().toLowerCase();
   if (email && email.includes("@")) out.em = email;
