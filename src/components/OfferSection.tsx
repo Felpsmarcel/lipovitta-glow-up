@@ -208,7 +208,7 @@ const OfferSection = () => {
             Escolha como quer começar. Você pode adicionar complementos depois.
           </p>
           <p className="font-sans font-normal text-sm text-[#5F5F5F] mt-2">
-            Frete grátis em compras a partir de R$323,00.
+            Frete grátis em compras a partir de R$400,00.
           </p>
           <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-gradient-to-r from-[#4667B4] to-[#9BAE52]" />
         </div>
