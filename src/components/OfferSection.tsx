@@ -589,6 +589,8 @@ const OfferSection = () => {
 
             <FlavorPicker value={flavorProtocolo} onChange={setFlavorProtocolo} idPrefix="protocolo" />
 
+            <KitIngredients productIds={["capsulas", "shot-matinal"]} className="mt-4 mb-2" />
+
             <div className="mt-auto">
               <div className="mb-4">
                 {promoProtocolo.hasDiscount && (
@@ -666,6 +668,8 @@ const OfferSection = () => {
               ))}
             </ul>
             <FlavorPicker value={flavorShot} onChange={setFlavorShot} idPrefix="shot" />
+
+            <IngredientsAccordion product={PRODUCT_INGREDIENTS["shot-matinal"]} className="mt-3 mb-2" />
 
             <div className="mt-auto">
               <div className="mb-4">
