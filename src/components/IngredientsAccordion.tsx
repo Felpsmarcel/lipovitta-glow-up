@@ -71,6 +71,4 @@ export const KitIngredients = ({ productIds, className = "" }: { productIds: Pro
   </div>
 );
 
-import { PRODUCT_INGREDIENTS } from "@/data/productIngredients";
-
 export default IngredientsAccordion;
