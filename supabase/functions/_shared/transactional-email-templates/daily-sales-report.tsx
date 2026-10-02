@@ -64,6 +64,29 @@ interface Props {
   bySource: { source: string; orders: number }[]
   noticeTitle?: string
   noticeText?: string
+  lipolovers?: LipoloversSummary
+}
+
+export interface LipoloversLeadRow {
+  createdAt: string
+  name: string
+  email: string
+  phone: string
+  plan: string
+  flavor: string
+  paymentApproved: boolean
+  ghlStatus: string
+  ghlFailed: boolean
+  duplicate: boolean
+}
+
+export interface LipoloversSummary {
+  periodLabel: string
+  newCount: number
+  totalCount: number
+  approvedCount: number
+  pendingCount: number
+  leads: LipoloversLeadRow[]
 }
 
 const brl = (v: number) =>
@@ -148,6 +171,7 @@ const Email = ({
   bySource = [],
   noticeTitle,
   noticeText,
+  lipolovers,
 }: Props) => {
   const allOrders = [...yesterdayOrders, ...todayOrders]
   const empty = allOrders.length === 0
@@ -254,6 +278,42 @@ const Email = ({
               ))
             )}
           </Section>
+
+          {lipolovers && (
+            <>
+              <Heading style={h2}>Cadastros Lipolovers ({lipolovers.periodLabel})</Heading>
+              <Section style={card}>
+                <Text style={lineItem}>
+                  Novos no período: <strong>{lipolovers.newCount}</strong> · Total acumulado: {lipolovers.totalCount}
+                </Text>
+                <Text style={muted}>
+                  Pagamento aprovado: {lipolovers.approvedCount} · Pendentes: {lipolovers.pendingCount}
+                </Text>
+              </Section>
+              {lipolovers.leads.length === 0 ? (
+                <Text style={muted}>Nenhum cadastro novo no período.</Text>
+              ) : (
+                lipolovers.leads.map((l, i) => (
+                  <Section key={`${l.createdAt}-${i}`} style={orderCard}>
+                    <Text style={orderTitle}>
+                      {l.name}
+                      {l.duplicate ? ' (repetido)' : ''}
+                    </Text>
+                    <Text style={orderMeta}>{l.createdAt}</Text>
+                    <Text style={lineItem}>E-mail: {l.email}</Text>
+                    <Text style={lineItem}>WhatsApp: {l.phone}</Text>
+                    <Text style={lineItem}>Plano: {l.plan} · Sabor: {l.flavor}</Text>
+                    <Text style={l.paymentApproved ? giftText : lineItem}>
+                      Pagamento: {l.paymentApproved ? 'Aprovado' : 'Pendente'}
+                    </Text>
+                    <Text style={l.ghlFailed ? alertText : muted}>
+                      GoHighLevel: {l.ghlFailed ? 'FALHOU — conferir manualmente' : l.ghlStatus}
+                    </Text>
+                  </Section>
+                ))
+              )}
+            </>
+          )}
 
           <Hr style={hr} />
           <Text style={footer}>LipoVitta · Relatório automático diário</Text>
