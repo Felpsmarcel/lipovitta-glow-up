@@ -416,6 +416,8 @@ const OfferSection = () => {
                 </ul>
               </div>
 
+              <KitIngredients productIds={["shot-rush", "capsulas"]} className="mb-5" />
+
               <div className="mt-auto pt-4 border-t border-[#EEF2FA] flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
                   {promoRush.hasDiscount && (
@@ -485,6 +487,8 @@ const OfferSection = () => {
                 </li>
               ))}
             </ul>
+
+            <IngredientsAccordion product={PRODUCT_INGREDIENTS.capsulas} className="mb-5" />
 
             <div className="mt-auto">
               <div className="mb-4">
