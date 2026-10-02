@@ -447,6 +447,16 @@ export const template = {
     todayOrders: [],
     topProducts: [{ name: 'Cápsulas Lipovitta', orders: 1 }],
     bySource: [{ source: 'direto', orders: 1 }],
+    lipolovers: {
+      periodLabel: '12/09 00h a 13/09 09h',
+      newCount: 1,
+      totalCount: 10,
+      approvedCount: 0,
+      pendingCount: 10,
+      leads: [
+        { createdAt: '12/09/2026 18:01', name: 'Maria Exemplo', email: 'maria@exemplo.com', phone: '+55 71 90000-0000', plan: 'Essencial', flavor: 'Abacaxi', paymentApproved: false, ghlStatus: 'sent', ghlFailed: false, duplicate: false },
+      ],
+    },
   },
   validate: validateDailySalesReport,
 } satisfies TemplateEntry

@@ -192,6 +192,7 @@ Deno.serve(async (req) => {
       orders: Number(s.orders ?? 0),
     })),
   }
+  templateData.lipolovers = await buildLipoloversSummary(admin, reportDate)
   if (mode === 'conference') {
     templateData.noticeTitle = CONFERENCE_TITLE
     templateData.noticeText = CONFERENCE_TEXT
@@ -344,3 +345,60 @@ Deno.serve(async (req) => {
     anyFailure ? 207 : 200,
   )
 })
+
+const TEST_LEAD = /teste|test|valida[cç][aã]o|example|exemplo/i
+const fmtBahia = (iso: string) =>
+  new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Bahia', dateStyle: 'short', timeStyle: 'short' }).format(new Date(iso))
+const cap = (v: string) => (v ? v.charAt(0).toUpperCase() + v.slice(1) : v)
+
+// deno-lint-ignore no-explicit-any
+async function buildLipoloversSummary(admin: any, reportDate: string) {
+  const end = new Date(`${reportDate}T09:00:00-03:00`)
+  const start = new Date(`${reportDate}T00:00:00-03:00`)
+  start.setUTCDate(start.getUTCDate() - 1)
+  const { data, error } = await admin
+    .from('lipolovers_leads')
+    .select('full_name,email,phone,plan,flavor,payment_status,ghl_status,created_at')
+    .lt('created_at', end.toISOString())
+    .order('created_at', { ascending: true })
+    .limit(5000)
+  if (error) {
+    console.error('Failed to load lipolovers leads', { code: error.code })
+    return undefined
+  }
+  const real = (data ?? []).filter(
+    (l: Record<string, string>) => !TEST_LEAD.test(l.full_name ?? '') && !TEST_LEAD.test(l.email ?? ''),
+  )
+  const seen = new Set<string>()
+  const leads = []
+  for (const l of real) {
+    const key = String(l.email).trim().toLowerCase()
+    const dup = seen.has(key)
+    seen.add(key)
+    if (new Date(l.created_at) < start) continue
+    leads.push({
+      createdAt: fmtBahia(l.created_at),
+      name: l.full_name,
+      email: l.email,
+      phone: l.phone,
+      plan: cap(l.plan),
+      flavor: cap(l.flavor),
+      paymentApproved: l.payment_status === 'approved',
+      ghlStatus: l.ghl_status,
+      ghlFailed: l.ghl_status === 'failed' || l.ghl_status === 'error',
+      duplicate: dup,
+    })
+  }
+  const approved = real.filter((l: Record<string, string>) => l.payment_status === 'approved').length
+  const [, m, d] = reportDate.split('-')
+  const y = new Date(start.getTime() + 3 * 3600e3)
+  const yLabel = `${String(y.getUTCDate()).padStart(2, '0')}/${String(y.getUTCMonth() + 1).padStart(2, '0')}`
+  return {
+    periodLabel: `${yLabel} 00h a ${d}/${m} 09h`,
+    newCount: leads.length,
+    totalCount: real.length,
+    approvedCount: approved,
+    pendingCount: real.length - approved,
+    leads,
+  }
+}
