@@ -3,6 +3,8 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
 import { trackCtaClick } from "@/lib/tracking";
+import IngredientsAccordion from "@/components/IngredientsAccordion";
+import { PRODUCT_INGREDIENTS } from "@/data/productIngredients";
 import shotRushImg from "@/assets/shot-rush.jpg?w=300;600;900&format=avif;webp;jpg&as=picture";
 import gummyImg from "@/assets/gummy-vittaglow.png?w=300;600;900&format=avif;webp;png&as=picture";
 
@@ -85,6 +87,7 @@ const complementos: Complemento[] = [
             </li>
           ))}
         </ul>
+        <IngredientsAccordion product={PRODUCT_INGREDIENTS["shot-rush"]} className="mb-4" />
         <ProductPrice kit={kit} />
 
         <button

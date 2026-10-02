@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
 import ResponsiveImage from "@/components/ui/ResponsiveImage";
 import LipoloversLeadDialog from "@/components/lipolovers/LipoloversLeadDialog";
+import { KitIngredients } from "@/components/IngredientsAccordion";
 import { LIPOLOVERS_CONFIG, LIPOLOVERS_GIFTS, type LipoloversFlavorId } from "@/config/lipolovers";
 import { trackViewContent } from "@/lib/tracking";
 import logo from "@/assets/logo-lipovitta.png";
@@ -143,6 +144,7 @@ export default function Lipolovers() {
                   <div className="grid grid-cols-[1fr_auto] items-center gap-3 py-4"><span className="flex items-center gap-2 font-semibold"><Check className="h-5 w-5 shrink-0 text-accent" />1 Cápsulas LipoVitta</span><span className="text-right text-xs text-muted-foreground sm:text-sm">Avulso: R$ {retailCapsules}</span></div>
                   <div className="grid grid-cols-[1fr_auto] items-center gap-3 py-4"><span className="flex items-center gap-2 font-semibold"><Check className="h-5 w-5 shrink-0 text-accent" />1 Shot Matinal</span><span className="text-right text-xs text-muted-foreground sm:text-sm">Avulso: R$ {retailShot}</span></div>
                 </div>
+                <KitIngredients productIds={["capsulas", "shot-matinal"]} className="mt-4" />
                 <div className="mt-6 grid grid-cols-2 gap-5">
                   <div><p className="text-xs font-semibold uppercase text-muted-foreground">Valor avulso total</p><p className="mt-1 text-2xl font-bold text-muted-foreground line-through">R$ {retailTotal}</p></div>
                   <div><p className="text-xs font-semibold uppercase text-primary">Valor Lipolovers</p><p className="mt-1 text-3xl font-extrabold text-primary">R$ {plan.price}<span className="text-sm">/mês</span></p></div>

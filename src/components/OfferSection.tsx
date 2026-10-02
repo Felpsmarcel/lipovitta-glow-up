@@ -12,6 +12,8 @@ import kitCompletoImg from "@/assets/kit-completo-lipovitta.png.asset.json";
 import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
 import { trackEvent } from "@/lib/metaPixel";
 import { trackCtaClick } from "@/lib/tracking";
+import IngredientsAccordion, { KitIngredients } from "@/components/IngredientsAccordion";
+import { PRODUCT_INGREDIENTS } from "@/data/productIngredients";
 
 
 const LINK_CAPSULAS = "https://seguro.lipovitta.site/r/RMTIX51GQN";
@@ -294,6 +296,8 @@ const OfferSection = () => {
 
               <FlavorPicker value={flavorCompleto} onChange={setFlavorCompleto} idPrefix="kit-completo" />
 
+              <KitIngredients productIds={["capsulas", "shot-matinal", "shot-rush"]} className="mt-4" />
+
               <div className="mt-auto pt-4 border-t border-[#EEF2FA] flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
                   {promoCompleto.hasDiscount && (
@@ -412,6 +416,8 @@ const OfferSection = () => {
                 </ul>
               </div>
 
+              <KitIngredients productIds={["shot-rush", "capsulas"]} className="mb-5" />
+
               <div className="mt-auto pt-4 border-t border-[#EEF2FA] flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
                   {promoRush.hasDiscount && (
@@ -481,6 +487,8 @@ const OfferSection = () => {
                 </li>
               ))}
             </ul>
+
+            <IngredientsAccordion product={PRODUCT_INGREDIENTS.capsulas} className="mb-5" />
 
             <div className="mt-auto">
               <div className="mb-4">
@@ -581,6 +589,8 @@ const OfferSection = () => {
 
             <FlavorPicker value={flavorProtocolo} onChange={setFlavorProtocolo} idPrefix="protocolo" />
 
+            <KitIngredients productIds={["capsulas", "shot-matinal"]} className="mt-4 mb-2" />
+
             <div className="mt-auto">
               <div className="mb-4">
                 {promoProtocolo.hasDiscount && (
@@ -658,6 +668,8 @@ const OfferSection = () => {
               ))}
             </ul>
             <FlavorPicker value={flavorShot} onChange={setFlavorShot} idPrefix="shot" />
+
+            <IngredientsAccordion product={PRODUCT_INGREDIENTS["shot-matinal"]} className="mt-3 mb-2" />
 
             <div className="mt-auto">
               <div className="mb-4">
