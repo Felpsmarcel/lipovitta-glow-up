@@ -1,6 +1,6 @@
 import * as Collapsible from "@radix-ui/react-collapsible";
 import { ChevronDown, Plus } from "lucide-react";
-import type { ProductIngredients } from "@/data/productIngredients";
+import { PRODUCT_INGREDIENTS, type ProductIngredients } from "@/data/productIngredients";
 
 /**
  * Accordion discreto "Ver ingredientes +" reutilizável em cards, kits e Lipolovers.
