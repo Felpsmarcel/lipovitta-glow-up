@@ -28,6 +28,7 @@ const IngredientsAccordion = ({ product, className = "" }: { product: ProductIng
 /** Segundo accordion opcional com a tabela nutricional (apenas onde houver espaço, nunca em cards pequenos). */
 export const NutritionAccordion = ({ product, className = "" }: { product: ProductIngredients; className?: string }) => {
   if (!product.nutrition) return null;
+  const hasVd = product.nutrition.rows.some((row) => row[2]);
   return (
     <Collapsible.Root className={className}>
       <Collapsible.Trigger className="group flex w-full items-center justify-between gap-2 rounded-lg border border-[#E8ECF1] bg-[#F8FAFD] px-3 py-2 text-left text-xs font-semibold text-[#4667B4] transition-colors hover:bg-[#EEF2FA]">
