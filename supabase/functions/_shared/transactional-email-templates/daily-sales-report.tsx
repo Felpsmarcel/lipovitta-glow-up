@@ -307,7 +307,7 @@ const Email = ({
                       Pagamento: {l.paymentApproved ? 'Aprovado' : 'Pendente'}
                     </Text>
                     <Text style={l.ghlFailed ? alertText : muted}>
-                      GoHighLevel: {l.ghlFailed ? 'FALHOU — conferir manualmente' : l.ghlStatus}
+                      GoHighLevel: {l.ghlFailed ? 'FALHOU — conferir manualmente' : l.ghlStatus === 'sent' ? 'Enviado' : 'Pendente'}
                     </Text>
                   </Section>
                 ))
