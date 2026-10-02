@@ -12,7 +12,7 @@ import kitCompletoImg from "@/assets/kit-completo-lipovitta.png.asset.json";
 import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
 import { trackEvent } from "@/lib/metaPixel";
 import { trackCtaClick } from "@/lib/tracking";
-import IngredientsAccordion, { KitIngredients } from "@/components/IngredientsAccordion";
+import IngredientsAccordion, { KitIngredients, NutritionAccordion } from "@/components/IngredientsAccordion";
 import { PRODUCT_INGREDIENTS } from "@/data/productIngredients";
 
 
@@ -488,7 +488,8 @@ const OfferSection = () => {
               ))}
             </ul>
 
-            <IngredientsAccordion product={PRODUCT_INGREDIENTS.capsulas} className="mb-5" />
+            <IngredientsAccordion product={PRODUCT_INGREDIENTS.capsulas} className="mb-2" />
+            <NutritionAccordion product={PRODUCT_INGREDIENTS.capsulas} className="mb-5" />
 
             <div className="mt-auto">
               <div className="mb-4">
@@ -670,6 +671,7 @@ const OfferSection = () => {
             <FlavorPicker value={flavorShot} onChange={setFlavorShot} idPrefix="shot" />
 
             <IngredientsAccordion product={PRODUCT_INGREDIENTS["shot-matinal"]} className="mt-3 mb-2" />
+            <NutritionAccordion product={PRODUCT_INGREDIENTS["shot-matinal"]} className="mb-2" />
 
             <div className="mt-auto">
               <div className="mb-4">

@@ -28,6 +28,7 @@ const IngredientsAccordion = ({ product, className = "" }: { product: ProductIng
 /** Segundo accordion opcional com a tabela nutricional (apenas onde houver espaço, nunca em cards pequenos). */
 export const NutritionAccordion = ({ product, className = "" }: { product: ProductIngredients; className?: string }) => {
   if (!product.nutrition) return null;
+  const hasVd = product.nutrition.rows.some((row) => row[2]);
   return (
     <Collapsible.Root className={className}>
       <Collapsible.Trigger className="group flex w-full items-center justify-between gap-2 rounded-lg border border-[#E8ECF1] bg-[#F8FAFD] px-3 py-2 text-left text-xs font-semibold text-[#4667B4] transition-colors hover:bg-[#EEF2FA]">
@@ -39,17 +40,20 @@ export const NutritionAccordion = ({ product, className = "" }: { product: Produ
           <table className="w-full text-xs text-[#555]">
             <caption className="sr-only">Informação nutricional por porção de {product.nutrition.servingSize}</caption>
             <tbody>
-              {product.nutrition.rows.map(([name, amount]) => (
+              {product.nutrition.rows.map(([name, amount, vd]) => (
                 <tr key={name} className="border-b border-[#F0F3F8] last:border-0">
                   <th scope="row" className="py-1 text-left font-normal">{name}</th>
                   <td className="py-1 text-right font-semibold text-[#4667B4]">{amount}</td>
+                  {hasVd && <td className="py-1 pl-2 text-right text-[#666]">{vd ?? ""}</td>}
                 </tr>
               ))}
             </tbody>
           </table>
           <p className="mt-2 text-[11px] text-[#666]">
             Porção: {product.nutrition.servingSize} · Porções por embalagem: {product.nutrition.servings}.
+            {hasVd && " %VD: percentual de valores diários fornecidos pela porção."}
           </p>
+          {product.nutrition.note && <p className="mt-1 text-[11px] text-[#666]">{product.nutrition.note}</p>}
         </div>
       </Collapsible.Content>
     </Collapsible.Root>
