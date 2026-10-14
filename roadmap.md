@@ -1,5 +1,9 @@
 # Lipolovers
 
+## Pré Black
+- [ ] Implementar `/pre-black` com fotos reais, contador e movimento acessível, sem alterar os demais fluxos.
+- [ ] Verificar convite VIP e validar desktop, celular, contador e rastreamento; não publicar.
+
 - [x] Criar página `/lipolovers` e modal de cadastro
 - [x] Criar página `/lipolovers/boas-vindas` com confirmação de pagamento
 - [x] Integrar leads, tags GHL e rastreamento sem Purchase no navegador
