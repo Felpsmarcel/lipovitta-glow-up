@@ -20,4 +20,16 @@ describe("Pré Black campaign rules", () => {
     const invite = "https://chat.whatsapp.com/AbCdEfGhIjKlMnOpQrStUv?mode=gi_t";
     expect(confirmedGroupUrl(invite)).toBe(invite);
   });
+  it("uses the exact confirmed NotifyFlow deeplink and rejects lookalikes", () => {
+    const link = "https://app.notifyflow.com.br/deeplink/campaign/5233468f-cc5c-426b-96bc-a97f89414747";
+    expect(PRE_BLACK_CONFIG.groupUrl).toBe(link);
+    expect(confirmedGroupUrl(link)).toBe(link);
+    for (const bad of [
+      "http://app.notifyflow.com.br/deeplink/campaign/5233468f-cc5c-426b-96bc-a97f89414747",
+      "https://app.notifyflow.com.br.evil.test/deeplink/campaign/5233468f-cc5c-426b-96bc-a97f89414747",
+      "https://user:pw@app.notifyflow.com.br/deeplink/campaign/5233468f-cc5c-426b-96bc-a97f89414747",
+      "https://app.notifyflow.com.br:8443/deeplink/campaign/5233468f-cc5c-426b-96bc-a97f89414747",
+      "https://app.notifyflow.com.br/deeplink/campaign/not-a-uuid",
+    ]) expect(confirmedGroupUrl(bad)).toBeNull();
+  });
 });

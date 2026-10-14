@@ -3,7 +3,7 @@
 ## Pré Black
 - [x] Implementar `/pre-black` com fotos reais, contador e movimento acessível, sem alterar os demais fluxos.
 - [x] Validar desktop 1440, celulares 390/320, fotos, UTMs, contador antes/depois e movimento reduzido; 4 testes, lint e compilação aprovados; sem publicação.
-- [ ] Liberar entrada no grupo VIP — bloqueado: convite oficial `chat.whatsapp.com` não fornecido nem encontrado; botões permanecem indisponíveis, sem eventos de ingresso ou Lead.
+- [x] Liberar entrada no grupo VIP com o deeplink oficial NotifyFlow fornecido (sem UTMs, sem Lead de ingresso); sem publicação.
 
 ## Lipolovers
 
