@@ -15,6 +15,8 @@ import raspador from "@/assets/gifts/brinde-raspador.png";
 import portaCapsulas from "@/assets/gifts/brinde-portacapsulas.png";
 
 const groupUrl = confirmedGroupUrl(PRE_BLACK_CONFIG.groupUrl);
+// Resolve the existing immutable asset on the official origin, including local QA.
+const kitUrl = new URL(kit.url, "https://lipovitta.site").href;
 
 function GroupCta({ location, final = false }: { location: string; final?: boolean }) {
   const label = final ? "ENTRE AGORA NO GRUPO VIP DO WHATSAPP" : "QUERO ENTRAR NO GRUPO DO WHATSAPP";
@@ -54,7 +56,7 @@ export default function PreBlack() {
             </div>
             <div className="pb-hero-photo" data-pb-motion="photo">
               <div className="pb-photo-caption"><span>SEU AUTOCUIDADO.<br />UM NOVO MOMENTO.</span><span>EDIÇÃO<br />PRÉ BLACK / 2026</span></div>
-              <img src={kit.url} alt="Cápsulas LipoVitta, Shot Matinal em Limão, Tangerina e Abacaxi e Shot Rush" width="1600" height="900" fetchPriority="high" />
+              <img src={kitUrl} alt="Cápsulas LipoVitta, Shot Matinal em Limão, Tangerina e Abacaxi e Shot Rush" width="1600" height="900" fetchPriority="high" />
               <div className="pb-photo-footer"><span>Cápsulas · Shot Matinal · Shot Rush</span><ArrowDown aria-hidden="true" size={20} /></div>
             </div>
           </div>
@@ -70,7 +72,7 @@ export default function PreBlack() {
 
         <section className="pb-products pb-shell" aria-labelledby="products-title">
           <div className="pb-section-heading" data-pb-motion="scroll"><p className="pb-eyebrow">O SEU RITUAL LIPOVITTA</p><h2 id="products-title">Vem aí uma oportunidade imperdível para você,<br className="hidden md:block" /> algo jamais visto na história.</h2><p>Shot Matinal, Shot Rush, LipoVitta cápsulas e acessórios exclusivos para sua rotina, com mixer, raspador de língua e porta-cápsulas para elevar seu autocuidado.</p></div>
-          <figure className="pb-kit" data-pb-motion="scroll"><img src={kit.url} alt="Linha LipoVitta com Cápsulas, três sabores de Shot Matinal e Shot Rush" loading="lazy" width="1600" height="900" /><figcaption><span>UM SISTEMA. A SUA ROTINA.</span><span>LipoVitta por Clara Caldas</span></figcaption></figure>
+          <figure className="pb-kit" data-pb-motion="scroll"><img src={kitUrl} alt="Linha LipoVitta com Cápsulas, três sabores de Shot Matinal e Shot Rush" loading="lazy" width="1600" height="900" /><figcaption><span>UM SISTEMA. A SUA ROTINA.</span><span>LipoVitta por Clara Caldas</span></figcaption></figure>
           <div className="pb-flavors" data-pb-motion="scroll"><div><p className="pb-eyebrow">SHOT MATINAL</p><h3>Qual é o seu sabor?</h3></div><div className="pb-flavor-list">{[[tangerina, "Tangerina"], [limao, "Limão"], [abacaxi, "Abacaxi"]].map(([src, name]) => <figure key={name}><img src={src} alt={`Shot Matinal ${name}`} width="180" height="220" loading="lazy" /><figcaption>{name}</figcaption></figure>)}</div></div>
         </section>
 
