@@ -1,8 +1,11 @@
 # Lipolovers
 
 ## Pré Black
-- [ ] Implementar `/pre-black` com fotos reais, contador e movimento acessível, sem alterar os demais fluxos.
-- [ ] Verificar convite VIP e validar desktop, celular, contador e rastreamento; não publicar.
+- [x] Implementar `/pre-black` com fotos reais, contador e movimento acessível, sem alterar os demais fluxos.
+- [x] Validar desktop 1440, celulares 390/320, fotos, UTMs, contador antes/depois e movimento reduzido; 4 testes, lint e compilação aprovados; sem publicação.
+- [ ] Liberar entrada no grupo VIP — bloqueado: convite oficial `chat.whatsapp.com` não fornecido nem encontrado; botões permanecem indisponíveis, sem eventos de ingresso ou Lead.
+
+## Lipolovers
 
 - [x] Criar página `/lipolovers` e modal de cadastro
 - [x] Criar página `/lipolovers/boas-vindas` com confirmação de pagamento
