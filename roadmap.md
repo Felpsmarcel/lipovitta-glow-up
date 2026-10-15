@@ -20,3 +20,6 @@
 - [x] Solicitar publicação da página `/lipolovers` no domínio oficial
 - [ ] Adicionar no fluxo de pagamento aprovado do GoHighLevel a chamada ao `lipolovers-payment` — bloqueado: nenhuma conexão GoHighLevel está disponível e a API não permite editar ações do workflow- [x] Relatório de jornada de conversões de 01 a 30 de setembro
 - [x] Inserir composição/ingredientes oficiais dos rótulos (Cápsulas, Shot Matinal, Shot Rush) com tabelas nutricionais nos cards
+
+## Marketing
+- [x] Página `/admin/campanhas`: envio de CSV/texto, análise com IA cruzando vendas pagas reais, histórico salvo; 3 testes e teste real aprovados.

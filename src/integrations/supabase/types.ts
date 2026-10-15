@@ -125,6 +125,54 @@ export type Database = {
         }
         Relationships: []
       }
+      campaign_analyses: {
+        Row: {
+          campaign_name: string | null
+          created_at: string
+          created_by: string
+          error: string | null
+          id: string
+          model: string | null
+          period_from: string | null
+          period_to: string | null
+          raw_input: string
+          result: Json | null
+          sales_snapshot: Json
+          source_type: string
+          status: string
+        }
+        Insert: {
+          campaign_name?: string | null
+          created_at?: string
+          created_by: string
+          error?: string | null
+          id?: string
+          model?: string | null
+          period_from?: string | null
+          period_to?: string | null
+          raw_input: string
+          result?: Json | null
+          sales_snapshot?: Json
+          source_type?: string
+          status?: string
+        }
+        Update: {
+          campaign_name?: string | null
+          created_at?: string
+          created_by?: string
+          error?: string | null
+          id?: string
+          model?: string | null
+          period_from?: string | null
+          period_to?: string | null
+          raw_input?: string
+          result?: Json | null
+          sales_snapshot?: Json
+          source_type?: string
+          status?: string
+        }
+        Relationships: []
+      }
       commercial_partner_applications: {
         Row: {
           business_type: string
