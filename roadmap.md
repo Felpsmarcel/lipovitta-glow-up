@@ -1,6 +1,7 @@
 # Lipolovers
 
 ## Pré Black
+- [x] Incluir o banner enviado em `/pre-black` e disponibilizar o atalho `/black`; banner e clique validados em desktop/celular, 5 testes, lint e compilação aprovados; sem publicar.
 - [x] Implementar `/pre-black` com fotos reais, contador e movimento acessível, sem alterar os demais fluxos.
 - [x] Validar desktop 1440, celulares 390/320, fotos, UTMs, contador antes/depois e movimento reduzido; 4 testes, lint e compilação aprovados; sem publicação.
 - [x] Liberar entrada no grupo VIP com o deeplink oficial NotifyFlow fornecido (sem UTMs, sem Lead de ingresso); sem publicação.
