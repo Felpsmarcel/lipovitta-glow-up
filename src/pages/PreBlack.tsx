@@ -13,6 +13,7 @@ import abacaxi from "@/assets/shot-matinal-abacaxi.jpg";
 import mixer from "@/assets/gifts/brinde-mixer.png";
 import raspador from "@/assets/gifts/brinde-raspador.png";
 import portaCapsulas from "@/assets/gifts/brinde-portacapsulas.png";
+import campaignBanner from "@/assets/pre-black-campaign-banner.png.asset.json";
 
 const groupUrl = confirmedGroupUrl(PRE_BLACK_CONFIG.groupUrl);
 // Resolve the existing immutable asset on the official origin, including local QA.
@@ -59,6 +60,18 @@ export default function PreBlack() {
               <img src={kitUrl} alt="Cápsulas LipoVitta, Shot Matinal em Limão, Tangerina e Abacaxi e Shot Rush" width="1600" height="900" fetchPriority="high" />
               <div className="pb-photo-footer"><span>Cápsulas · Shot Matinal · Shot Rush</span><ArrowDown aria-hidden="true" size={20} /></div>
             </div>
+          </div>
+        </section>
+
+        <section className="pb-shell py-10 md:py-16" aria-label="Campanha Pré Black LipoVitta">
+          <div className="mx-auto max-w-[640px]" data-pb-motion="scroll">
+            {groupUrl ? (
+              <a href={groupUrl} target="_blank" rel="noopener noreferrer" aria-label="Quero acesso antecipado: entrar no grupo VIP da Pré Black" className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring" onClick={() => trackCtaClick({ location: "pre_black_banner", label: "QUERO ACESSO ANTECIPADO", eventName: "CTAClick" })}>
+                <img src={campaignBanner.url} alt="Pré Black LipoVitta: até 30% OFF, presente especial e condições exclusivas. Quero acesso antecipado." width="768" height="960" className="block h-auto w-full" loading="lazy" />
+              </a>
+            ) : (
+              <img src={campaignBanner.url} alt="Pré Black LipoVitta: até 30% OFF, presente especial e condições exclusivas." width="768" height="960" className="block h-auto w-full" loading="lazy" />
+            )}
           </div>
         </section>
 

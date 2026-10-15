@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,6 +18,11 @@ import PreBlack from "./pages/PreBlack.tsx";
 
 const queryClient = new QueryClient();
 
+const BlackRedirect = () => {
+  const { search, hash } = useLocation();
+  return <Navigate to={`/pre-black${search}${hash}`} replace />;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -31,6 +36,7 @@ const App = () => (
           <Route path="/unsubscribe" element={<Unsubscribe />} />
           <Route path="/lipolovers" element={<Lipolovers />} />
           <Route path="/pre-black" element={<PreBlack />} />
+          <Route path="/black" element={<BlackRedirect />} />
           <Route path="/lipolovers/boas-vindas" element={<LipoloversWelcome />} />
           <Route path="/admin/conversoes" element={<Conversoes />} />
           <Route path="/admin/webhooks" element={<Webhooks />} />

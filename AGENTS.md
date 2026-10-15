@@ -2,3 +2,4 @@
 
 - Keep the Pré Black campaign configuration and countdown rules in `src/config/preBlack.ts`; a single source prevents inconsistent dates and unconfirmed WhatsApp destinations.
 - Scope Pré Black styles and native motion to its page and dedicated hook/components; existing pages and tracking flows must remain unaffected.
+- Keep `/black` as a redirect to `/pre-black` preserving query and hash, so campaign links share one page and retain attribution.
