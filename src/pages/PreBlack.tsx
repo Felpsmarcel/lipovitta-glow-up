@@ -18,6 +18,7 @@ import campaignBanner from "@/assets/pre-black-campaign-banner.png.asset.json";
 const groupUrl = confirmedGroupUrl(PRE_BLACK_CONFIG.groupUrl);
 // Resolve the existing immutable asset on the official origin, including local QA.
 const kitUrl = new URL(kit.url, "https://lipovitta.site").href;
+const campaignBannerUrl = new URL(campaignBanner.url, "https://lipovitta.site").href;
 
 function GroupCta({ location, final = false }: { location: string; final?: boolean }) {
   const label = final ? "ENTRE AGORA NO GRUPO VIP DO WHATSAPP" : "QUERO ENTRAR NO GRUPO DO WHATSAPP";
@@ -67,10 +68,10 @@ export default function PreBlack() {
           <div className="mx-auto max-w-[640px]" data-pb-motion="scroll">
             {groupUrl ? (
               <a href={groupUrl} target="_blank" rel="noopener noreferrer" aria-label="Quero acesso antecipado: entrar no grupo VIP da Pré Black" className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring" onClick={() => trackCtaClick({ location: "pre_black_banner", label: "QUERO ACESSO ANTECIPADO", eventName: "CTAClick" })}>
-                <img src={campaignBanner.url} alt="Pré Black LipoVitta: até 30% OFF, presente especial e condições exclusivas. Quero acesso antecipado." width="768" height="960" className="block h-auto w-full" loading="lazy" />
+                <img src={campaignBannerUrl} alt="Pré Black LipoVitta: até 30% OFF, presente especial e condições exclusivas. Quero acesso antecipado." width="768" height="960" className="block h-auto w-full" loading="lazy" />
               </a>
             ) : (
-              <img src={campaignBanner.url} alt="Pré Black LipoVitta: até 30% OFF, presente especial e condições exclusivas." width="768" height="960" className="block h-auto w-full" loading="lazy" />
+              <img src={campaignBannerUrl} alt="Pré Black LipoVitta: até 30% OFF, presente especial e condições exclusivas." width="768" height="960" className="block h-auto w-full" loading="lazy" />
             )}
           </div>
         </section>
