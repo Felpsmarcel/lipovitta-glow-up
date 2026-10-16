@@ -29,6 +29,7 @@
 ## Pré-Black — virada 18/10 08h (implementada, NÃO publicada)
 - [x] startsAt centralizado: 2026-10-18T08:00:00-03:00; rótulos de data derivados da config
 - [x] Fases teaser/live com relógio reativo (usePreBlackPhase) e override de demo ?fase=teaser|live
+- [x] CORREÇÃO DO DONO: campanha é VENDA DIRETA — removidos grupo VIP, convites NotifyFlow/WhatsApp, artes de captação e seção grupo-vip
 - [x] Burst de abertura 1x/sessão (PreBlackBurst), reduced-motion respeitado
 - [x] /pre-black live: hero comercial + OfferSection + GiftSelectionSection; home ganha faixa Pré-Black
 - [ ] Pendência comercial: preços exibidos na fase live são os ATUAIS do site (kits com 10% OFF). A tabela promocional de até 30% OFF NÃO está aplicada — aguarda valores confirmados e configuração na Yampi.
