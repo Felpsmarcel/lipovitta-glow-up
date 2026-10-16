@@ -5,6 +5,8 @@
 - [x] Implementar `/pre-black` com fotos reais, contador e movimento acessível, sem alterar os demais fluxos.
 - [x] Validar desktop 1440, celulares 390/320, fotos, UTMs, contador antes/depois e movimento reduzido; 4 testes, lint e compilação aprovados; sem publicação.
 - [x] Liberar entrada no grupo VIP com o deeplink oficial NotifyFlow fornecido (sem UTMs, sem Lead de ingresso); sem publicação.
+- [x] Colocar a arte "O grupo VIP recebe primeiro" na seção final da `/pre-black`, em duas colunas e clicável, com a frase de apoio removida; sem publicar.
+
 
 ## Lipolovers
 

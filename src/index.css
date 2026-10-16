@@ -214,11 +214,23 @@
 .pb-gift-list figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; margin-top: 14px; padding-top: 12px; border-top: 1px solid hsl(var(--pb-line)); }
 .pb-gift-list figcaption span { font-size: 9px; color: hsl(var(--primary)); letter-spacing: .18em; }
 .pb-final { background: hsl(var(--pb-ink)); color: hsl(var(--pb-light)); text-align: center; padding-block: 92px; scroll-margin-top: 20px; }
+.pb-final-grid { display: grid; grid-template-columns: minmax(0,1fr); grid-template-areas: "copy" "photo" "action"; gap: 30px; }
+.pb-final-copy { grid-area: copy; min-width: 0; }
+.pb-final-photo { grid-area: photo; display: block; min-width: 0; max-width: 420px; margin-inline: auto; border-radius: 4px; overflow: hidden; }
+.pb-final-photo > img { display: block; width: 100%; height: auto; }
+.pb-final-photo:focus-visible { outline: 2px solid hsl(var(--pb-olive)); outline-offset: 4px; }
+.pb-final-action { grid-area: action; min-width: 0; }
 .pb-final .pb-eyebrow { color: hsl(var(--pb-olive)); margin-bottom: 20px; }
 .pb-final h2 { font-size: 46px; }
-.pb-final .pb-shell > p:not(.pb-eyebrow):not(.pb-final-date) { font-size: 14px; line-height: 1.9; max-width: 490px; margin: 24px auto 30px; color: hsl(var(--pb-light) / .75); }
 .pb-final .pb-cta-block { margin-inline: auto; }
 .pb-final-date { font-size: 10px; margin-top: 30px; }
+@media (min-width: 900px) {
+  .pb-final-grid { grid-template-columns: minmax(0,1fr) minmax(0,440px); grid-template-areas: "copy photo" "action photo"; column-gap: 64px; row-gap: 26px; align-items: center; }
+  .pb-final-copy,.pb-final-action { text-align: left; }
+  .pb-final-photo { max-width: none; margin-inline: 0; }
+  .pb-final .pb-cta-block { margin-inline: 0; }
+}
+
 .pb-final-date span { color: hsl(var(--pb-olive)); margin-inline: 10px; }
 .pb-footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-block: 24px; }
 .pb-footer img { object-fit: contain; }
@@ -264,7 +276,8 @@
   .pb-gift-list figcaption { font-size: 9px; line-height: 1.6; }
   .pb-final { padding-block: 45px; }
   .pb-final h2 { font-size: 32px; }
-  .pb-final .pb-shell > p:not(.pb-eyebrow):not(.pb-final-date) { font-size: 12px; }
+  .pb-final-grid { gap: 24px; }
+
   .pb-footer { flex-wrap: wrap; padding-block: 24px; }
   .pb-footer p { order: 3; width: 100%; font-size: 9px; }
   .pb-mobile-bar { display: block; position: fixed; inset: auto 0 0; z-index: 30; padding: 12px 20px calc(12px + env(safe-area-inset-bottom)); background: hsl(var(--pb-paper)); border-top: 1px solid hsl(var(--pb-line)); }
