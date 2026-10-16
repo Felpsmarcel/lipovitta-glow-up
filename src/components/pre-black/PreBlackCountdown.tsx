@@ -21,7 +21,7 @@ export default function PreBlackCountdown() {
       <div className="pb-clock" role="timer" aria-label={countdown.started ? "A Pré Black já começou" : "Tempo até a Pré Black"}>
         {units.map(([value, label]) => <div className="pb-clock-unit" key={label}><span>{String(value).padStart(2, "0")}</span><small>{label}</small></div>)}
       </div>
-      {countdown.started && <p className="pb-started" role="status">A Pré Black começou. Confira as ofertas no grupo VIP.</p>}
+      {countdown.started && <p className="pb-started" role="status">A Pré Black começou. Confira as ofertas abaixo.</p>}
     </div>
   );
 }

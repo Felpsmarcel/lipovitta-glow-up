@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { confirmedGroupUrl, getPreBlackCountdown, getPreBlackPhase, resolvePreBlackPhase, PRE_BLACK_CONFIG } from "./preBlack";
+import { getPreBlackCountdown, getPreBlackPhase, resolvePreBlackPhase, PRE_BLACK_CONFIG } from "./preBlack";
 
 describe("Pré Black campaign rules", () => {
   it("opens at 08:00 Bahia on 18 October 2026", () => {
@@ -28,25 +28,7 @@ describe("Pré Black campaign rules", () => {
     expect(PRE_BLACK_CONFIG.shortDateLabel).toBe("18/10");
     expect(PRE_BLACK_CONFIG.timeLabel).toBe("08 horas");
   });
-  it("does not treat support or missing URLs as a group invitation", () => {
-    expect(confirmedGroupUrl("")).toBeNull();
-    expect(confirmedGroupUrl("https://wa.me/5571996150401")).toBeNull();
-    expect(confirmedGroupUrl("https://chat.whatsapp.com.evil.test/abcdefghijklmnopqrstuv")).toBeNull();
-  });
-  it("preserves confirmed group invites without attaching campaign parameters", () => {
-    const invite = "https://chat.whatsapp.com/AbCdEfGhIjKlMnOpQrStUv?mode=gi_t";
-    expect(confirmedGroupUrl(invite)).toBe(invite);
-  });
-  it("uses the exact confirmed NotifyFlow deeplink and rejects lookalikes", () => {
-    const link = "https://app.notifyflow.com.br/deeplink/campaign/5233468f-cc5c-426b-96bc-a97f89414747";
-    expect(PRE_BLACK_CONFIG.groupUrl).toBe(link);
-    expect(confirmedGroupUrl(link)).toBe(link);
-    for (const bad of [
-      "http://app.notifyflow.com.br/deeplink/campaign/5233468f-cc5c-426b-96bc-a97f89414747",
-      "https://app.notifyflow.com.br.evil.test/deeplink/campaign/5233468f-cc5c-426b-96bc-a97f89414747",
-      "https://user:pw@app.notifyflow.com.br/deeplink/campaign/5233468f-cc5c-426b-96bc-a97f89414747",
-      "https://app.notifyflow.com.br:8443/deeplink/campaign/5233468f-cc5c-426b-96bc-a97f89414747",
-      "https://app.notifyflow.com.br/deeplink/campaign/not-a-uuid",
-    ]) expect(confirmedGroupUrl(bad)).toBeNull();
+  it("direct-sale campaign: no group invite or capture destination exists in config", () => {
+    expect(PRE_BLACK_CONFIG).not.toHaveProperty("groupUrl");
   });
 });
