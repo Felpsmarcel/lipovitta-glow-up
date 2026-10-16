@@ -1,19 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 
-const STORAGE_KEY = "pb-burst-v1";
-
-function alreadyPlayed(): boolean {
+function alreadyPlayed(key: string): boolean {
   try {
-    return window.sessionStorage.getItem(STORAGE_KEY) === "1";
+    return window.sessionStorage.getItem(key) === "1";
   } catch {
     // sessionStorage indisponível: a página funciona normalmente, sem burst.
     return true;
   }
 }
 
-function markPlayed() {
+function markPlayed(key: string) {
   try {
-    window.sessionStorage.setItem(STORAGE_KEY, "1");
+    window.sessionStorage.setItem(key, "1");
   } catch {
     /* sem storage: apenas não repete nesta montagem */
   }
@@ -25,7 +23,7 @@ function markPlayed() {
  * none, aria-hidden), nunca bloqueia o conteúdo. Respeita reduced-motion
  * inclusive com mudança em runtime e limpa timers/animações ao desmontar.
  */
-export default function PreBlackBurst({ children }: { children: React.ReactNode }) {
+export default function PreBlackBurst({ children, storageKey = "pb-burst-live-v1" }: { children: React.ReactNode; storageKey?: string }) {
   const root = useRef<HTMLDivElement>(null);
   // Conteúdo visível por padrão; a ocultação inicial só é aplicada depois
   // que a animação está preparada (no effect), evitando flash ou tela vazia.
