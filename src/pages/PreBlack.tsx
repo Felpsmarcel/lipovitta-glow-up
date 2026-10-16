@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUpRight, MessageCircle } from "lucide-react";
+import { ArrowUpRight, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SEOHead from "@/components/SEOHead";
 import PreBlackCountdown from "@/components/pre-black/PreBlackCountdown";
@@ -14,11 +14,13 @@ import mixer from "@/assets/gifts/brinde-mixer.png";
 import raspador from "@/assets/gifts/brinde-raspador.png";
 import portaCapsulas from "@/assets/gifts/brinde-portacapsulas.png";
 import campaignBanner from "@/assets/pre-black-campaign-banner.png.asset.json";
+import heroClara from "@/assets/pre-black-hero-clara.png.asset.json";
 
 const groupUrl = confirmedGroupUrl(PRE_BLACK_CONFIG.groupUrl);
 // Resolve the existing immutable asset on the official origin, including local QA.
 const kitUrl = new URL(kit.url, "https://lipovitta.site").href;
 const campaignBannerUrl = new URL(campaignBanner.url, "https://lipovitta.site").href;
+const heroClaraUrl = new URL(heroClara.url, "https://lipovitta.site").href;
 
 function GroupCta({ location, final = false }: { location: string; final?: boolean }) {
   const label = final ? "ENTRE AGORA NO GRUPO VIP DO WHATSAPP" : "QUERO ENTRAR NO GRUPO DO WHATSAPP";
@@ -57,9 +59,7 @@ export default function PreBlack() {
               <div data-pb-motion="hero" data-pb-order="3"><GroupCta location="hero" /></div>
             </div>
             <div className="pb-hero-photo" data-pb-motion="photo">
-              <div className="pb-photo-caption"><span>SEU AUTOCUIDADO.<br />UM NOVO MOMENTO.</span><span>EDIÇÃO<br />PRÉ BLACK / 2026</span></div>
-              <img src={kitUrl} alt="Cápsulas LipoVitta, Shot Matinal em Limão, Tangerina e Abacaxi e Shot Rush" width="1600" height="900" fetchPriority="high" />
-              <div className="pb-photo-footer"><span>Cápsulas · Shot Matinal · Shot Rush</span><ArrowDown aria-hidden="true" size={20} /></div>
+              <img src={heroClaraUrl} alt="Clara Caldas sentada com um copo LipoVitta e a linha de produtos ao lado, com o texto: Não compre LipoVitta agora. A Pré-Black está chegando. Entre no grupo VIP." width="1122" height="1402" fetchPriority="high" />
             </div>
           </div>
         </section>

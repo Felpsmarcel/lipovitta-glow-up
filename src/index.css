@@ -173,11 +173,7 @@
 .pb-discount small { display: block; font-size: 29px; font-weight: 500; margin-top: 8px; }
 .pb-hero-description { color: hsl(var(--pb-light) / .8); font-size: 13px; line-height: 1.85; max-width: 520px; margin-block: 22px; }
 .pb-hero-photo { min-width: 0; background: hsl(var(--pb-light)); color: hsl(var(--pb-ink)); overflow: hidden; }
-.pb-photo-caption { display: flex; justify-content: space-between; padding: 30px 26px 24px; font-size: 10px; line-height: 1.75; letter-spacing: .12em; text-transform: uppercase; }
-.pb-photo-caption span:first-child { color: hsl(var(--primary)); font-weight: 600; }
-.pb-photo-caption span:last-child { text-align: right; color: hsl(var(--pb-subtle)); font-size: 9px; }
-.pb-hero-photo > img { width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; }
-.pb-photo-footer { display: flex; justify-content: space-between; align-items: center; padding: 22px 26px; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; border-top: 1px solid hsl(var(--pb-line)); }
+.pb-hero-photo > img { display: block; width: 100%; height: auto; }
 .pb-cta-block { width: 100%; max-width: 520px; }
 .pb-cta { width: 100%; height: auto; min-height: 58px; padding: 16px 20px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: .14em; background: hsl(var(--pb-olive)); color: hsl(var(--pb-ink)); white-space: normal; text-align: center; line-height: 1.6; transition: transform 180ms, box-shadow 180ms, background 180ms; }
 .pb-cta:disabled { opacity: 1; cursor: not-allowed; background: hsl(var(--pb-olive) / .6); color: hsl(var(--pb-light)); }
@@ -245,9 +241,6 @@
   .pb-discount small { font-size: 23px; }
   .pb-hero-description { font-size: 12px; line-height: 1.8; margin-block: 18px; }
   .pb-cta { min-height: 54px; padding: 13px 12px; font-size: 10px; }
-  .pb-photo-caption { padding: 18px; font-size: 10px; }
-  .pb-hero-photo > img { aspect-ratio: 16/10; }
-  .pb-photo-footer { padding: 16px 18px; font-size: 9px; }
   .pb-countdown-section { padding-block: 36px 22px; }
   .pb-countdown-grid { grid-template-columns: 1fr; gap: 30px; }
   .pre-black h2 { font-size: 26px; }
