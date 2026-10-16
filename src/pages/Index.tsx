@@ -21,23 +21,35 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import AffiliateFloatingButton from "@/components/AffiliateFloatingButton";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import PreBlackHomeBanner from "@/components/PreBlackHomeBanner";
+import PreBlackLiveHero from "@/components/pre-black/PreBlackLiveHero";
+import { resolvePreBlackPhase } from "@/config/preBlack";
+import { usePreBlackPhase } from "@/hooks/usePreBlackPhase";
+import { useLocation } from "react-router-dom";
 
 
-const Index = () => (
+const Index = () => {
+  const { search } = useLocation();
+  const { phase: forced, demo } = resolvePreBlackPhase(search);
+  const phase = usePreBlackPhase(demo ? forced : undefined);
+  const live = phase === "live";
+
+  return (
   <GiftFlowProvider>
     <div className="min-h-screen bg-background">
         <SEOHead
-          title="Comprar LipoVitta - Oferta Exclusiva"
-          description="Adquira LipoVitta com desconto exclusivo. Frete grátis, garantia de 30 dias e resultados comprovados. Aproveite a promoção limitada!"
+          title={live ? "Pré Black LipoVitta — ofertas no ar" : "Comprar LipoVitta - Oferta Exclusiva"}
+          description={live
+            ? "A Pré Black LipoVitta começou. Escolha seu kit e aproveite as condições disponíveis, com brindes especiais."
+            : "Adquira LipoVitta com desconto exclusivo. Frete grátis, garantia de 30 dias e resultados comprovados. Aproveite a promoção limitada!"}
           keywords="comprar LipoVitta, LipoVitta preço, LipoVitta onde comprar"
           ogType="product"
           canonicalUrl="https://lipovitta.site/"
         />
       <Navbar />
-      <PreBlackHomeBanner />
+      {!live && <PreBlackHomeBanner />}
       <main>
-        {/* Hero: branco */}
-        <HeroSection />
+        {/* Hero: versão comercial Pré-Black após a abertura; hero padrão antes */}
+        {live ? <PreBlackLiveHero offersHref="#precos" trackLocation="home_live" /> : <HeroSection />}
 
         {/* Routine: light grey */}
         <RoutineSection />
@@ -98,6 +110,7 @@ const Index = () => (
       <ExitIntentPopup />
     </div>
   </GiftFlowProvider>
-);
+  );
+};
 
 export default Index;
