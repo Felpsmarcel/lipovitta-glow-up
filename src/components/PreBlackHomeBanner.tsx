@@ -13,7 +13,7 @@ export default function PreBlackHomeBanner() {
   const phase = usePreBlackPhase();
   const live = phase === "live";
   const href = live ? "#precos" : "/pre-black";
-  const label = live ? "VER OFERTAS" : "ENTRAR NO GRUPO VIP";
+  const label = live ? "VER OFERTAS" : "CONHEÇA A CAMPANHA";
   return (
     <section className="pb-home-banner" aria-label="Pré Black LipoVitta">
       <div className="pb-home-banner-inner">
