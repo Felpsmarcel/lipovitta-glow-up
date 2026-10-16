@@ -79,21 +79,7 @@ function TeaserContent() {
 function LiveContent() {
   return (
     <>
-      <section className="pb-hero pb-hero-live">
-        <PreBlackBurst>
-          <div className="pb-shell pb-hero-grid">
-            <div className="pb-hero-copy">
-              <p className="pb-eyebrow" data-pb-burst="copy">PRÉ BLACK LIPOVITTA <span>NO AR</span></p>
-              <h1 data-pb-burst="copy">A Pré Black LipoVitta começou <span className="pb-offer-intro">com ofertas de até</span><span className="pb-discount">30<span>%<small>OFF</small></span></span></h1>
-              <p className="pb-hero-description" data-pb-burst="copy">O sistema LipoVitta para cuidar do corpo, reduzir a aparência da celulite e elevar sua autoestima — com até 3x sem juros e brindes especiais. Escolha seu kit abaixo.</p>
-              <div data-pb-burst="copy"><OffersCta location="hero_live" /></div>
-            </div>
-            <div className="pb-hero-photo pb-hero-kit" data-pb-burst="product">
-              <img src={kitUrl} alt="Kit completo LipoVitta com Cápsulas, Shot Matinal e Shot Rush" width="1600" height="900" fetchPriority="high" />
-            </div>
-          </div>
-        </PreBlackBurst>
-      </section>
+      <PreBlackLiveHero offersHref="#ofertas" trackLocation="pre_black_hero_live" />
 
       <div id="ofertas" className="pb-live-offers">
         <GiftFlowProvider>
@@ -114,9 +100,9 @@ export default function PreBlack() {
   return (
     <div ref={root} className={`pre-black${live ? " pre-black-live" : ""}`}>
       <SEOHead
-        title={live ? "Pré Black LipoVitta — ofertas de até 30% OFF no ar" : "Pré Black LipoVitta — até 30% OFF"}
+        title={live ? "Pré Black LipoVitta — ofertas no ar" : "Pré Black LipoVitta — até 30% OFF"}
         description={live
-          ? "A Pré Black LipoVitta começou. Ofertas de até 30% OFF, até 3x sem juros e brindes especiais. Escolha seu kit."
+          ? "A Pré Black LipoVitta começou. Escolha seu kit e aproveite as condições disponíveis, com até 3x sem juros e brindes especiais."
           : `Pré Black LipoVitta: ofertas de até 30% OFF, até 3x sem juros e brindes especiais. Começa dia ${PRE_BLACK_CONFIG.dateLabel}, às 08h da Bahia.`}
         canonicalUrl="https://lipovitta.site/pre-black"
       />
