@@ -22,7 +22,7 @@ const PreBlackLiveHero = ({ offersHref, trackLocation }: { offersHref: string; t
         <div className="pb-shell pb-hero-grid">
           <div className="pb-hero-copy">
             <p className="pb-eyebrow" data-pb-burst="copy">
-              {PRE_BLACK_CONFIG.eyebrow} <span>NO AR</span>
+              PRÉ BLACK LIPOVITTA <span>NO AR</span>
             </p>
             <h1 data-pb-burst="copy">A Pré Black LipoVitta começou</h1>
             <p className="pb-hero-description" data-pb-burst="copy">
