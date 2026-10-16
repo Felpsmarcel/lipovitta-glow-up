@@ -15,12 +15,16 @@ import raspador from "@/assets/gifts/brinde-raspador.png";
 import portaCapsulas from "@/assets/gifts/brinde-portacapsulas.png";
 import campaignBanner from "@/assets/pre-black-campaign-banner.png.asset.json";
 import heroClara from "@/assets/pre-black-hero-clara.png.asset.json";
+import finalGroup from "@/assets/pre-black-final-grupo.png.asset.json";
+
 
 const groupUrl = confirmedGroupUrl(PRE_BLACK_CONFIG.groupUrl);
 // Resolve the existing immutable asset on the official origin, including local QA.
 const kitUrl = new URL(kit.url, "https://lipovitta.site").href;
 const campaignBannerUrl = new URL(campaignBanner.url, "https://lipovitta.site").href;
 const heroClaraUrl = new URL(heroClara.url, "https://lipovitta.site").href;
+const finalGroupUrl = new URL(finalGroup.url, "https://lipovitta.site").href;
+
 
 function GroupCta({ location, final = false }: { location: string; final?: boolean }) {
   const label = final ? "ENTRE AGORA NO GRUPO VIP DO WHATSAPP" : "QUERO ENTRAR NO GRUPO DO WHATSAPP";
@@ -92,7 +96,7 @@ export default function PreBlack() {
 
         <section className="pb-gifts-section" aria-labelledby="gifts-title"><div className="pb-shell pb-gifts-grid" data-pb-motion="scroll"><div><p className="pb-eyebrow">OS DETALHES FAZEM PARTE</p><h2 id="gifts-title">Mais carinho<br /> com a sua rotina.</h2><p>Brindes especiais e acessórios exclusivos para elevar seu autocuidado.</p></div><div className="pb-gift-list">{[[mixer, "Mixer"], [raspador, "Raspador de língua"], [portaCapsulas, "Porta-cápsulas"]].map(([src, name], i) => <figure key={name}><img src={src} alt={name} width="300" height="360" loading="lazy" /><figcaption><span>0{i + 1}</span>{name}</figcaption></figure>)}</div></div></section>
 
-        <section id="grupo-vip" className="pb-final" aria-labelledby="vip-title"><div className="pb-shell" data-pb-motion="scroll"><p className="pb-eyebrow">O PRÓXIMO PASSO É SEU</p><h2 id="vip-title">A Pré Black começa<br />no grupo VIP.</h2><p>E seja VIP: tenha acesso antecipado às ofertas, condições especiais e acompanhe tudo.</p><GroupCta location="final" final /><p className="pb-final-date">21 DE OUTUBRO <span> / </span> 09H · BAHIA</p></div></section>
+        <section id="grupo-vip" className="pb-final" aria-labelledby="vip-title"><div className="pb-shell pb-final-grid" data-pb-motion="scroll"><div className="pb-final-copy"><p className="pb-eyebrow">O PRÓXIMO PASSO É SEU</p><h2 id="vip-title">A Pré Black começa<br />no grupo VIP.</h2></div>{groupUrl ? <a className="pb-final-photo" href={groupUrl} target="_blank" rel="noopener noreferrer" aria-label="O grupo VIP recebe primeiro: entrar no grupo VIP da Pré Black" onClick={() => trackCtaClick({ location: "pre_black_final_image", label: "O GRUPO VIP RECEBE PRIMEIRO", eventName: "CTAClick" })}><img src={finalGroupUrl} alt="O grupo VIP recebe primeiro. Pré-Black LipoVitta: até 30% OFF e condições especiais. Arte com símbolo do WhatsApp coroado sobre fundo escuro e botão visual 'Entrar agora'." width="1122" height="1402" loading="lazy" /></a> : <div className="pb-final-photo"><img src={finalGroupUrl} alt="O grupo VIP recebe primeiro. Pré-Black LipoVitta: até 30% OFF e condições especiais." width="1122" height="1402" loading="lazy" /></div>}<div className="pb-final-action"><GroupCta location="final" final /><p className="pb-final-date">21 DE OUTUBRO <span> / </span> 09H · BAHIA</p></div></div></section>
       </main>
       <footer className="pb-footer pb-shell"><a href="/" aria-label="LipoVitta — página inicial"><img src={logo} alt="LipoVitta" width="116" height="63" loading="lazy" /></a><p>© 2026 LipoVitta. Todos os direitos reservados.</p><a href="#pre-black-content">Voltar ao início ↑</a></footer>
       <div className="pb-mobile-bar"><GroupCta location="mobile" /></div>
