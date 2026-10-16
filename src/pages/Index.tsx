@@ -20,6 +20,7 @@ import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import AffiliateFloatingButton from "@/components/AffiliateFloatingButton";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
+import PreBlackHomeBanner from "@/components/PreBlackHomeBanner";
 
 
 const Index = () => (
