@@ -1,7 +1,6 @@
 import { ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PreBlackBurst from "@/components/pre-black/PreBlackBurst";
-import { PRE_BLACK_CONFIG } from "@/config/preBlack";
 import { assetUrl } from "@/lib/assetUrl";
 import { trackCtaClick } from "@/lib/tracking";
 import kit from "@/assets/kit-completo-lipovitta.png.asset.json";
