@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import lipovittaLogo from "@/assets/lipovitta-logo.png.asset.json";
+import { assetUrl } from "@/lib/assetUrl";
 import { trackCtaClick } from "@/lib/tracking";
 
 const Navbar = () => {

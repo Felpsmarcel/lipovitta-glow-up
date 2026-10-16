@@ -4,6 +4,7 @@ import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import desinchar from "@/assets/testimonials/desinchar.jpg?w=480;960&format=avif;webp;jpg&as=picture";
 import pesoPernas from "@/assets/testimonials/peso-pernas.jpg?w=480;960&format=avif;webp;jpg&as=picture";
 import inflamacaoAsset from "@/assets/testimonials/inflamacao.png.asset.json";
+import { assetUrl } from "@/lib/assetUrl";
 const inflamacao = assetUrl(inflamacaoAsset.url);
 import corpoPedindoAjuda from "@/assets/testimonials/corpo-pedindo-ajuda.jpg?w=480;960&format=avif;webp;jpg&as=picture";
 import peleMelhora from "@/assets/testimonials/pele-melhora.jpg?w=480;960&format=avif;webp;jpg&as=picture";
