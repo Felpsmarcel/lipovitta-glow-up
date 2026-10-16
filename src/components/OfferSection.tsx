@@ -9,6 +9,7 @@ import shotMatinalTangerinaImg from "@/assets/shot-matinal-tangerina.jpg?w=200;4
 import comboImg from "@/assets/combo-lipovitta.png.asset.json";
 import kitShotRushImg from "@/assets/kit-shot-rush-capsulas.png.asset.json";
 import kitCompletoImg from "@/assets/kit-completo-lipovitta.png.asset.json";
+import { assetUrl } from "@/lib/assetUrl";
 import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
 import { trackEvent } from "@/lib/metaPixel";
 import { trackCtaClick } from "@/lib/tracking";

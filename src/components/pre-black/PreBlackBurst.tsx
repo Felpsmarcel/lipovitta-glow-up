@@ -109,7 +109,7 @@ export default function PreBlackBurst({ children, storageKey = "pb-burst-live-v1
       preference.removeEventListener("change", onPreference);
       animations.forEach((a) => a.cancel());
     };
-  }, []);
+  }, [storageKey]);
 
   return (
     <div ref={root} className="pb-burst" data-pb-burst-root={ready ? "ready" : undefined}>
