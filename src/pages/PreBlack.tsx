@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import SEOHead from "@/components/SEOHead";
 import PreBlackCountdown from "@/components/pre-black/PreBlackCountdown";
-import PreBlackBurst from "@/components/pre-black/PreBlackBurst";
+import PreBlackLiveHero from "@/components/pre-black/PreBlackLiveHero";
 import OfferSection from "@/components/OfferSection";
 import GiftSelectionSection from "@/components/GiftSelectionSection";
 import { GiftFlowProvider } from "@/context/GiftFlowContext";
