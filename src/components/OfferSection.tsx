@@ -9,6 +9,7 @@ import shotMatinalTangerinaImg from "@/assets/shot-matinal-tangerina.jpg?w=200;4
 import comboImg from "@/assets/combo-lipovitta.png.asset.json";
 import kitShotRushImg from "@/assets/kit-shot-rush-capsulas.png.asset.json";
 import kitCompletoImg from "@/assets/kit-completo-lipovitta.png.asset.json";
+import { assetUrl } from "@/lib/assetUrl";
 import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
 import { trackEvent } from "@/lib/metaPixel";
 import { trackCtaClick } from "@/lib/tracking";
@@ -230,7 +231,7 @@ const OfferSection = () => {
 
             <div className="lg:col-span-5 relative bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center p-4 sm:p-6 min-h-[280px]">
               <img
-                src={kitCompletoImg.url}
+                src={assetUrl(kitCompletoImg.url)}
                 alt="Kit Completo LipoVitta: Cápsulas, Shot Matinal e Shot Rush"
                 className="w-full h-full max-h-[420px] object-contain"
                 loading="lazy"
@@ -357,7 +358,7 @@ const OfferSection = () => {
 
             <div className="lg:col-span-5 relative bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center p-4 sm:p-6 min-h-[280px]">
               <img
-                src={kitShotRushImg.url}
+                src={assetUrl(kitShotRushImg.url)}
                 alt="Kit Shot Rush sabor Frutas Vermelhas + Cápsulas LipoVitta"
                 className="w-full h-full max-h-[420px] object-contain"
                 loading="lazy"
@@ -560,7 +561,7 @@ const OfferSection = () => {
               aria-label="Ver opções do Protocolo Favorito LipoVitta"
               className="block w-full h-44 sm:h-52 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] overflow-hidden mb-5 mt-2 transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#9BAE52]"
             >
-              <img src={comboImg.url} alt="Cápsulas LipoVitta com Shot Matinal" className="h-full w-full object-contain" loading="lazy" />
+              <img src={assetUrl(comboImg.url)} alt="Cápsulas LipoVitta com Shot Matinal" className="h-full w-full object-contain" loading="lazy" />
             </button>
             <h3 className="font-sans font-semibold text-2xl sm:text-3xl text-[#4667B4] mb-1">
               Protocolo Favorito LipoVitta

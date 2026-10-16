@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import lipovittaLogo from "@/assets/lipovitta-logo.png.asset.json";
+import { assetUrl } from "@/lib/assetUrl";
 import { trackCtaClick } from "@/lib/tracking";
 
 const Navbar = () => {
@@ -20,7 +21,7 @@ const Navbar = () => {
     >
       <div className="container mx-auto flex items-center justify-between py-3 px-4 gap-3">
         <img
-          src={lipovittaLogo.url}
+          src={assetUrl(lipovittaLogo.url)}
           alt="LipoVitta por Clara Caldas"
           width={160}
           height={40}
