@@ -34,13 +34,15 @@ export default function PreBlackBurst({ children, storageKey = "pb-burst-live-v1
     if (!node) return;
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
     const mobile = window.matchMedia("(max-width: 767px)");
-    const shouldPlay = !alreadyPlayed() && !preference.matches;
+    // Sem suporte a WAAPI, cai no estado estático final (conteúdo visível).
+    const waapiSupported = typeof Element !== "undefined" && typeof Element.prototype.animate === "function";
+    const shouldPlay = waapiSupported && !alreadyPlayed(storageKey) && !preference.matches;
     if (!shouldPlay) {
       setReady(true);
       return;
     }
 
-    markPlayed();
+    markPlayed(storageKey);
     setReady(true);
 
     const ease = "cubic-bezier(.22,1,.36,1)";
