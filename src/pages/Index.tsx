@@ -49,7 +49,13 @@ const Index = () => {
       {!live && <PreBlackHomeBanner />}
       <main>
         {/* Hero: versão comercial Pré-Black após a abertura; hero padrão antes */}
-        {live ? <PreBlackLiveHero offersHref="#precos" trackLocation="home_live" /> : <HeroSection />}
+        {live ? (
+          <div className="pre-black pre-black-live">
+            <PreBlackLiveHero offersHref="#precos" trackLocation="home_live" />
+          </div>
+        ) : (
+          <HeroSection />
+        )}
 
         {/* Routine: light grey */}
         <RoutineSection />
