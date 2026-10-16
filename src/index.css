@@ -298,3 +298,37 @@ input:focus-visible {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* Pré Black — fase de vendas (live) e burst de abertura */
+.pb-burst { position: relative; }
+.pb-burst-fx { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.pb-burst > *:not(.pb-burst-fx) { position: relative; z-index: 1; }
+.pb-burst-glow { position: absolute; right: 4%; top: 50%; width: 420px; height: 420px; margin-top: -210px; border-radius: 50%; background: radial-gradient(circle, hsl(223 48% 49% / .55), hsl(74 36% 50% / .25) 55%, transparent 72%); opacity: 0; }
+.pb-burst-ring { position: absolute; right: 10%; top: 50%; width: 300px; height: 300px; margin-top: -150px; border-radius: 50%; border: 2px solid hsl(74 36% 50% / .8); opacity: 0; }
+.pb-burst-fragment { position: absolute; right: 16%; top: 50%; width: 14px; height: 14px; opacity: 0; }
+.pb-burst-fragment-0 { background: hsl(223 48% 49%); border-radius: 2px; }
+.pb-burst-fragment-1 { background: hsl(74 36% 50%); border-radius: 50%; }
+.pb-burst-fragment-2 { background: hsl(0 0% 100% / .85); border-radius: 2px; width: 8px; height: 8px; }
+.pb-hero-live .pb-hero-grid { align-items: center; }
+.pb-hero-kit { background: transparent; display: flex; align-items: center; justify-content: center; }
+.pb-hero-kit > img { width: 100%; height: auto; max-height: 460px; object-fit: contain; }
+.pb-live-offers { background: hsl(var(--pb-paper)); }
+.pre-black-live .pb-mobile-bar .pb-cta { background: hsl(var(--pb-olive)); color: hsl(var(--pb-ink)); }
+
+/* Faixa Pré-Black na home */
+.pb-home-banner { background: hsl(224 44% 14%); color: hsl(0 0% 100%); font-family: 'Poppins', sans-serif; }
+.pb-home-banner-inner { width: min(1280px, calc(100% - 48px)); margin-inline: auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-block: 14px; }
+.pb-home-banner-eyebrow { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .22em; color: hsl(74 36% 50%); white-space: nowrap; }
+.pb-home-banner-eyebrow span { color: hsl(0 0% 100% / .7); margin-left: 10px; }
+.pb-home-banner-title { font-size: 12px; line-height: 1.5; color: hsl(0 0% 100% / .85); }
+.pb-home-banner-cta { display: inline-flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; background: hsl(74 36% 50%); color: hsl(224 44% 14%); padding: 10px 18px; border-radius: 4px; white-space: nowrap; transition: transform 160ms, box-shadow 160ms; }
+.pb-home-banner-cta:is(:hover,:focus-visible) { transform: translateY(-2px); box-shadow: 0 8px 24px hsl(224 44% 14% / .3); }
+.pb-home-banner-cta:active { transform: scale(.98); transition-duration: 120ms; }
+@media (max-width: 767px) {
+  .pb-home-banner-inner { flex-direction: column; align-items: flex-start; gap: 8px; padding-block: 12px; }
+  .pb-home-banner-cta { padding: 9px 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pb-burst-glow, .pb-burst-ring, .pb-burst-fragment { display: none; }
+  .pb-home-banner-cta:is(:hover,:focus-visible,:active) { transform: none; }
+}

@@ -34,6 +34,7 @@ const Index = () => (
           canonicalUrl="https://lipovitta.site/"
         />
       <Navbar />
+      <PreBlackHomeBanner />
       <main>
         {/* Hero: branco */}
         <HeroSection />
