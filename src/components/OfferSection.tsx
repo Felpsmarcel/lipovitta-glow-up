@@ -15,6 +15,8 @@ import { trackEvent } from "@/lib/metaPixel";
 import { trackCtaClick } from "@/lib/tracking";
 import IngredientsAccordion, { KitIngredients, NutritionAccordion } from "@/components/IngredientsAccordion";
 import { PRODUCT_INGREDIENTS } from "@/data/productIngredients";
+import { getCampaignPrice, formatMoney, type CatalogId } from "@/config/campaignPricing";
+import { usePreBlackPhase } from "@/hooks/usePreBlackPhase";
 
 
 const LINK_CAPSULAS = "https://seguro.lipovitta.site/r/RMTIX51GQN";
@@ -122,36 +124,18 @@ const KIT_COMPLETO: SelectedKit = { id: "kit-completo", name: "Kit Completo Lipo
 
 type PromoKit = SelectedKit & { originalValue: number; discountPct: number; hasDiscount: boolean };
 
-const KIT_DISCOUNT_IDS = ["kit-completo", "kit-rush", "protocolo"] as const;
-const KIT_DISCOUNT_RATE = 0.1;
-
-const formatMoney = (value: number) =>
-  value.toLocaleString("pt-BR", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-
-const getKitPrice = (kit: SelectedKit): PromoKit => {
-  const hasDiscount = (KIT_DISCOUNT_IDS as readonly string[]).includes(kit.id);
-  if (!hasDiscount) return { ...kit, originalValue: kit.value, discountPct: 0, hasDiscount: false };
-
-  return {
-    ...kit,
-    originalValue: kit.value,
-    discountPct: Math.round(KIT_DISCOUNT_RATE * 100),
-    hasDiscount: true,
-    value: Math.round(kit.value * (1 - KIT_DISCOUNT_RATE) * 100) / 100,
-  };
-};
-
 const OfferSection = () => {
   const sectionRef = useScrollAnimation();
   const { selectKit } = useGiftFlow();
-  const promoCapsulas = getKitPrice(KIT_CAPSULAS);
-  const promoShot = getKitPrice(KIT_SHOT);
-  const promoRush = getKitPrice(KIT_RUSH);
-  const promoProtocolo = getKitPrice(KIT_PROTOCOLO);
-  const promoCompleto = getKitPrice(KIT_COMPLETO);
+  // Fase reativa da Pré Black: na virada, os preços sobem para 30% OFF
+  // em todos os produtos mesmo com a página já aberta.
+  const phase = usePreBlackPhase();
+  const priceOf = (kit: SelectedKit): PromoKit => ({ ...kit, ...getCampaignPrice(kit.id as CatalogId, phase) });
+  const promoCapsulas = priceOf(KIT_CAPSULAS);
+  const promoShot = priceOf(KIT_SHOT);
+  const promoRush = priceOf(KIT_RUSH);
+  const promoProtocolo = priceOf(KIT_PROTOCOLO);
+  const promoCompleto = priceOf(KIT_COMPLETO);
 
   const [flavorCompleto, setFlavorCompleto] = useState<FlavorId | null>(null);
   const [flavorProtocolo, setFlavorProtocolo] = useState<FlavorId | null>(null);
