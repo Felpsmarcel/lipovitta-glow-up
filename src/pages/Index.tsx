@@ -1,3 +1,4 @@
+import claraPreBlack from "@/assets/clara-foto.jpg";
 import { SEOHead } from "@/components/SEOHead";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
@@ -22,25 +23,22 @@ import AffiliateFloatingButton from "@/components/AffiliateFloatingButton";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import PreBlackHomeBanner from "@/components/PreBlackHomeBanner";
 import PreBlackLiveHero from "@/components/pre-black/PreBlackLiveHero";
-import { resolvePreBlackPhase } from "@/config/preBlack";
-import { usePreBlackPhase } from "@/hooks/usePreBlackPhase";
-import { useLocation } from "react-router-dom";
+import { usePreBlackCampaign, PreBlackDemoNotice } from "@/context/PreBlackCampaignContext";
 
 
 const Index = () => {
-  const { search } = useLocation();
-  const { phase: forced, demo } = resolvePreBlackPhase(search);
-  const phase = usePreBlackPhase(demo ? forced : undefined);
+  const { phase } = usePreBlackCampaign();
   const live = phase === "live";
 
   return (
   <GiftFlowProvider>
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen bg-background${live ? " lipovitta-campaign" : ""}`}>
+      <PreBlackDemoNotice />
         <SEOHead
-          title={live ? "Pré Black LipoVitta — ofertas no ar" : "Comprar LipoVitta - Oferta Exclusiva"}
+          title={live ? "Pré Black LipoVitta — 30% OFF em todos os produtos" : "Pré Black LipoVitta — 18/10 às 8h"}
           description={live
-            ? "A Pré Black LipoVitta começou. Escolha seu kit e aproveite as condições disponíveis, com brindes especiais."
-            : "Adquira LipoVitta com desconto exclusivo. Frete grátis, garantia de 30 dias e resultados comprovados. Aproveite a promoção limitada!"}
+            ? "A Pré Black LipoVitta começou: 30% OFF em todos os produtos. Escolha seus favoritos e aproveite."
+            : "A Pré Black LipoVitta começa em 18/10 às 8h da Bahia: 30% OFF em todos os produtos."}
           keywords="comprar LipoVitta, LipoVitta preço, LipoVitta onde comprar"
           ogType="product"
           canonicalUrl="https://lipovitta.site/"
@@ -56,6 +54,13 @@ const Index = () => {
         ) : (
           <HeroSection />
         )}
+
+        {live && <><OfferSection /><ProductsSection /><GiftSelectionSection /></>}
+
+        {live && <section className="pb-clara" aria-labelledby="pb-clara-title"><div className="pb-clara-inner">
+          <img src={claraPreBlack} alt="Clara Caldas com as Cápsulas LipoVitta" width="900" height="1600" loading="lazy" />
+          <div><small>LipoVitta por Clara Caldas</small><h2 id="pb-clara-title">Seu cuidado.<br />Sua rotina. Sua LipoVitta.</h2><p>Cápsulas, Shot Matinal e Shot Rush: escolha os produtos que combinam com a sua rotina e aproveite 30% de desconto na Pré Black.</p><a href="#precos">ESCOLHER MEUS FAVORITOS</a></div>
+        </div></section>}
 
         {/* Routine: light grey */}
         <RoutineSection />
@@ -89,13 +94,7 @@ const Index = () => {
         <CTABanner location="banner_ingredientes" eyebrow="Ingredientes escolhidos com critério. Rotina simples." label="ESCOLHER MEU KIT" />
 
         {/* Offer: light grey */}
-        <OfferSection />
-
-        {/* Escolha de brinde — aparece após clicar em comprar */}
-        <GiftSelectionSection />
-
-        {/* Products: branco */}
-        <ProductsSection />
+        {!live && <><OfferSection /><ProductsSection /><GiftSelectionSection /></>}
 
         {/* → FAQ: AZUL */}
         <SectionSwoosh direction="white-to-blue" />
@@ -113,7 +112,7 @@ const Index = () => {
       <WhatsAppButton />
       <AffiliateFloatingButton />
 
-      <ExitIntentPopup />
+      {!live && <ExitIntentPopup />}
     </div>
   </GiftFlowProvider>
   );

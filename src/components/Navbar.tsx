@@ -1,9 +1,12 @@
+import { usePreBlackCampaign } from "@/context/PreBlackCampaignContext";
 import { useState, useEffect } from "react";
 import lipovittaLogo from "@/assets/lipovitta-logo.png.asset.json";
 import { assetUrl } from "@/lib/assetUrl";
 import { trackCtaClick } from "@/lib/tracking";
 
 const Navbar = () => {
+  const { phase } = usePreBlackCampaign();
+  const label = phase === "live" ? "APROVEITAR 30% OFF" : "COMPRAR AGORA";
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -35,13 +38,13 @@ const Navbar = () => {
             href="#precos"
             onClick={(e) => {
               e.preventDefault();
-              trackCtaClick({ location: "navbar", label: "COMPRAR AGORA" });
-              document.getElementById("precos")?.scrollIntoView({ behavior: "smooth" });
+              trackCtaClick({ location: "navbar", label });
+              document.getElementById("precos")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
             }}
             className="inline-flex whitespace-nowrap font-bold text-xs sm:text-sm px-4 sm:px-5 py-2 rounded-full transition-colors text-white"
             style={{ backgroundColor: "#9BAE52" }}
           >
-            COMPRAR AGORA
+            {label}
           </a>
         </div>
       </div>

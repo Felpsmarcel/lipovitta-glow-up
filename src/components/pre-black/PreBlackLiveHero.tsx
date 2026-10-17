@@ -14,7 +14,7 @@ const kitUrl = assetUrl(kit.url);
  * cada rota renderiza a sua, evitando contextos aninhados e IDs duplicados.
  */
 const PreBlackLiveHero = ({ offersHref, trackLocation }: { offersHref: string; trackLocation: string }) => {
-  const label = "VER OFERTAS";
+  const label = "APROVEITAR 30% OFF";
   return (
     <section className="pb-hero pb-hero-live">
       <PreBlackBurst storageKey="pb-burst-live-v1">
@@ -23,11 +23,11 @@ const PreBlackLiveHero = ({ offersHref, trackLocation }: { offersHref: string; t
             <p className="pb-eyebrow" data-pb-burst="copy">
               PRÉ BLACK LIPOVITTA <span>NO AR</span>
             </p>
-            <h1 data-pb-burst="copy">A Pré Black LipoVitta começou</h1>
+            <h1 data-pb-burst="copy">A Pré Black LipoVitta começou<span className="pb-live-discount">30<span>%<small>OFF</small></span></span><span className="pb-live-all">em todos os produtos</span></h1>
             <p className="pb-hero-description" data-pb-burst="copy">
-              Escolha seu kit e aproveite as condições disponíveis — com até 3x sem juros e brindes especiais.
+              Escolha seus favoritos e aproveite a Pré Black LipoVitta.
             </p>
-            <div data-pb-burst="copy">
+            <div>
               <div className="pb-cta-block">
                 <Button asChild className="pb-cta">
                   <a
@@ -38,7 +38,7 @@ const PreBlackLiveHero = ({ offersHref, trackLocation }: { offersHref: string; t
                     <ArrowDown aria-hidden="true" />
                   </a>
                 </Button>
-                <p className="pb-cta-note">Ofertas da Pré Black logo abaixo, com os kits e brindes do site.</p>
+                <p className="pb-cta-note">Até 3x sem juros · Brinde conforme o pedido · Frete grátis a partir de R$400.</p>
               </div>
             </div>
           </div>

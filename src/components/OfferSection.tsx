@@ -15,8 +15,8 @@ import { trackEvent } from "@/lib/metaPixel";
 import { trackCtaClick } from "@/lib/tracking";
 import IngredientsAccordion, { KitIngredients, NutritionAccordion } from "@/components/IngredientsAccordion";
 import { PRODUCT_INGREDIENTS } from "@/data/productIngredients";
-import { getCampaignPrice, formatMoney, type CatalogId } from "@/config/campaignPricing";
-import { usePreBlackPhase } from "@/hooks/usePreBlackPhase";
+import { BASE_PRICES, getCampaignPrice, formatMoney, type CatalogId } from "@/config/campaignPricing";
+import { usePreBlackCampaign } from "@/context/PreBlackCampaignContext";
 
 
 const LINK_CAPSULAS = "https://seguro.lipovitta.site/r/RMTIX51GQN";
@@ -116,20 +116,20 @@ const FlavorPicker = ({
   </div>
 );
 
-const KIT_CAPSULAS: SelectedKit = { id: "capsulas", name: "LipoVitta Cápsulas", productCount: 1, checkoutUrl: LINK_CAPSULAS, value: 357.00, sku: "RMTIX51GQN" };
-const KIT_SHOT: SelectedKit = { id: "shot-matinal", name: "Shot Matinal LipoVitta", productCount: 1, checkoutUrl: LINK_SHOT, value: 170.00, sku: "PW60UM0Y2J" };
-const KIT_RUSH: SelectedKit = { id: "kit-rush", name: "Kit Shot Rush + Cápsulas", productCount: 2, checkoutUrl: LINK_KIT_RUSH, value: 582.00, sku: "3QUPWLJZ74U8" };
-const KIT_PROTOCOLO: SelectedKit = { id: "protocolo", name: "Protocolo Completo LipoVitta", productCount: 2, checkoutUrl: LINK_PROTOCOLO, value: 527.00, sku: "RPQ0CD6N6Q8C" };
-const KIT_COMPLETO: SelectedKit = { id: "kit-completo", name: "Kit Completo LipoVitta", productCount: 3, checkoutUrl: LINK_KIT_COMPLETO, value: 752.00, sku: "CLF9IC4LPI8K" };
+const KIT_CAPSULAS: SelectedKit = { id: "capsulas", name: "LipoVitta Cápsulas", productCount: 1, checkoutUrl: LINK_CAPSULAS, value: BASE_PRICES["capsulas"], sku: "RMTIX51GQN" };
+const KIT_SHOT: SelectedKit = { id: "shot-matinal", name: "Shot Matinal LipoVitta", productCount: 1, checkoutUrl: LINK_SHOT, value: BASE_PRICES["shot-matinal"], sku: "PW60UM0Y2J" };
+const KIT_RUSH: SelectedKit = { id: "kit-rush", name: "Kit Shot Rush + Cápsulas", productCount: 2, checkoutUrl: LINK_KIT_RUSH, value: BASE_PRICES["kit-rush"], sku: "3QUPWLJZ74U8" };
+const KIT_PROTOCOLO: SelectedKit = { id: "protocolo", name: "Protocolo Completo LipoVitta", productCount: 2, checkoutUrl: LINK_PROTOCOLO, value: BASE_PRICES["protocolo"], sku: "RPQ0CD6N6Q8C" };
+const KIT_COMPLETO: SelectedKit = { id: "kit-completo", name: "Kit Completo LipoVitta", productCount: 3, checkoutUrl: LINK_KIT_COMPLETO, value: BASE_PRICES["kit-completo"], sku: "CLF9IC4LPI8K" };
 
 type PromoKit = SelectedKit & { originalValue: number; discountPct: number; hasDiscount: boolean };
 
 const OfferSection = () => {
   const sectionRef = useScrollAnimation();
   const { selectKit } = useGiftFlow();
-  // Fase reativa da Pré Black: na virada, os preços sobem para 30% OFF
+  // Fase compartilhada da Pré Black: na virada, o desconto passa a 30%
   // em todos os produtos mesmo com a página já aberta.
-  const phase = usePreBlackPhase();
+  const { phase } = usePreBlackCampaign();
   const priceOf = (kit: SelectedKit): PromoKit => ({ ...kit, ...getCampaignPrice(kit.id as CatalogId, phase) });
   const promoCapsulas = priceOf(KIT_CAPSULAS);
   const promoShot = priceOf(KIT_SHOT);
@@ -189,7 +189,7 @@ const OfferSection = () => {
         {/* Header */}
         <div className="text-center mb-6 max-w-2xl mx-auto">
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-[#4667B4] mb-3">
-            Comece sua rotina LipoVitta
+            {phase === "live" ? "Seus favoritos com 30% OFF" : "Comece sua rotina LipoVitta"}
           </h2>
           <p className="font-sans font-normal text-[#555] text-base sm:text-lg">
             Escolha como quer começar. Você pode adicionar complementos depois.
@@ -237,7 +237,7 @@ const OfferSection = () => {
               </p>
 
               <div className="flex flex-wrap gap-2 mb-4">
-                {["Zero açúcares", "Sem glúten", "Sem lactose", "3 produtos", "Maior desconto"].map((s) => (
+                {["Zero açúcares", "Sem glúten", "Sem lactose", "3 produtos", "Rotina completa"].map((s) => (
                   <span
                     key={s}
                     className="text-[11px] sm:text-xs font-semibold text-[#4667B4] bg-[#EEF2FA] border border-[#D9E2F1] px-2.5 py-1 rounded-full"
@@ -269,7 +269,7 @@ const OfferSection = () => {
                     "Rotina completa de bem-estar",
                     "Disposição durante o dia",
                     "Performance nos treinos",
-                    "Maior economia da promoção",
+                    "Todos os produtos em um pedido",
                   ].map((b) => (
                     <li key={b} className="flex items-start gap-2 text-[#333] text-sm">
                       <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
@@ -465,7 +465,7 @@ const OfferSection = () => {
               A fórmula principal da rotina LipoVitta. Apoia o cuidado diário com circulação, sensação de pernas pesadas e bem-estar.
             </p>
             <ul className="space-y-2 mb-5">
-              {["Contém Dimpless® patenteado", "Frete grátis incluso", "Garantia de 30 dias"].map((b) => (
+              {["Contém Dimpless® patenteado", "Frete grátis a partir de R$400", "Garantia de 30 dias"].map((b) => (
                 <li key={b} className="flex items-start gap-2 text-[#333] text-sm sm:text-base">
                   <Check className="w-5 h-5 text-[#9BAE52] shrink-0 mt-0.5" />
                   <span>{b}</span>
@@ -570,7 +570,7 @@ const OfferSection = () => {
                 <Check className="w-5 h-5 text-[#9BAE52] shrink-0 mt-0.5" />
                 <span>Shot Matinal (ritual da manhã)</span>
               </li>
-              {["Cápsula + Shot juntos em um pedido", "Frete grátis incluso", "Garantia de 30 dias"].map((b) => (
+              {["Cápsula + Shot juntos em um pedido", "Frete grátis a partir de R$400", "Garantia de 30 dias"].map((b) => (
                 <li key={b} className="flex items-start gap-2 text-[#333] text-sm sm:text-base">
                   <Check className="w-5 h-5 text-[#9BAE52] shrink-0 mt-0.5" />
                   <span>{b}</span>
@@ -694,7 +694,7 @@ const OfferSection = () => {
                 COMPRAR SHOT MATINAL
               </button>
               <p className="text-xs text-[#5F5F5F] text-center mt-3">
-                Combine com a Cápsula para liberar frete grátis escolhendo o Protocolo Completo.
+                Escolha o Protocolo Favorito para combinar Shot Matinal e Cápsulas. Frete grátis em pedidos a partir de R$400 após descontos.
               </p>
               <a
                 href="#card-protocolo"

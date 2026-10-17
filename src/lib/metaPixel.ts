@@ -2,6 +2,7 @@
 // CAPI mirror is opt-in via VITE_META_CAPI_MIRROR=true (structure only for now).
 
 import { supabase } from "@/integrations/supabase/client";
+import { isPreBlackDemo } from "@/config/preBlack";
 
 const PIXEL_ID = (import.meta.env.VITE_META_PIXEL_ID as string | undefined)?.trim();
 const CAPI_MIRROR = (import.meta.env.VITE_META_CAPI_MIRROR as string | undefined) === "true";
@@ -24,7 +25,7 @@ declare global {
 let initialized = false;
 
 export function isPixelEnabled(): boolean {
-  return typeof window !== "undefined" && !!PIXEL_ID;
+  return typeof window !== "undefined" && !!PIXEL_ID && !isPreBlackDemo();
 }
 
 export function generateEventId(): string {
@@ -33,6 +34,7 @@ export function generateEventId(): string {
 }
 
 export function initMetaPixel(): void {
+  if (isPreBlackDemo()) return;
   if (typeof window === "undefined") return;
   if (initialized) return;
   if (!PIXEL_ID) return;
@@ -116,6 +118,7 @@ export function trackEvent(
   params?: Record<string, unknown>,
   options?: { eventID?: string; userData?: AdvancedMatchingData }
 ): void {
+  if (isPreBlackDemo()) return;
   const eventID = options?.eventID;
   const userParams = options?.userData ? pixelUserData(options.userData) : {};
   const merged = { ...(params ?? {}), ...userParams };

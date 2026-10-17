@@ -5,8 +5,8 @@ import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
 import { trackCtaClick } from "@/lib/tracking";
 import IngredientsAccordion, { NutritionAccordion } from "@/components/IngredientsAccordion";
 import { PRODUCT_INGREDIENTS } from "@/data/productIngredients";
-import { getCampaignPrice } from "@/config/campaignPricing";
-import { usePreBlackPhase } from "@/hooks/usePreBlackPhase";
+import { BASE_PRICES, getCampaignPrice } from "@/config/campaignPricing";
+import { usePreBlackCampaign } from "@/context/PreBlackCampaignContext";
 import shotRushImg from "@/assets/shot-rush.jpg?w=300;600;900&format=avif;webp;jpg&as=picture";
 import gummyImg from "@/assets/gummy-vittaglow.png?w=300;600;900&format=avif;webp;png&as=picture";
 
@@ -16,8 +16,8 @@ const formatMoney = (value: number) =>
     maximumFractionDigits: 2,
   });
 
-const ProductPrice = ({ kit }: { kit: SelectedKit }) => {
-  const phase = usePreBlackPhase();
+const ProductPrice = () => {
+  const { phase } = usePreBlackCampaign();
   const promo = getCampaignPrice("shot-rush", phase);
   return (
     <div className="mb-3">
@@ -44,7 +44,7 @@ const KIT_SHOT_RUSH: SelectedKit = {
   name: "Shot Rush Pré-Treino",
   productCount: 1,
   checkoutUrl: "https://seguro.lipovitta.site/r/5NYVZ7D8UT",
-  value: 225,
+  value: BASE_PRICES["shot-rush"],
   sku: "5NYVZ7D8UT",
 };
 
@@ -103,7 +103,7 @@ const complementos: Complemento[] = [
         </ul>
         <IngredientsAccordion product={PRODUCT_INGREDIENTS["shot-rush"]} className="mb-2" />
         <NutritionAccordion product={PRODUCT_INGREDIENTS["shot-rush"]} className="mb-4" />
-        <ProductPrice kit={kit} />
+        <ProductPrice />
 
         <button
           type="button"
@@ -134,6 +134,8 @@ const complementos: Complemento[] = [
 const ProductsSection = () => {
   const sectionRef = useScrollAnimation();
   const { selectKit } = useGiftFlow();
+  const { phase } = usePreBlackCampaign();
+  const promoKit = { ...KIT_SHOT_RUSH, value: getCampaignPrice("shot-rush", phase).value };
   const visiveis = complementos.filter((p) => p.inStock);
 
   if (visiveis.length === 0) return null;
@@ -148,7 +150,7 @@ const ProductsSection = () => {
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16">
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-[#4667B4] mb-4">
-            Complementos opcionais para sua rotina
+            Shot Rush para sua rotina
           </h2>
           <p className="font-sans font-normal text-base sm:text-lg text-[#444] mb-3">
             Produtos que combinam com a Cápsula LipoVitta para quem quer ir além.
@@ -174,11 +176,11 @@ const ProductsSection = () => {
                 label: "COMPRAR SHOT RUSH",
                 productName: KIT_SHOT_RUSH.name,
                 sku: KIT_SHOT_RUSH.sku,
-                value: KIT_SHOT_RUSH.value,
+                value: promoKit.value,
                 eventName: "InitiateCheckout",
               });
-              selectKit(KIT_SHOT_RUSH);
-            }, KIT_SHOT_RUSH)
+              selectKit(promoKit);
+            }, promoKit)
           )}
         </div>
       </div>
