@@ -15,6 +15,8 @@ import { trackEvent } from "@/lib/metaPixel";
 import { trackCtaClick } from "@/lib/tracking";
 import IngredientsAccordion, { KitIngredients, NutritionAccordion } from "@/components/IngredientsAccordion";
 import { PRODUCT_INGREDIENTS } from "@/data/productIngredients";
+import { getCampaignPrice, formatMoney, type CatalogId } from "@/config/campaignPricing";
+import { usePreBlackPhase } from "@/hooks/usePreBlackPhase";
 
 
 const LINK_CAPSULAS = "https://seguro.lipovitta.site/r/RMTIX51GQN";
@@ -122,36 +124,18 @@ const KIT_COMPLETO: SelectedKit = { id: "kit-completo", name: "Kit Completo Lipo
 
 type PromoKit = SelectedKit & { originalValue: number; discountPct: number; hasDiscount: boolean };
 
-const KIT_DISCOUNT_IDS = ["kit-completo", "kit-rush", "protocolo"] as const;
-const KIT_DISCOUNT_RATE = 0.1;
-
-const formatMoney = (value: number) =>
-  value.toLocaleString("pt-BR", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-
-const getKitPrice = (kit: SelectedKit): PromoKit => {
-  const hasDiscount = (KIT_DISCOUNT_IDS as readonly string[]).includes(kit.id);
-  if (!hasDiscount) return { ...kit, originalValue: kit.value, discountPct: 0, hasDiscount: false };
-
-  return {
-    ...kit,
-    originalValue: kit.value,
-    discountPct: Math.round(KIT_DISCOUNT_RATE * 100),
-    hasDiscount: true,
-    value: Math.round(kit.value * (1 - KIT_DISCOUNT_RATE) * 100) / 100,
-  };
-};
-
 const OfferSection = () => {
   const sectionRef = useScrollAnimation();
   const { selectKit } = useGiftFlow();
-  const promoCapsulas = getKitPrice(KIT_CAPSULAS);
-  const promoShot = getKitPrice(KIT_SHOT);
-  const promoRush = getKitPrice(KIT_RUSH);
-  const promoProtocolo = getKitPrice(KIT_PROTOCOLO);
-  const promoCompleto = getKitPrice(KIT_COMPLETO);
+  // Fase reativa da Pré Black: na virada, os preços sobem para 30% OFF
+  // em todos os produtos mesmo com a página já aberta.
+  const phase = usePreBlackPhase();
+  const priceOf = (kit: SelectedKit): PromoKit => ({ ...kit, ...getCampaignPrice(kit.id as CatalogId, phase) });
+  const promoCapsulas = priceOf(KIT_CAPSULAS);
+  const promoShot = priceOf(KIT_SHOT);
+  const promoRush = priceOf(KIT_RUSH);
+  const promoProtocolo = priceOf(KIT_PROTOCOLO);
+  const promoCompleto = priceOf(KIT_COMPLETO);
 
   const [flavorCompleto, setFlavorCompleto] = useState<FlavorId | null>(null);
   const [flavorProtocolo, setFlavorProtocolo] = useState<FlavorId | null>(null);
@@ -225,7 +209,7 @@ const OfferSection = () => {
             <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
               <span className="inline-flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
-                Kit com 10% OFF
+                Kit com {promoCompleto.discountPct}% OFF
               </span>
             </div>
 
@@ -352,7 +336,7 @@ const OfferSection = () => {
             <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
               <span className="inline-flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
-                Kit com 10% OFF
+                Kit com {promoRush.discountPct}% OFF
               </span>
             </div>
 
@@ -494,7 +478,16 @@ const OfferSection = () => {
 
             <div className="mt-auto">
               <div className="mb-4">
+                {promoCapsulas.hasDiscount && (
+                  <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
+                    <Sparkles className="w-3 h-3" />
+                    {promoCapsulas.discountPct}% OFF
+                  </span>
+                )}
                 <div className="flex items-center gap-3 flex-wrap">
+                  {promoCapsulas.hasDiscount && (
+                    <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R${formatMoney(promoCapsulas.originalValue)}</span>
+                  )}
                   <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
                     R${formatMoney(promoCapsulas.value)}
                   </p>
@@ -544,11 +537,7 @@ const OfferSection = () => {
                 </span>
 
 
-              ) : (
-                <span className="bg-[#4667B4] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
-                  Economize 10%
-                </span>
-              )}
+              ) : null}
             </div>
 
 
@@ -676,7 +665,16 @@ const OfferSection = () => {
 
             <div className="mt-auto">
               <div className="mb-4">
+                {promoShot.hasDiscount && (
+                  <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
+                    <Sparkles className="w-3 h-3" />
+                    {promoShot.discountPct}% OFF
+                  </span>
+                )}
                 <div className="flex items-center gap-2 flex-wrap">
+                  {promoShot.hasDiscount && (
+                    <span className="text-[#5F5F5F] line-through text-sm">R${formatMoney(promoShot.originalValue)}</span>
+                  )}
                   <p className="text-[#4667B4] font-bold text-2xl sm:text-3xl leading-none">
                     R${formatMoney(promoShot.value)}
                   </p>

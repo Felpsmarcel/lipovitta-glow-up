@@ -34,10 +34,27 @@ export function getPreBlackPhase(now = Date.now()): PreBlackPhase {
 
 /**
  * Override de fase apenas para demonstração no preview (?fase=teaser|live).
- * Nunca altera checkout, preços ou a data real — só a aparência da página.
+ * Restrito a hosts de preview/dev: em produção (lipovitta.site) o parâmetro
+ * é ignorado, para nunca antecipar a aparência promocional antes da abertura.
+ * Nunca altera checkout nem a data real — só a aparência da página.
  */
-export function resolvePreBlackPhase(search: string, now = Date.now()): { phase: PreBlackPhase; demo: boolean } {
+export function isPhaseOverrideHost(hostname: string): boolean {
+  return (
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname.endsWith(".lovable.app") ||
+    hostname.endsWith(".lovableproject.com")
+  );
+}
+
+export function resolvePreBlackPhase(
+  search: string,
+  now = Date.now(),
+  hostname: string = typeof window !== "undefined" ? window.location.hostname : ""
+): { phase: PreBlackPhase; demo: boolean } {
   const forced = new URLSearchParams(search).get("fase");
-  if (forced === "teaser" || forced === "live") return { phase: forced, demo: true };
+  if ((forced === "teaser" || forced === "live") && isPhaseOverrideHost(hostname)) {
+    return { phase: forced, demo: true };
+  }
   return { phase: getPreBlackPhase(now), demo: false };
 }
