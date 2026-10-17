@@ -209,7 +209,7 @@ const OfferSection = () => {
             <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
               <span className="inline-flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
-                Kit com 10% OFF
+                Kit com {promoCompleto.discountPct}% OFF
               </span>
             </div>
 
@@ -336,7 +336,7 @@ const OfferSection = () => {
             <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
               <span className="inline-flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
-                Kit com 10% OFF
+                Kit com {promoRush.discountPct}% OFF
               </span>
             </div>
 
@@ -528,11 +528,7 @@ const OfferSection = () => {
                 </span>
 
 
-              ) : (
-                <span className="bg-[#4667B4] text-white text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow">
-                  Economize 10%
-                </span>
-              )}
+              ) : null}
             </div>
 
 
