@@ -478,7 +478,16 @@ const OfferSection = () => {
 
             <div className="mt-auto">
               <div className="mb-4">
+                {promoCapsulas.hasDiscount && (
+                  <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
+                    <Sparkles className="w-3 h-3" />
+                    {promoCapsulas.discountPct}% OFF
+                  </span>
+                )}
                 <div className="flex items-center gap-3 flex-wrap">
+                  {promoCapsulas.hasDiscount && (
+                    <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R${formatMoney(promoCapsulas.originalValue)}</span>
+                  )}
                   <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
                     R${formatMoney(promoCapsulas.value)}
                   </p>
@@ -656,7 +665,16 @@ const OfferSection = () => {
 
             <div className="mt-auto">
               <div className="mb-4">
+                {promoShot.hasDiscount && (
+                  <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
+                    <Sparkles className="w-3 h-3" />
+                    {promoShot.discountPct}% OFF
+                  </span>
+                )}
                 <div className="flex items-center gap-2 flex-wrap">
+                  {promoShot.hasDiscount && (
+                    <span className="text-[#5F5F5F] line-through text-sm">R${formatMoney(promoShot.originalValue)}</span>
+                  )}
                   <p className="text-[#4667B4] font-bold text-2xl sm:text-3xl leading-none">
                     R${formatMoney(promoShot.value)}
                   </p>

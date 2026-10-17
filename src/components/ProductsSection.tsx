@@ -5,6 +5,8 @@ import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
 import { trackCtaClick } from "@/lib/tracking";
 import IngredientsAccordion, { NutritionAccordion } from "@/components/IngredientsAccordion";
 import { PRODUCT_INGREDIENTS } from "@/data/productIngredients";
+import { getCampaignPrice } from "@/config/campaignPricing";
+import { usePreBlackPhase } from "@/hooks/usePreBlackPhase";
 import shotRushImg from "@/assets/shot-rush.jpg?w=300;600;900&format=avif;webp;jpg&as=picture";
 import gummyImg from "@/assets/gummy-vittaglow.png?w=300;600;900&format=avif;webp;png&as=picture";
 
@@ -14,16 +16,28 @@ const formatMoney = (value: number) =>
     maximumFractionDigits: 2,
   });
 
-const ProductPrice = ({ kit }: { kit: SelectedKit }) => (
-  <div className="mb-3">
-    <div className="flex items-center gap-2 flex-wrap">
-      <span className="text-[#4667B4] font-extrabold text-xl">
-        R${formatMoney(kit.value)}
-      </span>
+const ProductPrice = ({ kit }: { kit: SelectedKit }) => {
+  const phase = usePreBlackPhase();
+  const promo = getCampaignPrice("shot-rush", phase);
+  return (
+    <div className="mb-3">
+      {promo.hasDiscount && (
+        <span className="inline-flex items-center bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
+          {promo.discountPct}% OFF
+        </span>
+      )}
+      <div className="flex items-center gap-2 flex-wrap">
+        {promo.hasDiscount && (
+          <span className="text-[#5F5F5F] line-through text-sm">R${formatMoney(promo.originalValue)}</span>
+        )}
+        <span className="text-[#4667B4] font-extrabold text-xl">
+          R${formatMoney(promo.value)}
+        </span>
+      </div>
+      <p className="text-xs text-[#555] mt-1">ou 3x R${formatMoney(promo.value / 3)} sem juros</p>
     </div>
-    <p className="text-xs text-[#555] mt-1">ou 3x R${formatMoney(kit.value / 3)} sem juros</p>
-  </div>
-);
+  );
+};
 
 const KIT_SHOT_RUSH: SelectedKit = {
   id: "shot-rush",
