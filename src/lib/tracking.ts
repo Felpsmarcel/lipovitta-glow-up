@@ -3,6 +3,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { generateEventId, trackEvent } from "@/lib/metaPixel";
+import { isPreBlackDemo } from "@/config/preBlack";
 
 const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const;
 type UtmKey = (typeof UTM_KEYS)[number];
@@ -42,6 +43,7 @@ export function getUtms(): Utms {
 
 /** Grava o evento no banco (fire-and-forget, nunca bloqueia o usuário). */
 function logConversion(payload: Record<string, unknown>): void {
+  if (isPreBlackDemo()) return;
   void supabase.functions
     .invoke("track-conversion", {
       body: {

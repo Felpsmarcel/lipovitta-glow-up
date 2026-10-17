@@ -18,8 +18,8 @@ describe("Pré Black campaign rules", () => {
   });
   it("demo override only accepts teaser/live and never changes the real clock", () => {
     const before = Date.parse("2026-10-17T00:00:00Z");
-    expect(resolvePreBlackPhase("?fase=live", before)).toEqual({ phase: "live", demo: true });
-    expect(resolvePreBlackPhase("?fase=teaser", Date.parse("2026-10-19T00:00:00Z"))).toEqual({ phase: "teaser", demo: true });
+    expect(resolvePreBlackPhase("?fase=live", before, "localhost")).toEqual({ phase: "live", demo: true });
+    expect(resolvePreBlackPhase("?fase=teaser", Date.parse("2026-10-19T00:00:00Z"), "localhost")).toEqual({ phase: "teaser", demo: true });
     expect(resolvePreBlackPhase("?fase=hacker", before)).toEqual({ phase: "teaser", demo: false });
     expect(resolvePreBlackPhase("", before)).toEqual({ phase: "teaser", demo: false });
   });

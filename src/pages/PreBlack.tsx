@@ -1,15 +1,15 @@
 import { ArrowDown } from "lucide-react";
-import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import SEOHead from "@/components/SEOHead";
 import PreBlackCountdown from "@/components/pre-black/PreBlackCountdown";
 import PreBlackLiveHero from "@/components/pre-black/PreBlackLiveHero";
+import ProductsSection from "@/components/ProductsSection";
 import OfferSection from "@/components/OfferSection";
 import GiftSelectionSection from "@/components/GiftSelectionSection";
 import { GiftFlowProvider } from "@/context/GiftFlowContext";
-import { PRE_BLACK_CONFIG, resolvePreBlackPhase } from "@/config/preBlack";
+import { PRE_BLACK_CONFIG } from "@/config/preBlack";
 import { usePreBlackMotion } from "@/hooks/usePreBlackMotion";
-import { usePreBlackPhase } from "@/hooks/usePreBlackPhase";
+import { usePreBlackCampaign, PreBlackDemoNotice } from "@/context/PreBlackCampaignContext";
 import { trackCtaClick } from "@/lib/tracking";
 import logo from "@/assets/logo-lipovitta.png";
 import kit from "@/assets/kit-completo-lipovitta.png.asset.json";
@@ -24,7 +24,7 @@ import portaCapsulas from "@/assets/gifts/brinde-portacapsulas.png";
 const kitUrl = new URL(kit.url, "https://lipovitta.site").href;
 
 function OffersCta({ location }: { location: string }) {
-  const label = "VER OFERTAS";
+  const label = "APROVEITAR 30% OFF";
   return (
     <div className="pb-cta-block">
       <Button asChild className="pb-cta"><a href="#ofertas" onClick={() => trackCtaClick({ location: `pre_black_${location}`, label, eventName: "CTAClick" })}><span>{label}</span><ArrowDown aria-hidden="true" /></a></Button>
@@ -47,7 +47,7 @@ function TeaserContent() {
         <div className="pb-shell pb-hero-grid">
           <div className="pb-hero-copy">
             <p className="pb-eyebrow" data-pb-motion="hero" data-pb-order="0">PRÉ BLACK LIPOVITTA <span>{PRE_BLACK_CONFIG.eyebrowDateLabel}</span></p>
-            <h1 data-pb-motion="hero" data-pb-order="1">A maior pré black da história da LipoVitta <span className="pb-offer-intro">com ofertas de até</span><span className="pb-discount">30<span>%<small>OFF</small></span></span></h1>
+            <h1 data-pb-motion="hero" data-pb-order="1">A Pré Black LipoVitta está chegando <span className="pb-offer-intro">em todos os produtos</span><span className="pb-discount">30<span>%<small>OFF</small></span></span></h1>
             <p className="pb-hero-description" data-pb-motion="hero" data-pb-order="2">Na nossa pré black, você vai conhecer o sistema LipoVitta, para cuidar do corpo, reduzir a aparência da celulite e elevar sua autoestima, com até 3x sem juros, brindes especiais e ofertas exclusivas.</p>
           </div>
           <div className="pb-hero-photo" data-pb-motion="photo">
@@ -65,7 +65,7 @@ function TeaserContent() {
       </section>
 
       <section className="pb-products pb-shell" aria-labelledby="products-title">
-        <div className="pb-section-heading" data-pb-motion="scroll"><p className="pb-eyebrow">O SEU RITUAL LIPOVITTA</p><h2 id="products-title">Vem aí uma oportunidade imperdível para você,<br className="hidden md:block" /> algo jamais visto na história.</h2><p>Shot Matinal, Shot Rush, LipoVitta cápsulas e acessórios exclusivos para sua rotina, com mixer, raspador de língua e porta-cápsulas para elevar seu autocuidado.</p></div>
+        <div className="pb-section-heading" data-pb-motion="scroll"><p className="pb-eyebrow">O SEU RITUAL LIPOVITTA</p><h2 id="products-title">Seus favoritos da LipoVitta,<br className="hidden md:block" /> com 30% de desconto.</h2><p>Shot Matinal, Shot Rush, LipoVitta cápsulas e acessórios exclusivos para sua rotina, com mixer, raspador de língua e porta-cápsulas para elevar seu autocuidado.</p></div>
         <figure className="pb-kit" data-pb-motion="scroll"><img src={kitUrl} alt="Linha LipoVitta com Cápsulas, três sabores de Shot Matinal e Shot Rush" loading="lazy" width="1600" height="900" /><figcaption><span>UM SISTEMA. A SUA ROTINA.</span><span>LipoVitta por Clara Caldas</span></figcaption></figure>
         <div className="pb-flavors" data-pb-motion="scroll"><div><p className="pb-eyebrow">SHOT MATINAL</p><h3>Qual é o seu sabor?</h3></div><div className="pb-flavor-list">{[[tangerina, "Tangerina"], [limao, "Limão"], [abacaxi, "Abacaxi"]].map(([src, name]) => <figure key={name}><img src={src} alt={`Shot Matinal ${name}`} width="180" height="220" loading="lazy" /><figcaption>{name}</figcaption></figure>)}</div></div>
       </section>
@@ -84,6 +84,7 @@ function LiveContent() {
       <div id="ofertas" className="pb-live-offers">
         <GiftFlowProvider>
           <OfferSection />
+          <ProductsSection />
           <GiftSelectionSection />
         </GiftFlowProvider>
       </div>
@@ -93,17 +94,16 @@ function LiveContent() {
 
 export default function PreBlack() {
   const root = usePreBlackMotion();
-  const { search } = useLocation();
-  const { phase: forced, demo } = resolvePreBlackPhase(search);
-  const phase = usePreBlackPhase(demo ? forced : undefined);
+  const { phase } = usePreBlackCampaign();
   const live = phase === "live";
   return (
     <div ref={root} className={`pre-black${live ? " pre-black-live" : ""}`}>
+      <PreBlackDemoNotice />
       <SEOHead
-        title={live ? "Pré Black LipoVitta — ofertas no ar" : "Pré Black LipoVitta — até 30% OFF"}
+        title={live ? "Pré Black LipoVitta — 30% OFF em todos os produtos" : "Pré Black LipoVitta — 30% OFF em todos os produtos"}
         description={live
-          ? "A Pré Black LipoVitta começou. Escolha seu kit e aproveite as condições disponíveis, com até 3x sem juros e brindes especiais."
-          : `Pré Black LipoVitta: ofertas de até 30% OFF, até 3x sem juros e brindes especiais. Começa dia ${PRE_BLACK_CONFIG.dateLabel}, às 08h da Bahia.`}
+          ? "A Pré Black LipoVitta começou: 30% OFF em todos os produtos, com até 3x sem juros e brindes conforme o pedido."
+          : `Pré Black LipoVitta: 30% OFF em todos os produtos, até 3x sem juros e brindes especiais. Começa dia ${PRE_BLACK_CONFIG.dateLabel}, às 08h da Bahia.`}
         canonicalUrl="https://lipovitta.site/pre-black"
       />
       <a className="pb-skip" href="#pre-black-content">Ir para o conteúdo</a>

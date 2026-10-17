@@ -332,3 +332,28 @@ input:focus-visible {
   .pb-burst-glow, .pb-burst-ring, .pb-burst-fragment { display: none; }
   .pb-home-banner-cta:is(:hover,:focus-visible,:active) { transform: none; }
 }
+
+/* Pré Black 2026 — campaign identity, scoped to the commercial experience. */
+.pb-live-discount { display: flex; align-items: center; gap: 8px; font-size: clamp(96px, 10vw, 150px); font-weight: 700; line-height: .95; letter-spacing: -.06em; color: #b7ca70; margin-top: 24px; }
+.pb-live-discount > span { font-size: .46em; line-height: .85; letter-spacing: -.02em; }
+.pb-live-discount small { display: block; font-size: .38em; letter-spacing: .08em; margin-top: 12px; }
+.pb-live-all { display: block; font-size: clamp(18px, 2vw, 25px); font-weight: 400; letter-spacing: 0; margin-top: 18px; }
+.pb-demo-notice { padding: 10px 20px; background: #f6efce; color: #423e23; text-align: center; font-size: 12px; line-height: 1.6; }
+.lipovitta-campaign main > .pre-black { padding-bottom: 0; }
+.lipovitta-campaign #precos, .pre-black-live #precos { scroll-margin-top: 80px; background: #f0f3f8 !important; padding-top: 64px; }
+.lipovitta-campaign #complementos, .pre-black-live #complementos { padding-top: 48px; }
+.pb-clara { background: #182443; color: white; padding: 64px 24px; }
+.pb-clara-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 64px; }
+.pb-clara img { width: 100%; max-height: 560px; object-fit: cover; object-position: center 34%; border-radius: 4px; }
+.pb-clara h2 { font-size: clamp(30px, 3.5vw, 46px); line-height: 1.15; margin-block: 18px; }
+.pb-clara p { line-height: 1.8; color: #e1e6f0; margin-bottom: 24px; }
+.pb-clara small { text-transform: uppercase; letter-spacing: .2em; color: #b7ca70; }
+.pb-clara a { display: inline-flex; background: #b7ca70; color: #182443; font-weight: 700; padding: 16px 22px; border-radius: 4px; font-size: 12px; }
+@media(max-width: 767px) {
+  .pb-live-discount { font-size: 108px; margin-top: 20px; }
+  .pb-hero-live .pb-hero-grid { gap: 16px; }
+  .pb-hero-live .pb-hero-kit > img { max-height: 280px; }
+  .pb-clara-inner { grid-template-columns: 1fr; gap: 24px; }
+  .pb-clara { padding-block: 40px; }
+  .pb-clara img { max-height: 420px; }
+}

@@ -32,5 +32,6 @@
 - [x] CORREÇÃO DO DONO: campanha é VENDA DIRETA — removidos grupo VIP, convites NotifyFlow/WhatsApp, artes de captação e seção grupo-vip
 - [x] Burst de abertura 1x/sessão (PreBlackBurst), reduced-motion respeitado
 - [x] /pre-black live: hero comercial + OfferSection + GiftSelectionSection; home ganha faixa Pré-Black
-- [ ] Pendência comercial: preços exibidos na fase live são os ATUAIS do site (kits com 10% OFF). A tabela promocional de até 30% OFF NÃO está aplicada — aguarda valores confirmados e configuração na Yampi.
+- [x] Regra aprovada em 17/10: frontend preparado com 30% OFF em todos os produtos e kits, sem acumular os 10% anteriores.
+- [ ] Yampi: configurar os 30% e validar o link do Protocolo (hoje aponta para cápsula avulsa). Ver docs/pre-black-2026.md.
 - [ ] Publicar somente após aprovação e confirmação dos preços promocionais.

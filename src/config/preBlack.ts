@@ -42,7 +42,8 @@ export function isPhaseOverrideHost(hostname: string): boolean {
   return (
     hostname === "localhost" ||
     hostname === "127.0.0.1" ||
-    hostname.endsWith(".lovable.app") ||
+    (hostname.startsWith("id-preview--") && hostname.endsWith(".lovable.app")) ||
+    (hostname.startsWith("id-preview-") && hostname.includes("--") && hostname.endsWith(".lovable.app")) ||
     hostname.endsWith(".lovableproject.com")
   );
 }
@@ -57,4 +58,9 @@ export function resolvePreBlackPhase(
     return { phase: forced, demo: true };
   }
   return { phase: getPreBlackPhase(now), demo: false };
+}
+
+/** Demo interactions never create real conversion records. */
+export function isPreBlackDemo(): boolean {
+  return typeof window !== "undefined" && resolvePreBlackPhase(window.location.search).demo;
 }

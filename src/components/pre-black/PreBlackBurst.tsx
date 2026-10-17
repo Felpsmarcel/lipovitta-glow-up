@@ -105,7 +105,17 @@ export default function PreBlackBurst({ children, storageKey = "pb-burst-live-v1
       if (preference.matches) animations.forEach((a) => a.cancel());
     };
     preference.addEventListener("change", onPreference);
+    const onVisibility = () => {
+      animations.forEach((a) => {
+        if (a.playState === "finished" || a.playState === "idle") return;
+        if (document.hidden) a.pause();
+        else if (!preference.matches) a.play();
+      });
+    };
+    onVisibility();
+    document.addEventListener("visibilitychange", onVisibility);
     return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
       preference.removeEventListener("change", onPreference);
       animations.forEach((a) => a.cancel());
     };

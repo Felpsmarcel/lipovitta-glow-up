@@ -16,6 +16,7 @@ import MetaPixelRouteTracker from "./components/MetaPixelRouteTracker";
 import Lipolovers from "./pages/Lipolovers.tsx";
 import LipoloversWelcome from "./pages/LipoloversWelcome.tsx";
 import PreBlack from "./pages/PreBlack.tsx";
+import { PreBlackCampaignProvider } from "@/context/PreBlackCampaignContext";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <PreBlackCampaignProvider>
         <MetaPixelRouteTracker />
         <Routes>
           <Route path="/" element={<Index />} />
@@ -47,6 +49,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </PreBlackCampaignProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

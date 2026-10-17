@@ -1,4 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { usePreBlackCampaign } from "@/context/PreBlackCampaignContext";
+import { BASE_PRICES, getCampaignPrice, type CatalogId } from "@/config/campaignPricing";
 
 export type SelectedKit = {
   id: string;
@@ -27,7 +29,12 @@ type GiftFlowContextValue = {
 const GiftFlowContext = createContext<GiftFlowContextValue | null>(null);
 
 export const GiftFlowProvider = ({ children }: { children: ReactNode }) => {
-  const [selectedKit, setSelectedKit] = useState<SelectedKit | null>(null);
+  const [selection, setSelectedKit] = useState<SelectedKit | null>(null);
+  const { phase } = usePreBlackCampaign();
+  // Derive price from the same phase as the cards, retaining flavor and gift at opening.
+  const selectedKit = useMemo(() => selection && Object.prototype.hasOwnProperty.call(BASE_PRICES, selection.id)
+    ? { ...selection, value: getCampaignPrice(selection.id as CatalogId, phase).value }
+    : selection, [selection, phase]);
   const [selectedGiftId, setSelectedGiftId] = useState<string | null>(null);
 
   const selectKit = useCallback((kit: SelectedKit) => {
@@ -36,7 +43,8 @@ export const GiftFlowProvider = ({ children }: { children: ReactNode }) => {
     // Smooth scroll to the gift section
     requestAnimationFrame(() => {
       const el = document.getElementById("escolha-brinde");
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      if (el) el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
     });
   }, []);
 

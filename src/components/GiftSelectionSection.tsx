@@ -4,9 +4,12 @@ import { useGiftFlow } from "@/context/GiftFlowContext";
 import { getEligibleGifts } from "@/data/gifts";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { appendTrackingParams, trackCtaClick } from "@/lib/tracking";
+import { usePreBlackCampaign } from "@/context/PreBlackCampaignContext";
+import { formatMoney } from "@/config/campaignPricing";
 
 const GiftSelectionSection = () => {
   const { selectedKit, selectedGiftId, setSelectedGiftId } = useGiftFlow();
+  const { demo } = usePreBlackCampaign();
   const checkoutRef = useRef<HTMLButtonElement>(null);
 
   const handleSelectGift = (id: string) => {
@@ -26,7 +29,7 @@ const GiftSelectionSection = () => {
   const selectedGift = eligible.find((g) => g.id === selectedGiftId) ?? null;
 
   const missingFlavor = Boolean(selectedKit.requiresFlavor && !selectedKit.flavor);
-  const canCheckout = Boolean(selectedGift) && !missingFlavor;
+  const canCheckout = Boolean(selectedGift) && !missingFlavor && !demo;
 
   const handleCheckout = () => {
     if (!selectedGift || !canCheckout) return;
@@ -68,6 +71,7 @@ const GiftSelectionSection = () => {
             <p className="font-sans text-base sm:text-lg text-[#4667B4] font-bold">
               {selectedKit.name}
             </p>
+            {selectedKit.value != null && <p className="font-bold text-[#4667B4] mt-2">R$ {formatMoney(selectedKit.value)} <span className="text-xs font-normal">+ frete, quando aplicável</span></p>}
             {selectedKit.flavor && (
               <p className="font-sans text-sm text-[#555] mt-1 flex items-center gap-2 flex-wrap">
                 <span>
@@ -161,7 +165,7 @@ const GiftSelectionSection = () => {
                 : "bg-[#B7BFC9] opacity-70 cursor-not-allowed"
             }`}
           >
-            {selectedKit.flavor ? `Finalizar compra · ${selectedKit.flavor}` : "Finalizar minha compra"}
+            {demo ? "Demonstração · checkout desativado" : selectedKit.flavor ? `Finalizar compra · ${selectedKit.flavor}` : "Finalizar minha compra"}
           </button>
         </div>
       </div>
