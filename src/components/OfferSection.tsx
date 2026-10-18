@@ -206,12 +206,14 @@ const OfferSection = () => {
             id="card-kit-completo-top"
             className="relative bg-white rounded-2xl border border-[#E8ECF1] overflow-hidden shadow-xl grid grid-cols-1 lg:grid-cols-12 scroll-mt-32"
           >
+            {promoCompleto.hasDiscount && (
             <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
               <span className="inline-flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
                 Kit com {promoCompleto.discountPct}% OFF
               </span>
             </div>
+            )}
 
             <div className="lg:col-span-5 relative bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center p-4 sm:p-6 min-h-[280px]">
               <img
@@ -333,12 +335,14 @@ const OfferSection = () => {
             id="card-kit-rush-top"
             className="relative bg-white rounded-2xl border border-[#E8ECF1] overflow-hidden shadow-xl grid grid-cols-1 lg:grid-cols-12 scroll-mt-32"
           >
+            {promoRush.hasDiscount && (
             <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
               <span className="inline-flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
                 Kit com {promoRush.discountPct}% OFF
               </span>
             </div>
+            )}
 
             <div className="lg:col-span-5 relative bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center p-4 sm:p-6 min-h-[280px]">
               <img
