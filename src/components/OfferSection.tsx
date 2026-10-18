@@ -1,3 +1,4 @@
+import CouponBadge from "@/components/pre-black/CouponBadge";
 import { useEffect, useRef, useState } from "react";
 import { Shield, Check, Tag, Sparkles } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
@@ -206,6 +207,7 @@ const OfferSection = () => {
             id="card-kit-completo-top"
             className="relative bg-white rounded-2xl border border-[#E8ECF1] overflow-hidden shadow-xl grid grid-cols-1 lg:grid-cols-12 scroll-mt-32"
           >
+            <CouponBadge className="lg:col-span-12 m-3 mb-0" />
             {promoCompleto.hasDiscount && (
             <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
               <span className="inline-flex items-center gap-1.5">
@@ -335,6 +337,7 @@ const OfferSection = () => {
             id="card-kit-rush-top"
             className="relative bg-white rounded-2xl border border-[#E8ECF1] overflow-hidden shadow-xl grid grid-cols-1 lg:grid-cols-12 scroll-mt-32"
           >
+            <CouponBadge className="lg:col-span-12 m-3 mb-0" />
             {promoRush.hasDiscount && (
             <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
               <span className="inline-flex items-center gap-1.5">
@@ -455,6 +458,7 @@ const OfferSection = () => {
             id="card-capsulas"
             className="lg:col-span-5 bg-white rounded-2xl border border-[#E8ECF1] p-7 sm:p-9 flex flex-col shadow-xl lg:-translate-y-2"
           >
+            <CouponBadge className="mb-4" />
             <span className="inline-block self-start text-xs font-semibold uppercase tracking-wide text-white bg-[#4667B4] px-3 py-1 rounded-full mb-4">
               Fórmula principal
             </span>
@@ -516,6 +520,7 @@ const OfferSection = () => {
             id="card-protocolo"
             className="lg:col-span-4 relative bg-white rounded-2xl border-2 border-[#9BAE52] p-6 sm:p-7 flex flex-col shadow-2xl"
           >
+            <CouponBadge className="relative z-10 mb-4" />
             {/* Mancha orgânica decorativa (clipada dentro do card) */}
             <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
               <svg
@@ -637,6 +642,7 @@ const OfferSection = () => {
             id="card-shot"
             className="lg:col-span-3 bg-white rounded-2xl border border-[#E8ECF1] p-5 sm:p-6 flex flex-col shadow-sm lg:translate-y-6"
           >
+            <CouponBadge className="mb-4" />
             <span className="inline-block self-start text-xs font-medium text-[#666] border border-[#D1D5DB] px-3 py-1 rounded-full mb-4">
               Complemento matinal
             </span>
