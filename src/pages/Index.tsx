@@ -35,9 +35,9 @@ const Index = () => {
     <div className={`min-h-screen bg-background${live ? " lipovitta-campaign" : ""}`}>
       <PreBlackDemoNotice />
         <SEOHead
-          title={live ? "Pré Black LipoVitta — 30% OFF em todos os produtos" : "Pré Black LipoVitta — 18/10 às 8h"}
+          title={live ? "Pré Black LipoVitta — 30% OFF com o cupom BLACKLIPOVITTA" : "Pré Black LipoVitta — 18/10 às 8h"}
           description={live
-            ? "A Pré Black LipoVitta começou: 30% OFF em todos os produtos. Escolha seus favoritos e aproveite."
+            ? "A Pré Black LipoVitta começou: use o cupom BLACKLIPOVITTA no checkout e ganhe 30% OFF em todos os produtos."
             : "A Pré Black LipoVitta começa em 18/10 às 8h da Bahia: 30% OFF em todos os produtos."}
           keywords="comprar LipoVitta, LipoVitta preço, LipoVitta onde comprar"
           ogType="product"
