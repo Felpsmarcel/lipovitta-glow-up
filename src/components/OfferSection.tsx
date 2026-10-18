@@ -189,7 +189,7 @@ const OfferSection = () => {
         {/* Header */}
         <div className="text-center mb-6 max-w-2xl mx-auto">
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-[#4667B4] mb-3">
-            {phase === "live" ? "Seus favoritos com 30% OFF" : "Comece sua rotina LipoVitta"}
+            {phase === "live" ? "Seus favoritos com 30% OFF no cupom BLACKLIPOVITTA" : "Comece sua rotina LipoVitta"}
           </h2>
           <p className="font-sans font-normal text-[#555] text-base sm:text-lg">
             Escolha como quer começar. Você pode adicionar complementos depois.
