@@ -44,7 +44,7 @@ const Index = () => {
           canonicalUrl="https://lipovitta.site/"
         />
       <Navbar />
-      {!live && <PreBlackHomeBanner />}
+      <PreBlackHomeBanner />
       <main>
         {/* Hero: versão comercial Pré-Black após a abertura; hero padrão antes */}
         {live ? (
