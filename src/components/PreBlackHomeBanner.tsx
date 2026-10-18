@@ -13,7 +13,7 @@ export default function PreBlackHomeBanner() {
   const { phase } = usePreBlackCampaign();
   const live = phase === "live";
   const href = live ? "#precos" : "/pre-black";
-  const label = live ? "APROVEITAR 30% OFF" : "CONHEÇA A CAMPANHA";
+  const label = live ? "VER OFERTAS" : "CONHEÇA A CAMPANHA";
   return (
     <section className="pb-home-banner" aria-label="Pré Black LipoVitta">
       <div className="pb-home-banner-inner">
@@ -21,7 +21,7 @@ export default function PreBlackHomeBanner() {
           PRÉ BLACK LIPOVITTA <span>{live ? "NO AR" : PRE_BLACK_CONFIG.eyebrowDateLabel}</span>
         </p>
         <p className="pb-home-banner-title">
-          {live ? "30% OFF em todos os produtos. A Pré Black começou." : "30% OFF em todos os produtos a partir de 18/10 às 8h da Bahia."}
+          {live ? "30% OFF em todos os produtos." : "30% OFF em todos os produtos a partir de 18/10 às 8h da Bahia."}
         </p>
         <a
           className="pb-home-banner-cta"
