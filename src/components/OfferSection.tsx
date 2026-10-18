@@ -19,10 +19,10 @@ import { BASE_PRICES, getCampaignPrice, formatMoney, type CatalogId } from "@/co
 import { usePreBlackCampaign } from "@/context/PreBlackCampaignContext";
 
 
-const LINK_CAPSULAS = "https://seguro.lipovitta.site/r/RMTIX51GQN";
+const LINK_CAPSULAS = "https://seguro.lipovitta.site/b/CIG6J1D5VEGW";
 // Página do catálogo onde a cliente confirma o sabor do Shot Matinal.
 const LINK_PROTOCOLO = "https://lipovitta2.catalog.yampi.io/capsulas-lipovitta/p";
-const LINK_SHOT = "https://lipovitta2.catalog.yampi.io/shot-matinal-lipovitta/p";
+const LINK_SHOT = "https://seguro.lipovitta.site/b/OSFWLDJPY68W";
 const LINK_KIT_RUSH = "https://seguro.lipovitta.site/b/3QUPWLJZ74U8";
 const LINK_KIT_COMPLETO = "https://seguro.lipovitta.site/b/CLF9IC4LPI8K";
 
@@ -116,7 +116,7 @@ const FlavorPicker = ({
   </div>
 );
 
-const KIT_CAPSULAS: SelectedKit = { id: "capsulas", name: "LipoVitta Cápsulas", productCount: 1, checkoutUrl: LINK_CAPSULAS, value: BASE_PRICES["capsulas"], sku: "RMTIX51GQN" };
+const KIT_CAPSULAS: SelectedKit = { id: "capsulas", name: "LipoVitta Cápsulas", productCount: 1, checkoutUrl: LINK_CAPSULAS, value: BASE_PRICES["capsulas"], sku: "CIG6J1D5VEGW" };
 const KIT_SHOT: SelectedKit = { id: "shot-matinal", name: "Shot Matinal LipoVitta", productCount: 1, checkoutUrl: LINK_SHOT, value: BASE_PRICES["shot-matinal"], sku: "PW60UM0Y2J" };
 const KIT_RUSH: SelectedKit = { id: "kit-rush", name: "Kit Shot Rush + Cápsulas", productCount: 2, checkoutUrl: LINK_KIT_RUSH, value: BASE_PRICES["kit-rush"], sku: "3QUPWLJZ74U8" };
 const KIT_PROTOCOLO: SelectedKit = { id: "protocolo", name: "Protocolo Completo LipoVitta", productCount: 2, checkoutUrl: LINK_PROTOCOLO, value: BASE_PRICES["protocolo"], sku: "RPQ0CD6N6Q8C" };
