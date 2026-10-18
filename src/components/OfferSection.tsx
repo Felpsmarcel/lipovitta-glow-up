@@ -19,10 +19,10 @@ import { BASE_PRICES, getCampaignPrice, formatMoney, type CatalogId } from "@/co
 import { usePreBlackCampaign } from "@/context/PreBlackCampaignContext";
 
 
-const LINK_CAPSULAS = "https://seguro.lipovitta.site/r/RMTIX51GQN";
+const LINK_CAPSULAS = "https://seguro.lipovitta.site/b/CIG6J1D5VEGW";
 // Página do catálogo onde a cliente confirma o sabor do Shot Matinal.
 const LINK_PROTOCOLO = "https://lipovitta2.catalog.yampi.io/capsulas-lipovitta/p";
-const LINK_SHOT = "https://lipovitta2.catalog.yampi.io/shot-matinal-lipovitta/p";
+const LINK_SHOT = "https://seguro.lipovitta.site/b/OSFWLDJPY68W";
 const LINK_KIT_RUSH = "https://seguro.lipovitta.site/b/3QUPWLJZ74U8";
 const LINK_KIT_COMPLETO = "https://seguro.lipovitta.site/b/CLF9IC4LPI8K";
 
