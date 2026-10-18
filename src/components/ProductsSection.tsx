@@ -1,3 +1,4 @@
+import CouponBadge from "@/components/pre-black/CouponBadge";
 import { Check } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
@@ -63,6 +64,7 @@ const complementos: Complemento[] = [
         key="shot-rush"
         className="bg-white rounded-2xl border border-[#E8ECF1] p-5 flex flex-col"
       >
+        <CouponBadge className="mb-3" />
         <span className="self-start text-[11px] font-semibold uppercase tracking-wide text-[#4667B4] border border-[#4667B4]/30 px-3 py-1 rounded-full mb-3">
           Combina com a Cápsula
         </span>
