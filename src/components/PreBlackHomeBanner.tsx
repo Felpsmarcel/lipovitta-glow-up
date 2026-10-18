@@ -21,7 +21,7 @@ export default function PreBlackHomeBanner() {
           PRÉ BLACK LIPOVITTA <span>{live ? "NO AR" : PRE_BLACK_CONFIG.eyebrowDateLabel}</span>
         </p>
         <p className="pb-home-banner-title">
-          {live ? "30% OFF em todos os produtos." : "30% OFF em todos os produtos a partir de 18/10 às 8h da Bahia."}
+          {live ? <>30% OFF com o cupom <strong>BLACKLIPOVITTA</strong> no checkout.</> : "30% OFF em todos os produtos a partir de 18/10 às 8h da Bahia."}
         </p>
         <a
           className="pb-home-banner-cta"

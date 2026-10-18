@@ -15,6 +15,9 @@ import { getPreBlackPhase, type PreBlackPhase } from "@/config/preBlack";
 /** Desconto da campanha: 30% sobre a base integral, aplicado uma única vez. */
 export const PRE_BLACK_DISCOUNT_RATE = 0.3;
 
+/** Cupom da Pré Black aplicado pela cliente no checkout da Yampi. */
+export const PRE_BLACK_COUPON = "BLACKLIPOVITTA";
+
 /** Desconto vigente fora da campanha (kits com 10% OFF). */
 export const DEFAULT_KIT_DISCOUNT_RATE = 0.1;
 
@@ -53,12 +56,8 @@ export type CampaignPrice = {
 export function getCampaignPrice(id: CatalogId, phase: PreBlackPhase): CampaignPrice {
   const base = BASE_PRICES[id];
   if (phase === "live") {
-    return {
-      value: round2(base * (1 - PRE_BLACK_DISCOUNT_RATE)),
-      originalValue: base,
-      discountPct: Math.round(PRE_BLACK_DISCOUNT_RATE * 100),
-      hasDiscount: true,
-    };
+    // Pré Black: site mostra preço cheio; os 30% entram com o cupom no checkout.
+    return { value: base, originalValue: base, discountPct: 0, hasDiscount: false };
   }
   const hasDefault = DEFAULT_DISCOUNT_IDS.includes(id);
   return {

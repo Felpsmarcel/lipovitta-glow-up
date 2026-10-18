@@ -25,7 +25,7 @@ const PreBlackLiveHero = ({ offersHref, trackLocation }: { offersHref: string; t
             </p>
             <h1 data-pb-burst="copy">A Pré Black LipoVitta começou<span className="pb-live-discount">30<span>%<small>OFF</small></span></span><span className="pb-live-all">em todos os produtos</span></h1>
             <p className="pb-hero-description" data-pb-burst="copy">
-              Escolha seus favoritos e aproveite a Pré Black LipoVitta.
+              Use o cupom <strong>BLACKLIPOVITTA</strong> no checkout e ganhe 30% OFF em todos os produtos.
             </p>
             <div>
               <div className="pb-cta-block">
