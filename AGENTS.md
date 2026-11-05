@@ -1,7 +1,5 @@
 # Project architecture
 
-- Call the admin-only schedule-status RPC with the authenticated admin client, not the service client; its internal auth.uid() check must retain user identity, and unavailable reads must render an unknown state rather than crash.
-
 - Keep public B2B offers and integer-cent simulation rules in `src/config/partnerOffers.ts`; `/parceiros` reuses `PartnerForm` with optional interest props and the existing application flow to preserve affiliate compatibility.
 - Scope partner design tokens and styles to `.partners-page`; B2B presentation must not affect retail or subscription surfaces.
 
