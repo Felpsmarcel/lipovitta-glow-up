@@ -4,6 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { trackLead, trackLeadStart } from "@/lib/tracking";
 import { buildWhatsAppAffiliateDataLink, buildWhatsAppAffiliateMessage } from "@/lib/whatsapp";
 import { STATES, Field, inputCls, SuccessCard, WhatsAppPreview } from "@/components/affiliates/shared";
+import { Button } from "@/components/ui/button";
+import { buildPartnerInterest, PARTNER_OFFERS, type PartnerProduct } from "@/config/partnerOffers";
 
 const BUSINESS_TYPES = [
   "Farmácia",
@@ -11,6 +13,10 @@ const BUSINESS_TYPES = [
   "Nutricionista",
   "Personal trainer",
   "Loja de suplementos",
+  "Academia",
+  "Estúdio de pilates",
+  "Loja de moda feminina",
+  "Espaço de beleza",
   "Outro",
 ];
 
@@ -74,7 +80,13 @@ const initialState: FormState = {
   volume_notes: "",
 };
 
-const PartnerForm = () => {
+interface PartnerFormProps {
+  selectedProduct?: PartnerProduct;
+  quantity?: number;
+  onProductChange?: (product: PartnerProduct) => void;
+}
+
+const PartnerForm = ({ selectedProduct, quantity = 50, onProductChange }: PartnerFormProps = {}) => {
   const [form, setForm] = useState<FormState>(initialState);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -83,6 +95,8 @@ const PartnerForm = () => {
   const [whatsappHref, setWhatsappHref] = useState<string | null>(null);
 
   const startedRef = useRef(false);
+  const interestNotes = buildPartnerInterest(selectedProduct, quantity, form.volume_notes);
+  const notesLimit = 600 - (selectedProduct ? buildPartnerInterest(selectedProduct, quantity, "").length + 1 : 0);
 
   const update =
     (k: keyof FormState, transform?: (v: string) => string) =>
@@ -109,9 +123,9 @@ const PartnerForm = () => {
         businessType: form.business_type,
         city: form.city.trim(),
         state: form.state,
-        volumeNotes: form.volume_notes.trim(),
+        volumeNotes: interestNotes,
       }),
-    [form]
+    [form, interestNotes]
   );
 
 
@@ -121,7 +135,7 @@ const PartnerForm = () => {
     if (submitting) return;
     setServerError(null);
 
-    const parsed = schema.safeParse(form);
+    const parsed = schema.safeParse({ ...form, volume_notes: interestNotes });
     if (!parsed.success) {
       const errs: Record<string, string> = {};
       parsed.error.issues.forEach((i) => {
@@ -205,7 +219,19 @@ const PartnerForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white border border-border rounded-2xl p-6 md:p-8 shadow-sm space-y-5">
+    <form onSubmit={handleSubmit} aria-label="Cadastro comercial" className="bg-background border border-border rounded-lg p-6 md:p-8 shadow-sm space-y-5">
+      {selectedProduct && onProductChange && (
+        <div>
+          <label htmlFor="partner-product" className="block text-sm font-semibold mb-2">Produto de interesse</label>
+          <select id="partner-product" value={selectedProduct} onChange={(event) => {
+            const value = event.target.value;
+            if (value === "capsulas" || value === "shot_matinal") onProductChange(value);
+          }} className={inputCls()}>
+            {Object.entries(PARTNER_OFFERS).map(([key, offer]) => <option key={key} value={key}>{offer.name}</option>)}
+          </select>
+          <p className="text-sm text-muted-foreground mt-2">Interesse em {quantity} unidades. Pedidos mistos sob consulta.</p>
+        </div>
+      )}
       <Field label="Nome do responsável" error={errors.responsible_name}>
         <input type="text" value={form.responsible_name} onChange={update("responsible_name")} className={inputCls(errors.responsible_name)} placeholder="Seu nome" autoComplete="name" />
       </Field>
@@ -259,7 +285,7 @@ const PartnerForm = () => {
           onChange={update("volume_notes")}
           className={`${inputCls(errors.volume_notes)} min-h-[96px] resize-y`}
           placeholder="Ex.: revenda ~50 un/mês, indicação para pacientes, parceria clínica..."
-          maxLength={600}
+          maxLength={notesLimit}
         />
       </Field>
 
@@ -269,14 +295,13 @@ const PartnerForm = () => {
         <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{serverError}</p>
       )}
 
-      <button
+      <Button
         type="submit"
         disabled={submitting}
-        className="w-full font-bold text-white text-sm md:text-base rounded-full py-3.5 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-        style={{ backgroundColor: "#4667B4" }}
+        className="w-full font-bold text-sm md:text-base h-auto min-h-12 py-3.5 disabled:cursor-not-allowed"
       >
         {submitting ? "Enviando..." : "Quero ser parceiro"}
-      </button>
+      </Button>
 
       <p className="text-xs text-muted-foreground text-center">
         Ao enviar, você concorda em ser contatado pela nossa equipe comercial.
