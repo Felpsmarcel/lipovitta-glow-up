@@ -15,6 +15,13 @@
       "when": 1793839903835,
       "tag": "0001_restore_admin_schedule_read",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793840085494,
+      "tag": "0002_rollback_admin_schedule_read_scope",
+      "breakpoints": true
     }
   ]
 }
