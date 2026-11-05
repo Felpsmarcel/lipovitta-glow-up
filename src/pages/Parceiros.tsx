@@ -27,7 +27,7 @@ export default function Parceiros() {
   const shot = flavors[flavor] ?? flavors[0];
   return (
     <div className="partners-page">
-      <SEOHead title="Parceiros comerciais — Revenda LipoVitta" description="Leve LipoVitta para seu estabelecimento. Conheça Cápsulas e Shot Matinal, condições de revenda, pedido inicial de 50 unidades e apoio comercial." keywords="parceiros comerciais LipoVitta, atacado, revenda, farmácias, academias" canonicalUrl="https://lipovitta.site/parceiros" ogImage="https://lipovitta.site/src/assets/capsulas-lipovitta.png" />
+      <SEOHead title="Parceiros comerciais — Revenda LipoVitta" description="Leve LipoVitta para seu estabelecimento. Conheça Cápsulas e Shot Matinal, condições de revenda, pedido inicial de 50 unidades e apoio comercial." keywords="parceiros comerciais LipoVitta, atacado, revenda, farmácias, academias" canonicalUrl="https://lipovitta.site/parceiros" ogImage={new URL(capsules, "https://lipovitta.site").href} />
       <a href="#conteudo-parceiros" className="b2b-skip">Ir para o conteúdo</a>
       <header className="b2b-header">
         <div className="b2b-shell b2b-nav">

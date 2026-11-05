@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { cloneElement, isValidElement, useId, useState, type ReactElement } from "react";
 import { Link } from "react-router-dom";
 
 export const STATES = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];
@@ -45,15 +45,19 @@ export const Field = ({
   label: string;
   error?: string;
   children: React.ReactNode;
-}) => (
+}) => {
+  const id = useId();
+  const control = isValidElement(children) ? cloneElement(children as ReactElement<{ id?: string; "aria-invalid"?: boolean; "aria-describedby"?: string }>, { id, "aria-invalid": Boolean(error), "aria-describedby": error ? `${id}-error` : undefined }) : children;
+  return (
   <div>
-    <label className="block text-xs uppercase tracking-[1.5px] font-semibold text-[#4667B4] mb-2">
+    <label htmlFor={id} className="block text-xs uppercase tracking-[1.5px] font-semibold text-[#4667B4] mb-2">
       {label}
     </label>
-    {children}
-    {error && <p className="text-xs text-red-600 mt-1.5">{error}</p>}
+    {control}
+    {error && <p id={`${id}-error`} className="text-xs text-red-600 mt-1.5">{error}</p>}
   </div>
-);
+  );
+};
 
 export const inputCls = (err?: string) =>
   `w-full rounded-lg border px-4 py-3 text-sm bg-white outline-none transition-colors ${
