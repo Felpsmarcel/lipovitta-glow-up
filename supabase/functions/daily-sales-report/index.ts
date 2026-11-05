@@ -5,6 +5,7 @@ import {
   sendTemplateEmail,
 } from '../_shared/transactional-email-templates/send-email.ts'
 import { validateDailySalesReport } from '../_shared/transactional-email-templates/daily-sales-report.tsx'
+import { readScheduleStatus } from './schedule-status.ts'
 
 // Daily sales digest, 09:00 America/Bahia.
 // Modes:
@@ -105,6 +106,7 @@ Deno.serve(async (req) => {
   const providedSecret = req.headers.get('x-cron-secret') ?? ''
   let authorized = false
   let trigger = 'manual'
+  let authenticatedClient: ReturnType<typeof createClient> | undefined
 
   if (providedSecret) {
     const { data: tokenRow } = await admin
@@ -136,6 +138,7 @@ Deno.serve(async (req) => {
       return json({ error: 'Authorization check failed' }, 500)
     }
     if (!isAdmin) return json({ error: 'Forbidden' }, 403)
+    authenticatedClient = userClient
     authorized = true
     trigger = 'manual'
   }
@@ -146,11 +149,8 @@ Deno.serve(async (req) => {
 
   // --- Read-only: real state of the scheduled job ---
   if (mode === 'schedule') {
-    const { data: schedule, error: scheduleError } = await admin.rpc('daily_report_schedule_status')
-    if (scheduleError) {
-      console.error('Failed to read schedule status', { code: scheduleError.code })
-      return json({ error: 'Failed to read schedule status' }, 500)
-    }
+    // The RPC authorizes auth.uid(); a service client loses the admin's identity.
+    const schedule = await readScheduleStatus(authenticatedClient)
     return json({ schedule })
   }
 

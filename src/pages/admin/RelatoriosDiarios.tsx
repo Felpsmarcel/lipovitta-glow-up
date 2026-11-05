@@ -151,8 +151,10 @@ const RelatoriosDiarios = () => {
           found: !!data.schedule.found,
           active: !!data.schedule.active,
           schedule: data.schedule.schedule ?? undefined,
+          unknown: data.schedule.unknown === true,
         });
-      });
+      })
+      .catch(() => setSchedule({ found: false, active: false, unknown: true }));
   }, [isAdmin, load]);
 
 

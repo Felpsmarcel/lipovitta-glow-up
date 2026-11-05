@@ -1,5 +1,10 @@
 # Lipolovers
 
+## Parceiros comerciais
+- [x] Implementar `/parceiros` com produtos reais, condições públicas e simulador em centavos.
+- [x] Reutilizar cadastro comercial com interesse de produto, mantendo afiliadas e integrações.
+- [x] Validar cálculos, fluxo com interceptações, desktop/celular e compilação; não publicar.
+
 ## Pré Black
 - [x] Incluir o banner enviado em `/pre-black` e disponibilizar o atalho `/black`; banner e clique validados em desktop/celular, 5 testes, lint e compilação aprovados; sem publicar.
 - [x] Implementar `/pre-black` com fotos reais, contador e movimento acessível, sem alterar os demais fluxos.
