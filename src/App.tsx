@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Afiliados from "./pages/Afiliados.tsx";
+import Parceiros from "./pages/Parceiros";
 import Unsubscribe from "./pages/Unsubscribe.tsx";
 import Conversoes from "./pages/admin/Conversoes.tsx";
 import Webhooks from "./pages/admin/Webhooks.tsx";
@@ -36,6 +37,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/afiliados" element={<Afiliados />} />
+          <Route path="/parceiros" element={<Parceiros />} />
           <Route path="/unsubscribe" element={<Unsubscribe />} />
           <Route path="/lipolovers" element={<Lipolovers />} />
           <Route path="/pre-black" element={<PreBlack />} />

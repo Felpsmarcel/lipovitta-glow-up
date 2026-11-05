@@ -62,6 +62,7 @@ const Afiliados = () => {
             </div>
           </div>
 
+          {!isAffiliate && <Link to="/parceiros" className="block text-center text-primary underline underline-offset-4 mb-6">Conheça os produtos e condições para parceiros comerciais</Link>}
           {isAffiliate ? <AffiliateForm /> : <PartnerForm />}
         </div>
       </main>
