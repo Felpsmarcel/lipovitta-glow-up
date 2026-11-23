@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import { usePreBlackCampaign } from "@/context/PreBlackCampaignContext";
 import { BASE_PRICES, getCampaignPrice, type CatalogId } from "@/config/campaignPricing";
+import { isCatalogItemAvailable } from "@/config/catalogAvailability";
 
 export type SelectedKit = {
   id: string;
@@ -38,6 +39,7 @@ export const GiftFlowProvider = ({ children }: { children: ReactNode }) => {
   const [selectedGiftId, setSelectedGiftId] = useState<string | null>(null);
 
   const selectKit = useCallback((kit: SelectedKit) => {
+    if (!isCatalogItemAvailable(kit.id)) return;
     setSelectedKit(kit);
     setSelectedGiftId(null);
     // Smooth scroll to the gift section

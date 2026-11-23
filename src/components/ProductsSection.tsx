@@ -1,4 +1,5 @@
-import CouponBadge from "@/components/pre-black/CouponBadge";
+import { Button } from "@/components/ui/button";
+import { isCatalogItemAvailable } from "@/config/catalogAvailability";
 import { Check } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
@@ -58,19 +59,19 @@ type Complemento = {
 const complementos: Complemento[] = [
   {
     id: "shot-rush",
-    inStock: true,
+    inStock: isCatalogItemAvailable("shot-rush"),
     render: (onBuy, kit) => (
       <article
         key="shot-rush"
         className="bg-white rounded-2xl border border-[#E8ECF1] p-5 flex flex-col"
       >
-        <CouponBadge className="mb-3" />
+
         <span className="self-start text-[11px] font-semibold uppercase tracking-wide text-[#4667B4] border border-[#4667B4]/30 px-3 py-1 rounded-full mb-3">
           Combina com a Cápsula
         </span>
         <div className="relative rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] h-44 flex items-center justify-center mb-4 overflow-hidden">
           <span className="absolute top-2 left-2 z-10 bg-[#9BAE52] text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full shadow-md">
-            Temos estoque
+            Esgotado
           </span>
           <ResponsiveImage
             picture={shotRushImg}
@@ -107,15 +108,11 @@ const complementos: Complemento[] = [
         <NutritionAccordion product={PRODUCT_INGREDIENTS["shot-rush"]} className="mb-4" />
         <ProductPrice />
 
-        <button
-          type="button"
-          onClick={onBuy}
-          className="mt-auto block w-full text-center border-2 border-[#4667B4] text-[#4667B4] hover:bg-[#4667B4] hover:text-white font-semibold py-2.5 rounded-full transition-colors text-sm"
-        >
-          COMPRAR SHOT RUSH
-        </button>
+        <Button disabled={!isCatalogItemAvailable(kit.id)} onClick={onBuy} variant="secondary" className="mt-auto w-full">
+          ESGOTADO
+        </Button>
         <p className="text-[11px] text-[#5F5F5F] text-center mt-2">
-          Receba junto com sua Cápsula.
+          Shot Rush sem estoque. Pedidos indisponíveis.
         </p>
       </article>
     ),
@@ -138,7 +135,7 @@ const ProductsSection = () => {
   const { selectKit } = useGiftFlow();
   const { phase } = usePreBlackCampaign();
   const promoKit = { ...KIT_SHOT_RUSH, value: getCampaignPrice("shot-rush", phase).value };
-  const visiveis = complementos.filter((p) => p.inStock);
+  const visiveis = complementos.filter((p) => p.id !== "gummy");
 
   if (visiveis.length === 0) return null;
 
@@ -155,7 +152,7 @@ const ProductsSection = () => {
             Shot Rush para sua rotina
           </h2>
           <p className="font-sans font-normal text-base sm:text-lg text-[#444] mb-3">
-            Produtos que combinam com a Cápsula LipoVitta para quem quer ir além.
+            Shot Rush está esgotado. Cápsulas e Shot Matinal continuam disponíveis.
           </p>
           <p className="font-sans font-normal text-sm text-[#666]">
             Frete grátis em compras a partir de R$400,00.
@@ -173,6 +170,7 @@ const ProductsSection = () => {
         >
           {visiveis.map((p) =>
             p.render(() => {
+              if (!isCatalogItemAvailable(p.id)) return;
               trackCtaClick({
                 location: "complemento_shot_rush",
                 label: "COMPRAR SHOT RUSH",

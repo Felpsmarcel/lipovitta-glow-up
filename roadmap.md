@@ -1,5 +1,9 @@
 # Lipolovers
 
+## Estoque Rush
+- [x] Marcar Rush e kits que o incluem como esgotados, bloquear seleção e destacar Protocolo disponível.
+- [x] Validar compra bloqueada e fluxo dos produtos disponíveis em desktop/celular, sem pedidos reais; manter em preview. Dez testes aprovados; home e /pre-black verificadas em 1440 e 390px; compilação automática OK.
+
 ## Parceiros comerciais
 - [x] Implementar `/parceiros` com produtos reais, condições públicas e simulador em centavos.
 - [x] Reutilizar cadastro comercial com interesse de produto, mantendo afiliadas e integrações.

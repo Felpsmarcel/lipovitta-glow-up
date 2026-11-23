@@ -1,5 +1,7 @@
 # Project architecture
 
+- Keep stock restrictions in `src/config/catalogAvailability.ts` and enforce them in the gift-selection flow; unavailable bundles must not reach checkout through alternate selection paths.
+
 - Keep public B2B offers and integer-cent simulation rules in `src/config/partnerOffers.ts`; `/parceiros` reuses `PartnerForm` with optional interest props and the existing application flow to preserve affiliate compatibility.
 - Scope partner design tokens and styles to `.partners-page`; B2B presentation must not affect retail or subscription surfaces.
 

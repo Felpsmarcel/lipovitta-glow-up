@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+import { isCatalogItemAvailable } from "@/config/catalogAvailability";
 import CouponBadge from "@/components/pre-black/CouponBadge";
 import { useEffect, useRef, useState } from "react";
 import { Shield, Check, Tag, Sparkles } from "lucide-react";
@@ -138,13 +140,13 @@ const OfferSection = () => {
   const promoProtocolo = priceOf(KIT_PROTOCOLO);
   const promoCompleto = priceOf(KIT_COMPLETO);
 
-  const [flavorCompleto, setFlavorCompleto] = useState<FlavorId | null>(null);
   const [flavorProtocolo, setFlavorProtocolo] = useState<FlavorId | null>(null);
   const [flavorShot, setFlavorShot] = useState<FlavorId | null>(null);
 
 
   /** Registra o clique no CTA e segue para a etapa de brinde. */
   const chooseKit = (kit: SelectedKit, location: string, label: string, flavor?: FlavorId | null) => {
+    if (!isCatalogItemAvailable(kit.id)) return;
     const finalKit = flavor ? withFlavor(kit, flavor) : kit;
     trackCtaClick({
       location,
@@ -201,324 +203,12 @@ const OfferSection = () => {
           <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-gradient-to-r from-[#4667B4] to-[#9BAE52]" />
         </div>
 
-        {/* CARD 0 — Kit Completo LipoVitta */}
-        <div className="max-w-6xl mx-auto mb-10 scroll-mt-32" id="kit-completo-anchor">
-          <article
-            id="card-kit-completo-top"
-            className="relative bg-white rounded-2xl border border-[#E8ECF1] overflow-hidden shadow-xl grid grid-cols-1 lg:grid-cols-12 scroll-mt-32"
-          >
-            <CouponBadge className="lg:col-span-12 m-3 mb-0" />
-            {promoCompleto.hasDiscount && (
-            <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
-              <span className="inline-flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5" />
-                Kit com {promoCompleto.discountPct}% OFF
-              </span>
-            </div>
-            )}
-
-            <div className="lg:col-span-5 relative bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center p-4 sm:p-6 min-h-[280px]">
-              <img
-                src={assetUrl(kitCompletoImg.url)}
-                alt="Kit Completo LipoVitta: Cápsulas, Shot Matinal e Shot Rush"
-                className="w-full h-full max-h-[420px] object-contain"
-                loading="lazy"
-              />
-            </div>
-
-            <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col">
-              <span className="inline-block self-start text-xs font-semibold uppercase tracking-wide text-white bg-[#E63946] px-3 py-1 rounded-full mb-3">
-                Todos os produtos
-              </span>
-              <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-medium text-[#4667B4] mb-2 leading-tight">
-                Kit Completo LipoVitta
-              </h3>
-              <p className="font-sans text-[#4667B4] font-medium text-sm sm:text-base mb-3">
-                A rotina completa: Cápsula, Shot Matinal e Shot Rush em um único pedido.
-              </p>
-              <p className="font-sans text-[#555] text-sm sm:text-base mb-4">
-                Aproveite o máximo do Sistema LipoVitta por Clara Caldas. Cápsula como base diária, Shot Matinal para o ritual da manhã e Shot Rush para disposição e performance.
-              </p>
-
-              <div className="flex flex-wrap gap-2 mb-4">
-                {["Zero açúcares", "Sem glúten", "Sem lactose", "3 produtos", "Rotina completa"].map((s) => (
-                  <span
-                    key={s}
-                    className="text-[11px] sm:text-xs font-semibold text-[#4667B4] bg-[#EEF2FA] border border-[#D9E2F1] px-2.5 py-1 rounded-full"
-                  >
-                    {s}
-                  </span>
-                ))}
-              </div>
-
-              <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2 mb-5">
-                <ul className="space-y-2">
-                  <li className="text-xs font-bold uppercase tracking-wide text-[#5F5F5F] mb-1">O que vem</li>
-                  <li className="flex items-start gap-2 text-[#333] text-sm">
-                    <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
-                    <span>1 LipoVitta Cápsulas (30 cápsulas)</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-[#333] text-sm">
-                    <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
-                    <span>1 Shot Matinal LipoVitta</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-[#333] text-sm">
-                    <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
-                    <span>1 Shot Rush sabor Frutas Vermelhas (180g)</span>
-                  </li>
-                </ul>
-                <ul className="space-y-2">
-                  <li className="text-xs font-bold uppercase tracking-wide text-[#5F5F5F] mb-1">Pensado para</li>
-                  {[
-                    "Rotina completa de bem-estar",
-                    "Disposição durante o dia",
-                    "Performance nos treinos",
-                    "Todos os produtos em um pedido",
-                  ].map((b) => (
-                    <li key={b} className="flex items-start gap-2 text-[#333] text-sm">
-                      <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <FlavorPicker value={flavorCompleto} onChange={setFlavorCompleto} idPrefix="kit-completo" />
-
-              <KitIngredients productIds={["capsulas", "shot-matinal", "shot-rush"]} className="mt-4" />
-
-              <div className="mt-auto pt-4 border-t border-[#EEF2FA] flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-                <div>
-                  {promoCompleto.hasDiscount && (
-                    <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
-                      <Sparkles className="w-3 h-3" />
-                      {promoCompleto.discountPct}% OFF
-                    </span>
-                  )}
-                  <div className="flex items-center gap-3 flex-wrap">
-                    {promoCompleto.hasDiscount && (
-                      <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R${formatMoney(promoCompleto.originalValue)}</span>
-                    )}
-                    <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
-                      R${formatMoney(promoCompleto.value)}
-                    </p>
-                    {promoCompleto.hasDiscount && (
-                      <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
-                        Economize {formatMoney(promoCompleto.originalValue - promoCompleto.value)}
-                      </span>
-                    )}
-                  </div>
-
-                  <p className="text-sm text-[#666] mt-1">
-                    ou 3x de R${formatMoney(promoCompleto.value / 3)} sem juros
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => chooseKit(promoCompleto, "card_kit_completo", "COMPRAR KIT COMPLETO", flavorCompleto)}
-                  disabled={!flavorCompleto}
-                  className={`inline-block text-center text-white font-bold rounded-full transition-colors text-base sm:text-lg px-8 py-4 min-h-[56px] shadow-md ${
-                    flavorCompleto ? "bg-[#9BAE52] hover:bg-[#8A9D45]" : "bg-[#B7BFC9] cursor-not-allowed"
-                  }`}
-                >
-                  COMPRAR KIT COMPLETO
-                </button>
-              </div>
-              <p className="text-xs text-[#5F5F5F] mt-3">
-                Frete grátis · Garantia de 30 dias
-              </p>
-            </div>
-          </article>
-        </div>
-
-        {/* CARD 4 — Kit Shot Rush + Cápsulas (destacado no topo) */}
-        <div className="max-w-6xl mx-auto mb-10 scroll-mt-32" id="kit-rush-anchor">
-          <article
-            id="card-kit-rush-top"
-            className="relative bg-white rounded-2xl border border-[#E8ECF1] overflow-hidden shadow-xl grid grid-cols-1 lg:grid-cols-12 scroll-mt-32"
-          >
-            <CouponBadge className="lg:col-span-12 m-3 mb-0" />
-            {promoRush.hasDiscount && (
-            <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
-              <span className="inline-flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5" />
-                Kit com {promoRush.discountPct}% OFF
-              </span>
-            </div>
-            )}
-
-            <div className="lg:col-span-5 relative bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center p-4 sm:p-6 min-h-[280px]">
-              <img
-                src={assetUrl(kitShotRushImg.url)}
-                alt="Kit Shot Rush sabor Frutas Vermelhas + Cápsulas LipoVitta"
-                className="w-full h-full max-h-[420px] object-contain"
-                loading="lazy"
-              />
-            </div>
-
-            <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col">
-              <span className="inline-block self-start text-xs font-semibold uppercase tracking-wide text-white bg-[#E63946] px-3 py-1 rounded-full mb-3">
-                Sabor Frutas Vermelhas
-              </span>
-              <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-medium text-[#4667B4] mb-2 leading-tight">
-                Kit Shot Rush + Cápsulas LipoVitta
-              </h3>
-              <p className="font-sans text-[#4667B4] font-medium text-sm sm:text-base mb-3">
-                Energia, vitalidade e cuidado corporal em uma rotina só.
-              </p>
-              <p className="font-sans text-[#555] text-sm sm:text-base mb-4">
-                Une o Shot Rush sabor Frutas Vermelhas (disposição e performance) com a Cápsula LipoVitta, motor do Sistema LipoVitta por Clara Caldas.
-              </p>
-
-              <div className="flex flex-wrap gap-2 mb-4">
-                {["Zero açúcares", "Sem glúten", "Sem lactose", "180g", "30 cápsulas"].map((s) => (
-                  <span
-                    key={s}
-                    className="text-[11px] sm:text-xs font-semibold text-[#4667B4] bg-[#EEF2FA] border border-[#D9E2F1] px-2.5 py-1 rounded-full"
-                  >
-                    {s}
-                  </span>
-                ))}
-              </div>
-
-              <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2 mb-5">
-                <ul className="space-y-2">
-                  <li className="text-xs font-bold uppercase tracking-wide text-[#5F5F5F] mb-1">O que vem</li>
-                  <li className="flex items-start gap-2 text-[#333] text-sm">
-                    <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
-                    <span>1 Shot Rush sabor Frutas Vermelhas (180g)</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-[#333] text-sm">
-                    <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
-                    <span>1 Cápsulas LipoVitta (30 cápsulas)</span>
-                  </li>
-                </ul>
-                <ul className="space-y-2">
-                  <li className="text-xs font-bold uppercase tracking-wide text-[#5F5F5F] mb-1">Pensado para</li>
-                  {[
-                    "Energia e disposição diária",
-                    "Vitalidade e vigor na rotina",
-                    "Apoio à constância no Sistema LipoVitta",
-                  ].map((b) => (
-                    <li key={b} className="flex items-start gap-2 text-[#333] text-sm">
-                      <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <KitIngredients productIds={["shot-rush", "capsulas"]} className="mb-5" />
-
-              <div className="mt-auto pt-4 border-t border-[#EEF2FA] flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-                <div>
-                  {promoRush.hasDiscount && (
-                    <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
-                      <Sparkles className="w-3 h-3" />
-                      {promoRush.discountPct}% OFF
-                    </span>
-                  )}
-                  <div className="flex items-center gap-3 flex-wrap">
-                    {promoRush.hasDiscount && (
-                      <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R${formatMoney(promoRush.originalValue)}</span>
-                    )}
-                    <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
-                      R${formatMoney(promoRush.value)}
-                    </p>
-                    {promoRush.hasDiscount && (
-                      <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
-                        Economize {formatMoney(promoRush.originalValue - promoRush.value)}
-                      </span>
-                    )}
-                  </div>
-
-                  <p className="text-sm text-[#666] mt-1">
-                    ou 3x de R${formatMoney(promoRush.value / 3)} sem juros
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => chooseKit(promoRush, "card_kit_rush", "COMPRAR KIT AGORA")}
-                  className="inline-block text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base sm:text-lg px-8 py-4 min-h-[56px] shadow-md"
-                >
-                  COMPRAR KIT AGORA
-                </button>
-              </div>
-              <p className="text-xs text-[#5F5F5F] mt-3">
-                Frete grátis · Garantia de 30 dias
-              </p>
-            </div>
-          </article>
-        </div>
-
         {/* 3 Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-5 max-w-6xl mx-auto items-start mb-10">
-          {/* CARD 1 — Cápsulas */}
-          <article
-            id="card-capsulas"
-            className="lg:col-span-5 bg-white rounded-2xl border border-[#E8ECF1] p-7 sm:p-9 flex flex-col shadow-xl lg:-translate-y-2"
-          >
-            <CouponBadge className="mb-4" />
-            <span className="inline-block self-start text-xs font-semibold uppercase tracking-wide text-white bg-[#4667B4] px-3 py-1 rounded-full mb-4">
-              Fórmula principal
-            </span>
-            <div className="h-56 sm:h-64 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden mb-5">
-              <ResponsiveImage picture={capsulasImg} alt="LipoVitta Cápsulas" className="h-full w-full object-contain" loading="lazy" sizes="(min-width: 1024px) 500px, 90vw" />
-            </div>
-
-            <h3 className="font-sans font-semibold text-2xl sm:text-3xl text-[#4667B4] mb-2">
-              LipoVitta Cápsulas
-            </h3>
-            <p className="font-sans font-normal text-[#555] text-base mb-4">
-              A fórmula principal da rotina LipoVitta. Apoia o cuidado diário com circulação, sensação de pernas pesadas e bem-estar.
-            </p>
-            <ul className="space-y-2 mb-5">
-              {["Contém Dimpless® patenteado", "Frete grátis a partir de R$400", "Garantia de 30 dias"].map((b) => (
-                <li key={b} className="flex items-start gap-2 text-[#333] text-sm sm:text-base">
-                  <Check className="w-5 h-5 text-[#9BAE52] shrink-0 mt-0.5" />
-                  <span>{b}</span>
-                </li>
-              ))}
-            </ul>
-
-            <IngredientsAccordion product={PRODUCT_INGREDIENTS.capsulas} className="mb-2" />
-            <NutritionAccordion product={PRODUCT_INGREDIENTS.capsulas} className="mb-5" />
-
-            <div className="mt-auto">
-              <div className="mb-4">
-                {promoCapsulas.hasDiscount && (
-                  <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
-                    <Sparkles className="w-3 h-3" />
-                    {promoCapsulas.discountPct}% OFF
-                  </span>
-                )}
-                <div className="flex items-center gap-3 flex-wrap">
-                  {promoCapsulas.hasDiscount && (
-                    <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R${formatMoney(promoCapsulas.originalValue)}</span>
-                  )}
-                  <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
-                    R${formatMoney(promoCapsulas.value)}
-                  </p>
-                </div>
-                <p className="text-sm text-[#666] mt-1">ou 3x de R${formatMoney(promoCapsulas.value / 3)} sem juros</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => chooseKit(promoCapsulas, "card_capsulas", "COMEÇAR MINHA ROTINA")}
-                className="block w-full text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base sm:text-lg py-4 sm:py-5 min-h-[56px]"
-              >
-                COMEÇAR MINHA ROTINA
-              </button>
-              <p className="text-xs text-[#5F5F5F] text-center mt-3">
-                Adicione o Shot Rush logo abaixo.
-              </p>
-            </div>
-          </article>
-
           {/* CARD 2 — Protocolo Completo */}
           <article
             id="card-protocolo"
-            className="lg:col-span-4 relative bg-white rounded-2xl border-2 border-[#9BAE52] p-6 sm:p-7 flex flex-col shadow-2xl"
+            className="lg:col-span-5 relative bg-white rounded-2xl border-2 border-[#9BAE52] p-6 sm:p-7 flex flex-col shadow-2xl"
           >
             <CouponBadge className="relative z-10 mb-4" />
             {/* Mancha orgânica decorativa (clipada dentro do card) */}
@@ -568,7 +258,7 @@ const OfferSection = () => {
               Cápsula + Shot Matinal. O combo mais escolhido pelas nossas clientes.
             </p>
             <p className="font-sans font-normal text-[#555] text-sm sm:text-base mb-4">
-              A combinação que a maioria das clientes começa: a Cápsula como base diária e o Shot Matinal para o ritual da manhã. Quer incluir o Shot Rush? Escolha o Kit Completo logo acima.
+              A combinação que a maioria das clientes começa: a Cápsula como base diária e o Shot Matinal para o ritual da manhã.
             </p>
             <ul className="space-y-2 mb-5">
               <li className="flex items-start gap-2 text-[#4667B4] font-semibold text-sm sm:text-base">
@@ -633,6 +323,68 @@ const OfferSection = () => {
               </p>
               <p className="text-[11px] text-[#4667B4] text-center mt-2 font-medium">
                 Cápsula + Shot Matinal. Shot Rush não incluso.
+              </p>
+            </div>
+          </article>
+
+          {/* CARD 1 — Cápsulas */}
+          <article
+            id="card-capsulas"
+            className="lg:col-span-4 bg-white rounded-2xl border border-[#E8ECF1] p-7 sm:p-9 flex flex-col shadow-xl lg:-translate-y-2"
+          >
+            <CouponBadge className="mb-4" />
+            <span className="inline-block self-start text-xs font-semibold uppercase tracking-wide text-white bg-[#4667B4] px-3 py-1 rounded-full mb-4">
+              Fórmula principal
+            </span>
+            <div className="h-56 sm:h-64 rounded-xl bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center overflow-hidden mb-5">
+              <ResponsiveImage picture={capsulasImg} alt="LipoVitta Cápsulas" className="h-full w-full object-contain" loading="lazy" sizes="(min-width: 1024px) 500px, 90vw" />
+            </div>
+
+            <h3 className="font-sans font-semibold text-2xl sm:text-3xl text-[#4667B4] mb-2">
+              LipoVitta Cápsulas
+            </h3>
+            <p className="font-sans font-normal text-[#555] text-base mb-4">
+              A fórmula principal da rotina LipoVitta. Apoia o cuidado diário com circulação, sensação de pernas pesadas e bem-estar.
+            </p>
+            <ul className="space-y-2 mb-5">
+              {["Contém Dimpless® patenteado", "Frete grátis a partir de R$400", "Garantia de 30 dias"].map((b) => (
+                <li key={b} className="flex items-start gap-2 text-[#333] text-sm sm:text-base">
+                  <Check className="w-5 h-5 text-[#9BAE52] shrink-0 mt-0.5" />
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+
+            <IngredientsAccordion product={PRODUCT_INGREDIENTS.capsulas} className="mb-2" />
+            <NutritionAccordion product={PRODUCT_INGREDIENTS.capsulas} className="mb-5" />
+
+            <div className="mt-auto">
+              <div className="mb-4">
+                {promoCapsulas.hasDiscount && (
+                  <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
+                    <Sparkles className="w-3 h-3" />
+                    {promoCapsulas.discountPct}% OFF
+                  </span>
+                )}
+                <div className="flex items-center gap-3 flex-wrap">
+                  {promoCapsulas.hasDiscount && (
+                    <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R${formatMoney(promoCapsulas.originalValue)}</span>
+                  )}
+                  <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
+                    R${formatMoney(promoCapsulas.value)}
+                  </p>
+                </div>
+                <p className="text-sm text-[#666] mt-1">ou 3x de R${formatMoney(promoCapsulas.value / 3)} sem juros</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => chooseKit(promoCapsulas, "card_capsulas", "COMEÇAR MINHA ROTINA")}
+                className="block w-full text-center bg-[#9BAE52] hover:bg-[#8A9D45] text-white font-bold rounded-full transition-colors text-base sm:text-lg py-4 sm:py-5 min-h-[56px]"
+              >
+                COMEÇAR MINHA ROTINA
+              </button>
+              <p className="text-xs text-[#5F5F5F] text-center mt-3">
+                Combine com o Shot Matinal no Protocolo Favorito.
               </p>
             </div>
           </article>
@@ -718,6 +470,245 @@ const OfferSection = () => {
 
 
 
+
+        {/* CARD 0 — Kit Completo LipoVitta */}
+        <div className="max-w-6xl mx-auto mb-10 scroll-mt-32" id="kit-completo-anchor">
+          <article
+            id="card-kit-completo-top"
+            className="relative bg-white rounded-2xl border border-[#E8ECF1] overflow-hidden shadow-xl grid grid-cols-1 lg:grid-cols-12 scroll-mt-32"
+          >
+            <CouponBadge className="lg:col-span-12 m-3 mb-0" />
+            {promoCompleto.hasDiscount && (
+            <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
+              <span className="inline-flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5" />
+                Kit com {promoCompleto.discountPct}% OFF
+              </span>
+            </div>
+            )}
+
+            <div className="lg:col-span-5 relative bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center p-4 sm:p-6 min-h-[280px]">
+              <img
+                src={assetUrl(kitCompletoImg.url)}
+                alt="Kit Completo LipoVitta: Cápsulas, Shot Matinal e Shot Rush"
+                className="w-full h-full max-h-[420px] object-contain"
+                loading="lazy"
+              />
+            </div>
+
+            <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col">
+              <span className="inline-block self-start text-xs font-semibold uppercase tracking-wide text-white bg-[#E63946] px-3 py-1 rounded-full mb-3">
+                Esgotado
+              </span>
+              <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-medium text-[#4667B4] mb-2 leading-tight">
+                Kit Completo LipoVitta
+              </h3>
+              <p className="font-sans text-[#4667B4] font-medium text-sm sm:text-base mb-3">
+                A rotina completa: Cápsula, Shot Matinal e Shot Rush em um único pedido.
+              </p>
+              <p className="font-sans text-[#555] text-sm sm:text-base mb-4">
+                Aproveite o máximo do Sistema LipoVitta por Clara Caldas. Cápsula como base diária, Shot Matinal para o ritual da manhã e Shot Rush para disposição e performance.
+              </p>
+
+              <div className="flex flex-wrap gap-2 mb-4">
+                {["Zero açúcares", "Sem glúten", "Sem lactose", "3 produtos", "Rotina completa"].map((s) => (
+                  <span
+                    key={s}
+                    className="text-[11px] sm:text-xs font-semibold text-[#4667B4] bg-[#EEF2FA] border border-[#D9E2F1] px-2.5 py-1 rounded-full"
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2 mb-5">
+                <ul className="space-y-2">
+                  <li className="text-xs font-bold uppercase tracking-wide text-[#5F5F5F] mb-1">O que vem</li>
+                  <li className="flex items-start gap-2 text-[#333] text-sm">
+                    <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
+                    <span>1 LipoVitta Cápsulas (30 cápsulas)</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-[#333] text-sm">
+                    <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
+                    <span>1 Shot Matinal LipoVitta</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-[#333] text-sm">
+                    <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
+                    <span>1 Shot Rush sabor Frutas Vermelhas (180g)</span>
+                  </li>
+                </ul>
+                <ul className="space-y-2">
+                  <li className="text-xs font-bold uppercase tracking-wide text-[#5F5F5F] mb-1">Pensado para</li>
+                  {[
+                    "Rotina completa de bem-estar",
+                    "Disposição durante o dia",
+                    "Performance nos treinos",
+                    "Todos os produtos em um pedido",
+                  ].map((b) => (
+                    <li key={b} className="flex items-start gap-2 text-[#333] text-sm">
+                      <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <p className="text-sm font-semibold text-muted-foreground mb-4">Esgotado · contém Shot Rush, atualmente sem estoque.</p>
+
+              <KitIngredients productIds={["capsulas", "shot-matinal", "shot-rush"]} className="mt-4" />
+
+              <div className="mt-auto pt-4 border-t border-[#EEF2FA] flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+                <div>
+                  {promoCompleto.hasDiscount && (
+                    <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
+                      <Sparkles className="w-3 h-3" />
+                      {promoCompleto.discountPct}% OFF
+                    </span>
+                  )}
+                  <div className="flex items-center gap-3 flex-wrap">
+                    {promoCompleto.hasDiscount && (
+                      <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R${formatMoney(promoCompleto.originalValue)}</span>
+                    )}
+                    <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
+                      R${formatMoney(promoCompleto.value)}
+                    </p>
+                    {promoCompleto.hasDiscount && (
+                      <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
+                        Economize {formatMoney(promoCompleto.originalValue - promoCompleto.value)}
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-sm text-[#666] mt-1">
+                    ou 3x de R${formatMoney(promoCompleto.value / 3)} sem juros
+                  </p>
+                </div>
+                <Button disabled variant="secondary" size="lg" className="min-h-14">
+                  ESGOTADO
+                </Button>
+              </div>
+              <p className="text-xs text-[#5F5F5F] mt-3">
+                Contém Shot Rush, atualmente sem estoque.
+              </p>
+            </div>
+          </article>
+        </div>
+
+        {/* CARD 4 — Kit Shot Rush + Cápsulas (destacado no topo) */}
+        <div className="max-w-6xl mx-auto mb-10 scroll-mt-32" id="kit-rush-anchor">
+          <article
+            id="card-kit-rush-top"
+            className="relative bg-white rounded-2xl border border-[#E8ECF1] overflow-hidden shadow-xl grid grid-cols-1 lg:grid-cols-12 scroll-mt-32"
+          >
+            <CouponBadge className="lg:col-span-12 m-3 mb-0" />
+            {promoRush.hasDiscount && (
+            <div className="lg:col-span-12 bg-gradient-to-r from-[#4667B4] to-[#9BAE52] text-white text-center py-2 text-xs sm:text-sm font-bold uppercase tracking-wide">
+              <span className="inline-flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5" />
+                Kit com {promoRush.discountPct}% OFF
+              </span>
+            </div>
+            )}
+
+            <div className="lg:col-span-5 relative bg-gradient-to-br from-[#F5F7FA] to-[#E8ECF1] flex items-center justify-center p-4 sm:p-6 min-h-[280px]">
+              <img
+                src={assetUrl(kitShotRushImg.url)}
+                alt="Kit Shot Rush sabor Frutas Vermelhas + Cápsulas LipoVitta"
+                className="w-full h-full max-h-[420px] object-contain"
+                loading="lazy"
+              />
+            </div>
+
+            <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col">
+              <span className="inline-block self-start text-xs font-semibold uppercase tracking-wide text-white bg-[#E63946] px-3 py-1 rounded-full mb-3">
+                Esgotado · Frutas Vermelhas
+              </span>
+              <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-medium text-[#4667B4] mb-2 leading-tight">
+                Kit Shot Rush + Cápsulas LipoVitta
+              </h3>
+              <p className="font-sans text-[#4667B4] font-medium text-sm sm:text-base mb-3">
+                Energia, vitalidade e cuidado corporal em uma rotina só.
+              </p>
+              <p className="font-sans text-[#555] text-sm sm:text-base mb-4">
+                Une o Shot Rush sabor Frutas Vermelhas (disposição e performance) com a Cápsula LipoVitta, motor do Sistema LipoVitta por Clara Caldas.
+              </p>
+
+              <div className="flex flex-wrap gap-2 mb-4">
+                {["Zero açúcares", "Sem glúten", "Sem lactose", "180g", "30 cápsulas"].map((s) => (
+                  <span
+                    key={s}
+                    className="text-[11px] sm:text-xs font-semibold text-[#4667B4] bg-[#EEF2FA] border border-[#D9E2F1] px-2.5 py-1 rounded-full"
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2 mb-5">
+                <ul className="space-y-2">
+                  <li className="text-xs font-bold uppercase tracking-wide text-[#5F5F5F] mb-1">O que vem</li>
+                  <li className="flex items-start gap-2 text-[#333] text-sm">
+                    <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
+                    <span>1 Shot Rush sabor Frutas Vermelhas (180g)</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-[#333] text-sm">
+                    <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
+                    <span>1 Cápsulas LipoVitta (30 cápsulas)</span>
+                  </li>
+                </ul>
+                <ul className="space-y-2">
+                  <li className="text-xs font-bold uppercase tracking-wide text-[#5F5F5F] mb-1">Pensado para</li>
+                  {[
+                    "Energia e disposição diária",
+                    "Vitalidade e vigor na rotina",
+                    "Apoio à constância no Sistema LipoVitta",
+                  ].map((b) => (
+                    <li key={b} className="flex items-start gap-2 text-[#333] text-sm">
+                      <Check className="w-4 h-4 text-[#9BAE52] shrink-0 mt-0.5" />
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <KitIngredients productIds={["shot-rush", "capsulas"]} className="mb-5" />
+
+              <div className="mt-auto pt-4 border-t border-[#EEF2FA] flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+                <div>
+                  {promoRush.hasDiscount && (
+                    <span className="inline-flex items-center gap-1.5 bg-[#E63946] text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">
+                      <Sparkles className="w-3 h-3" />
+                      {promoRush.discountPct}% OFF
+                    </span>
+                  )}
+                  <div className="flex items-center gap-3 flex-wrap">
+                    {promoRush.hasDiscount && (
+                      <span className="text-[#5F5F5F] line-through text-base sm:text-lg">R${formatMoney(promoRush.originalValue)}</span>
+                    )}
+                    <p className="text-[#4667B4] font-extrabold text-3xl sm:text-4xl leading-none">
+                      R${formatMoney(promoRush.value)}
+                    </p>
+                    {promoRush.hasDiscount && (
+                      <span className="inline-flex items-center bg-[#e8f5e0] text-[#4a7c2e] text-xs font-bold px-2.5 py-1 rounded-full">
+                        Economize {formatMoney(promoRush.originalValue - promoRush.value)}
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-sm text-[#666] mt-1">
+                    ou 3x de R${formatMoney(promoRush.value / 3)} sem juros
+                  </p>
+                </div>
+                <Button disabled variant="secondary" size="lg" className="min-h-14">
+                  ESGOTADO
+                </Button>
+              </div>
+              <p className="text-xs text-[#5F5F5F] mt-3">
+                Contém Shot Rush, atualmente sem estoque.
+              </p>
+            </div>
+          </article>
+        </div>
 
         {/* Guarantee Block */}
         <div className="max-w-3xl mx-auto bg-white border border-[#E8ECF1] rounded-2xl p-6 text-center mb-6 shadow-sm">
