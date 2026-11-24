@@ -9,12 +9,10 @@ import CTABanner from "@/components/CTABanner";
 import ForWhoSection from "@/components/ForWhoSection";
 import HowToUseSection from "@/components/HowToUseSection";
 import IngredientsSection from "@/components/IngredientsSection";
-import ProductsSection from "@/components/ProductsSection";
 import OfferSection from "@/components/OfferSection";
 import FAQSection from "@/components/FAQSection";
 import SectionSwoosh from "@/components/SectionSwoosh";
 import TrustBar from "@/components/TrustBar";
-import GiftSelectionSection from "@/components/GiftSelectionSection";
 import { GiftFlowProvider } from "@/context/GiftFlowContext";
 
 import Footer from "@/components/Footer";
@@ -55,11 +53,11 @@ const Index = () => {
           <HeroSection />
         )}
 
-        {live && <><OfferSection /><ProductsSection /><GiftSelectionSection /></>}
+        {live && <OfferSection />}
 
         {live && <section className="pb-clara" aria-labelledby="pb-clara-title"><div className="pb-clara-inner">
           <img src={claraPreBlack} alt="Clara Caldas com as Cápsulas LipoVitta" width="900" height="1600" loading="lazy" />
-          <div><small>LipoVitta por Clara Caldas</small><h2 id="pb-clara-title">Seu cuidado.<br />Sua rotina. Sua LipoVitta.</h2><p>Cápsulas, Shot Matinal e Shot Rush: escolha os produtos que combinam com a sua rotina e aproveite 30% de desconto na Pré Black.</p><a href="#precos">ESCOLHER MEUS FAVORITOS</a></div>
+          <div><small>LipoVitta por Clara Caldas</small><h2 id="pb-clara-title">Seu cuidado.<br />Sua rotina. Sua LipoVitta.</h2><p>Cápsulas e Shot Matinal: escolha os produtos que combinam com a sua rotina e aproveite 30% de desconto na Pré Black.</p><a href="#precos">ESCOLHER MEUS FAVORITOS</a></div>
         </div></section>}
 
         {/* Routine: light grey */}
@@ -94,7 +92,7 @@ const Index = () => {
         <CTABanner location="banner_ingredientes" eyebrow="Ingredientes escolhidos com critério. Rotina simples." label="ESCOLHER MEU KIT" />
 
         {/* Offer: light grey */}
-        {!live && <><OfferSection /><ProductsSection /><GiftSelectionSection /></>}
+        {!live && <OfferSection />}
 
         {/* → FAQ: AZUL */}
         <SectionSwoosh direction="white-to-blue" />

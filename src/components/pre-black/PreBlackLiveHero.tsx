@@ -38,7 +38,7 @@ const PreBlackLiveHero = ({ offersHref, trackLocation }: { offersHref: string; t
                     <ArrowDown aria-hidden="true" />
                   </a>
                 </Button>
-                <p className="pb-cta-note">Até 3x sem juros · Brinde conforme o pedido · Frete grátis a partir de R$400.</p>
+                <p className="pb-cta-note">Até 3x sem juros · Frete grátis a partir de R$400.</p>
               </div>
             </div>
           </div>

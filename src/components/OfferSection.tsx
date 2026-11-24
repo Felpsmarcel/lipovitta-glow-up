@@ -13,7 +13,7 @@ import comboImg from "@/assets/combo-lipovitta.png.asset.json";
 import kitShotRushImg from "@/assets/kit-shot-rush-capsulas.png.asset.json";
 import kitCompletoImg from "@/assets/kit-completo-lipovitta.png.asset.json";
 import { assetUrl } from "@/lib/assetUrl";
-import { useGiftFlow, type SelectedKit } from "@/context/GiftFlowContext";
+import { type SelectedKit } from "@/context/GiftFlowContext";
 import { trackEvent } from "@/lib/metaPixel";
 import { trackCtaClick } from "@/lib/tracking";
 import IngredientsAccordion, { KitIngredients, NutritionAccordion } from "@/components/IngredientsAccordion";
@@ -129,7 +129,6 @@ type PromoKit = SelectedKit & { originalValue: number; discountPct: number; hasD
 
 const OfferSection = () => {
   const sectionRef = useScrollAnimation();
-  const { selectKit } = useGiftFlow();
   // Fase compartilhada da Pré Black: na virada, o desconto passa a 30%
   // em todos os produtos mesmo com a página já aberta.
   const { phase } = usePreBlackCampaign();
@@ -148,7 +147,8 @@ const OfferSection = () => {
   const chooseKit = (kit: SelectedKit, location: string, label: string, flavor?: FlavorId | null) => {
     if (!isCatalogItemAvailable(kit.id)) return;
     const finalKit = flavor ? withFlavor(kit, flavor) : kit;
-    trackCtaClick({
+    const { url } = trackCtaClick({
+      checkoutUrl: finalKit.checkoutUrl,
       location,
       label,
       productName: finalKit.name,
@@ -158,7 +158,8 @@ const OfferSection = () => {
       flavor: finalKit.flavor,
       flavorId: finalKit.flavorId,
     });
-    selectKit(finalKit);
+    // Brindes desativados: compra segue direto ao checkout.
+    window.open(url ?? finalKit.checkoutUrl, "_blank", "noopener");
   };
   const viewFired = useRef(false);
 
@@ -472,7 +473,7 @@ const OfferSection = () => {
 
 
         {/* CARD 0 — Kit Completo LipoVitta */}
-        <div className="max-w-6xl mx-auto mb-10 scroll-mt-32" id="kit-completo-anchor">
+        <div className="max-w-6xl mx-auto mb-10 scroll-mt-32" id="kit-completo-anchor" hidden>
           <article
             id="card-kit-completo-top"
             className="relative bg-white rounded-2xl border border-[#E8ECF1] overflow-hidden shadow-xl grid grid-cols-1 lg:grid-cols-12 scroll-mt-32"
@@ -595,7 +596,7 @@ const OfferSection = () => {
         </div>
 
         {/* CARD 4 — Kit Shot Rush + Cápsulas (destacado no topo) */}
-        <div className="max-w-6xl mx-auto mb-10 scroll-mt-32" id="kit-rush-anchor">
+        <div className="max-w-6xl mx-auto mb-10 scroll-mt-32" id="kit-rush-anchor" hidden>
           <article
             id="card-kit-rush-top"
             className="relative bg-white rounded-2xl border border-[#E8ECF1] overflow-hidden shadow-xl grid grid-cols-1 lg:grid-cols-12 scroll-mt-32"

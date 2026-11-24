@@ -3,9 +3,7 @@ import { Button } from "@/components/ui/button";
 import SEOHead from "@/components/SEOHead";
 import PreBlackCountdown from "@/components/pre-black/PreBlackCountdown";
 import PreBlackLiveHero from "@/components/pre-black/PreBlackLiveHero";
-import ProductsSection from "@/components/ProductsSection";
 import OfferSection from "@/components/OfferSection";
-import GiftSelectionSection from "@/components/GiftSelectionSection";
 import { GiftFlowProvider } from "@/context/GiftFlowContext";
 import { PRE_BLACK_CONFIG } from "@/config/preBlack";
 import { usePreBlackMotion } from "@/hooks/usePreBlackMotion";
@@ -16,9 +14,6 @@ import kit from "@/assets/kit-completo-lipovitta.png.asset.json";
 import tangerina from "@/assets/shot-matinal-tangerina.jpg";
 import limao from "@/assets/shot-matinal-limao.jpg";
 import abacaxi from "@/assets/shot-matinal-abacaxi.jpg";
-import mixer from "@/assets/gifts/brinde-mixer.png";
-import raspador from "@/assets/gifts/brinde-raspador.png";
-import portaCapsulas from "@/assets/gifts/brinde-portacapsulas.png";
 
 // Resolve the existing immutable asset on the official origin, including local QA.
 const kitUrl = new URL(kit.url, "https://lipovitta.site").href;
@@ -28,7 +23,7 @@ function OffersCta({ location }: { location: string }) {
   return (
     <div className="pb-cta-block">
       <Button asChild className="pb-cta"><a href="#ofertas" onClick={() => trackCtaClick({ location: `pre_black_${location}`, label, eventName: "CTAClick" })}><span>{label}</span><ArrowDown aria-hidden="true" /></a></Button>
-      <p className="pb-cta-note">Ofertas da Pré Black logo abaixo, com os kits e brindes do site.</p>
+      <p className="pb-cta-note">Ofertas da Pré Black logo abaixo, com os produtos do site.</p>
     </div>
   );
 }
@@ -48,7 +43,7 @@ function TeaserContent() {
           <div className="pb-hero-copy">
             <p className="pb-eyebrow" data-pb-motion="hero" data-pb-order="0">PRÉ BLACK LIPOVITTA <span>{PRE_BLACK_CONFIG.eyebrowDateLabel}</span></p>
             <h1 data-pb-motion="hero" data-pb-order="1">A Pré Black LipoVitta está chegando <span className="pb-offer-intro">em todos os produtos</span><span className="pb-discount">30<span>%<small>OFF</small></span></span></h1>
-            <p className="pb-hero-description" data-pb-motion="hero" data-pb-order="2">Na nossa pré black, você vai conhecer o sistema LipoVitta, para cuidar do corpo, reduzir a aparência da celulite e elevar sua autoestima, com até 3x sem juros, brindes especiais e ofertas exclusivas.</p>
+            <p className="pb-hero-description" data-pb-motion="hero" data-pb-order="2">Na nossa pré black, você vai conhecer o sistema LipoVitta, para cuidar do corpo, reduzir a aparência da celulite e elevar sua autoestima, com até 3x sem juros e ofertas exclusivas.</p>
           </div>
           <div className="pb-hero-photo" data-pb-motion="photo">
             <img src={kitUrl} alt="Linha LipoVitta com Cápsulas, três sabores de Shot Matinal e Shot Rush" width="1600" height="900" fetchPriority="high" />
@@ -65,12 +60,11 @@ function TeaserContent() {
       </section>
 
       <section className="pb-products pb-shell" aria-labelledby="products-title">
-        <div className="pb-section-heading" data-pb-motion="scroll"><p className="pb-eyebrow">O SEU RITUAL LIPOVITTA</p><h2 id="products-title">Seus favoritos da LipoVitta,<br className="hidden md:block" /> com 30% de desconto.</h2><p>Shot Matinal, Shot Rush, LipoVitta cápsulas e acessórios exclusivos para sua rotina, com mixer, raspador de língua e porta-cápsulas para elevar seu autocuidado.</p></div>
+        <div className="pb-section-heading" data-pb-motion="scroll"><p className="pb-eyebrow">O SEU RITUAL LIPOVITTA</p><h2 id="products-title">Seus favoritos da LipoVitta,<br className="hidden md:block" /> com 30% de desconto.</h2><p>Shot Matinal e LipoVitta Cápsulas para a sua rotina.</p></div>
         <figure className="pb-kit" data-pb-motion="scroll"><img src={kitUrl} alt="Linha LipoVitta com Cápsulas, três sabores de Shot Matinal e Shot Rush" loading="lazy" width="1600" height="900" /><figcaption><span>UM SISTEMA. A SUA ROTINA.</span><span>LipoVitta por Clara Caldas</span></figcaption></figure>
         <div className="pb-flavors" data-pb-motion="scroll"><div><p className="pb-eyebrow">SHOT MATINAL</p><h3>Qual é o seu sabor?</h3></div><div className="pb-flavor-list">{[[tangerina, "Tangerina"], [limao, "Limão"], [abacaxi, "Abacaxi"]].map(([src, name]) => <figure key={name}><img src={src} alt={`Shot Matinal ${name}`} width="180" height="220" loading="lazy" /><figcaption>{name}</figcaption></figure>)}</div></div>
       </section>
 
-      <section className="pb-gifts-section" aria-labelledby="gifts-title"><div className="pb-shell pb-gifts-grid" data-pb-motion="scroll"><div><p className="pb-eyebrow">OS DETALHES FAZEM PARTE</p><h2 id="gifts-title">Mais carinho<br /> com a sua rotina.</h2><p>Brindes especiais e acessórios exclusivos para elevar seu autocuidado.</p></div><div className="pb-gift-list">{[[mixer, "Mixer"], [raspador, "Raspador de língua"], [portaCapsulas, "Porta-cápsulas"]].map(([src, name], i) => <figure key={name}><img src={src} alt={name} width="300" height="360" loading="lazy" /><figcaption><span>0{i + 1}</span>{name}</figcaption></figure>)}</div></div></section>
     </>
   );
 }
@@ -84,8 +78,6 @@ function LiveContent() {
       <div id="ofertas" className="pb-live-offers">
         <GiftFlowProvider>
           <OfferSection />
-          <ProductsSection />
-          <GiftSelectionSection />
         </GiftFlowProvider>
       </div>
     </>
@@ -102,8 +94,8 @@ export default function PreBlack() {
       <SEOHead
         title={live ? "Pré Black LipoVitta — 30% OFF em todos os produtos" : "Pré Black LipoVitta — 30% OFF em todos os produtos"}
         description={live
-          ? "A Pré Black LipoVitta começou: 30% OFF em todos os produtos, com até 3x sem juros e brindes conforme o pedido."
-          : `Pré Black LipoVitta: 30% OFF em todos os produtos, até 3x sem juros e brindes especiais. Começa dia ${PRE_BLACK_CONFIG.dateLabel}, às 08h da Bahia.`}
+          ? "A Pré Black LipoVitta começou: 30% OFF em todos os produtos, com até 3x sem juros."
+          : `Pré Black LipoVitta: 30% OFF em todos os produtos, até 3x sem juros. Começa dia ${PRE_BLACK_CONFIG.dateLabel}, às 08h da Bahia.`}
         canonicalUrl="https://lipovitta.site/pre-black"
       />
       <a className="pb-skip" href="#pre-black-content">Ir para o conteúdo</a>
